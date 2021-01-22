@@ -12,8 +12,8 @@ public interface Listener<T> extends Serializable {
             serialVersionUID = 1L;
         protected final Set<Listener<T>>
             listeners = new HashSet<>(),
-            attach    = new HashSet<>(),
-            detach    = new HashSet<>();
+            attach = new HashSet<>(),
+            detach = new HashSet<>();
 
         public void attach(Listener<T> listener) {
             attach.add(listener);
@@ -24,7 +24,7 @@ public interface Listener<T> extends Serializable {
         }
 
         public void onAttach(Listener<T> listener) {
-            listeners.add   (listener);
+            listeners.add(listener);
         }
 
         public void onDetach(Listener<T> listener) {
@@ -32,7 +32,7 @@ public interface Listener<T> extends Serializable {
         }
 
         public void onAttach() {
-            if(attach.size() > 0) {
+            if (attach.size() > 0) {
                 for (Listener<T> listener : attach)
                     onAttach(listener);
                 attach.clear();
@@ -40,7 +40,7 @@ public interface Listener<T> extends Serializable {
         }
 
         public void onDetach() {
-            if(detach.size() > 0) {
+            if (detach.size() > 0) {
                 for (Listener<T> listener : detach)
                     onDetach(listener);
                 detach.clear();
@@ -48,7 +48,7 @@ public interface Listener<T> extends Serializable {
         }
 
         public void flush(T event) {
-            for(Listener<T> listener: listeners)
+            for (Listener<T> listener : listeners)
                 listener.handle(event);
         }
     }

@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Version implements Comparable<Version>, Serializable {
     private static final long
         serialVersionUID = 1L;
-
+    
     public final String
         string;
     public final int
@@ -36,11 +36,11 @@ public class Version implements Comparable<Version>, Serializable {
     @Override
     public int compareTo(Version o) {
         int k;
-        if((k = major - o.major) != 0)
+        if ((k = major - o.major) != 0)
             return k;
-        if((k = minor - o.minor) != 0)
+        if ((k = minor - o.minor) != 0)
             return k;
-        if((k = patch - o.patch) != 0)
+        if ((k = patch - o.patch) != 0)
             return k;
         return 0;
     }

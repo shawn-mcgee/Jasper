@@ -61,7 +61,7 @@ public class Broker implements Serializable {
 
     public <T> void queue(T event) {
         System.out.println("Queue event... " + event);
-        synchronized(this) {
+        synchronized (this) {
             System.out.println("Queue event... Acquiring lock");
             events0.push(event);
             System.out.println("Queue event... Releasing lock");
@@ -75,7 +75,7 @@ public class Broker implements Serializable {
 
     public void flush() {
         System.out.println("Swapping queue...");
-        synchronized(this) {
+        synchronized (this) {
             System.out.println("Swapping queue... Acquiring lock");
 
             ArrayStack<Object> events2 = events0;
@@ -88,7 +88,7 @@ public class Broker implements Serializable {
 
         System.out.println("Flushing queue...");
 
-        for(Object event: events1)
+        for (Object event : events1)
             flush(event);
         events1.clear();
 
@@ -106,8 +106,8 @@ public class Broker implements Serializable {
             serialVersionUID = 1L;
         protected final Set<Broker>
             brokers = new HashSet<>(),
-            attach  = new HashSet<>(),
-            detach  = new HashSet<>();
+            attach = new HashSet<>(),
+            detach = new HashSet<>();
 
         public void attach(Broker broker) {
             attach.add(broker);
@@ -118,7 +118,7 @@ public class Broker implements Serializable {
         }
 
         public void onAttach(Broker broker) {
-            brokers.add   (broker);
+            brokers.add(broker);
         }
 
         public void onDetach(Broker broker) {
@@ -126,23 +126,23 @@ public class Broker implements Serializable {
         }
 
         public void onAttach() {
-            for(Broker broker: attach)
+            for (Broker broker : attach)
                 onAttach(broker);
-            for(Broker broker: brokers)
+            for (Broker broker : brokers)
                 broker.onAttach();
             attach.clear();
         }
 
         public void onDetach() {
-            for(Broker broker: brokers)
+            for (Broker broker : brokers)
                 broker.onDetach();
-            for(Broker broker: detach)
+            for (Broker broker : detach)
                 onDetach(broker);
             detach.clear();
         }
 
         public <T> void flush(T event) {
-            for(Broker broker: brokers)
+            for (Broker broker : brokers)
                 broker.flush(event);
         }
     }

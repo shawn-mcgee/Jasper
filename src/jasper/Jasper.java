@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class Jasper {
     public static final Version
         VERSION = new Version("Jasper", 0, 1, 0);
-
+    
     public static void main(String[] args) {
         Console.info(VERSION);
 
@@ -60,52 +60,52 @@ public class Jasper {
 //                a.pushTail(i);
 //        });
     }
-
+    
     private static final long
         ONE_SECOND = 1000000000,
-        ONE_MILLIS =    1000000;
-
+        ONE_MILLIS = 1000000;
+    
     public static void test(int n, String name, Test test) {
         try {
             long a, b;
             double[] data = new double[n];
-
+            
             for (int i = 0; i < n; i++) {
                 a = System.nanoTime();
                 test.perform();
                 b = System.nanoTime();
-
+                
                 System.gc();
-
-                data[i] = (double)(b - a) / ONE_MILLIS;
+                
+                data[i] = (double) (b - a) / ONE_MILLIS;
             }
-
+            
             Arrays.sort(data);
-
+            
             double
-                min = data[        0],
+                min = data[0],
                 med = data[2 * n / 4],
-                max = data[    n - 1],
+                max = data[n - 1],
                 avg = 0.,
                 std = 0.;
-
+            
             for (double datum : data)
                 avg += datum;
-            avg =           avg / n ;
-
+            avg = avg / n;
+            
             for (double datum : data)
                 std += (datum - avg) * (datum - avg);
             std = Math.sqrt(std / n);
-
+            
             Console.info(String.format("%1$s: %2$5.2f ~ %3$5.2f [%4$5.2f - %5$5.2f - %6$5.2f] ms", name, avg, std, min, med, max));
-
-        } catch(Exception e) {
+            
+        } catch (Exception e) {
             Console.warn(String.format("%1$s: ERROR", name));
-            Console.warn(                                 e);
+            Console.warn(e);
             e.printStackTrace();
         }
     }
-
+    
     public static interface Test {
         public void perform();
     }
