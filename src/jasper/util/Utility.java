@@ -7,7 +7,7 @@ public final class Utility {
             Copyable<?> u = Unsafe.cast(t       );
             return          Unsafe.cast(u.copy());
         } else if (t != null)
-            Console.warn(new Object() { }, typeOf(t) + " is not of type jasper.util.Copyable");
+            Debug.warn.trace(new Object() { }, typeOf(t) + " is not of type jasper.util.Copyable");
         return t;
     }
     

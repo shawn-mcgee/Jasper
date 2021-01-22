@@ -1,18 +1,46 @@
 package jasper;
 
-import jasper.util.Console;
+import jasper.util.Debug;
 import jasper.util.Version;
 
 import java.util.Arrays;
 
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
+
 public class Jasper {
     public static final Version
-        VERSION = new Version("Jasper", 0, 1, 0);
+        VERSION = new Version("Jasper", 0, 2, 0);
     
     public static void main(String[] args) {
-        Console.info(VERSION);
+        Debug.info(VERSION);
+        
+        if(!glfwInit())
+            Debug.warn.trace(new Object() { }, "Failed to init GLFW");
 
-//        Console.info();
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        glfwWindowHint(GLFW_RESIZABLE , GLFW_FALSE );
+
+        int
+            window_w = 640,
+            window_h = 480;
+        String
+            window_title = "Hello Vulkan";
+
+        long window = glfwCreateWindow(window_w, window_h, window_title, NULL, NULL);
+
+        glfwShowWindow(window);
+
+        while(!glfwWindowShouldClose(window))
+            glfwPollEvents();
+
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        
+        
+
+//        Debug.info("");
 //        test(1000, "ArrayList.add", () -> {
 //            ArrayList<Integer> a = new ArrayList<>();
 //            for(int i = 0; i < 100000; i ++)
@@ -24,7 +52,7 @@ public class Jasper {
 //                a.add(i);
 //        });
 //
-//        Console.info();
+//        Debug.info("");
 //        test(1000, "ArrayStack.push", () -> {
 //            ArrayStack<Integer> a = new ArrayStack<>();
 //            for(int i = 0; i < 100000; i ++)
@@ -36,7 +64,7 @@ public class Jasper {
 //                a.push(i);
 //        });
 //
-//        Console.info();
+//        Debug.info("");
 //        test(1000, "ArrayDeque.pushHead", () -> {
 //            ArrayDeque<Integer> a = new ArrayDeque<>();
 //            for(int i = 0; i < 100000; i ++)
@@ -48,7 +76,7 @@ public class Jasper {
 //                a.pushHead(i);
 //        });
 //
-//        Console.info();
+//        Debug.info("");
 //        test(1000, "ArrayDeque.pushTail", () -> {
 //            ArrayDeque<Integer> a = new ArrayDeque<>();
 //            for(int i = 0; i < 100000; i ++)
@@ -63,7 +91,7 @@ public class Jasper {
     
     private static final long
         ONE_SECOND = 1000000000,
-        ONE_MILLIS = 1000000;
+        ONE_MILLIS =    1000000;
     
     public static void test(int n, String name, Test test) {
         try {
@@ -97,11 +125,11 @@ public class Jasper {
                 std += (datum - avg) * (datum - avg);
             std = Math.sqrt(std / n);
             
-            Console.info(String.format("%1$s: %2$5.2f ~ %3$5.2f [%4$5.2f - %5$5.2f - %6$5.2f] ms", name, avg, std, min, med, max));
+            Debug.info(String.format("%1$s: %2$5.2f ~ %3$5.2f [%4$5.2f - %5$5.2f - %6$5.2f] ms", name, avg, std, min, med, max));
             
         } catch (Exception e) {
-            Console.warn(String.format("%1$s: ERROR", name));
-            Console.warn(e);
+            Debug.warn("%1$s: ERROR", name);
+            Debug.warn(e);
             e.printStackTrace();
         }
     }

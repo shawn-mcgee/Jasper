@@ -1,6 +1,6 @@
 package jasper.engine.event;
 
-import jasper.util.data.ArrayStack;
+import jasper.util.ArrayStack;
 
 import java.io.Serializable;
 import java.util.HashSet;
