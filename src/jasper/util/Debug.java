@@ -14,20 +14,30 @@ public class Debug {
         // do nothing
     }
     
-    public static void info(Object event, Object... args) {
+    public static void info(Object event) {
         if(info != null)
-            info.trace("Info", event, args);
+            info.log("Info", event);
     }
     
-    public static void warn(Object event, Object... args) {
+    public static void info(Object trace, Object event) {
+        if(info != null)
+            info.log(trace, event);
+    }
+    
+    public static void warn(Object event) {
         if(warn != null)
-            warn.trace("Warn", event, args);
+            warn.log("Warn", event);
+    }
+    
+    public static void warn(Object trace, Object event) {
+        if(warn != null)
+            warn.log(trace, event);
     }
     
     public interface Logger {
-        public void trace(Object trace, Object event, Object... args);
+        public void log(Object trace, Object event, Object... args);
         
-        public static void trace(PrintStream out, Object trace, Object event, Object...args) {
+        public static void log(PrintStream out, Object trace, Object event, Object...args) {
             String prefix;
             if (trace instanceof String)
                 prefix = String.format("[%1$s]", trace);
@@ -45,7 +55,7 @@ public class Debug {
                 out.printf("%1$s %2$s%n", prefix, message);
         }
         
-        public static void trace(PrintWriter out, Object trace, Object event, Object... args) {
+        public static void log(PrintWriter out, Object trace, Object event, Object... args) {
             String prefix;
             if (trace instanceof String)
                 prefix = String.format("[%1$s]", trace);
@@ -68,11 +78,11 @@ public class Debug {
         }
         
         public static Logger create(PrintStream out) {
-            return (trace, event, args) -> trace(out, trace, event, args);
+            return (trace, event, args) -> log(out, trace, event, args);
         }
         
         public static Logger create(PrintWriter out) {
-            return (trace, event, args) -> trace(out, trace, event, args);
+            return (trace, event, args) -> log(out, trace, event, args);
         }
     }
 }

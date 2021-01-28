@@ -60,11 +60,8 @@ public class Broker implements Serializable {
     }
 
     public <T> void queue(T event) {
-        System.out.println("Queue event... " + event);
         synchronized (this) {
-            System.out.println("Queue event... Acquiring lock");
             events0.push(event);
-            System.out.println("Queue event... Releasing lock");
         }
     }
 
@@ -74,25 +71,17 @@ public class Broker implements Serializable {
     }
 
     public void flush() {
-        System.out.println("Swapping queue...");
         synchronized (this) {
-            System.out.println("Swapping queue... Acquiring lock");
-
             ArrayStack<Object> events2 = events0;
             events0 = events1;
             events1 = events2;
-
-            System.out.println("Swapping queue... Releasing lock");
         }
-        System.out.println("Swapping queue... Done");
-
-        System.out.println("Flushing queue...");
-
-        for (Object event : events1)
-            flush(event);
-        events1.clear();
-
-        System.out.println("Flushing queue... Done");
+        
+        if(events1.size() > 0) {
+            for (Object event : events1)
+                flush(event);
+            events1.clear();
+        }
     }
 
     public void poll() {

@@ -1,42 +1,21 @@
 package jasper;
 
+import jasper.math.Region2;
+import jasper.math.Vector4;
 import jasper.util.Debug;
 import jasper.util.Version;
 
 import java.util.Arrays;
 
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
-
 public class Jasper {
     public static final Version
-        VERSION = new Version("Jasper", 0, 2, 0);
+        VERSION = new Version("Jasper", 0, 0, 2);
     
     public static void main(String[] args) {
         Debug.info(VERSION);
         
-        if(!glfwInit())
-            Debug.warn.trace(new Object() { }, "Failed to init GLFW");
-
-        glfwDefaultWindowHints();
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE , GLFW_FALSE );
-
-        int
-            window_w = 640,
-            window_h = 480;
-        String
-            window_title = "Hello Vulkan";
-
-        long window = glfwCreateWindow(window_w, window_h, window_title, NULL, NULL);
-
-        glfwShowWindow(window);
-
-        while(!glfwWindowShouldClose(window))
-            glfwPollEvents();
-
-        glfwDestroyWindow(window);
-        glfwTerminate();
+        Debug.info(new Vector4(1, 2, 3, 4));
+        Debug.info(new Region2(1, 2, 3, 4));
         
         
 
@@ -128,9 +107,7 @@ public class Jasper {
             Debug.info(String.format("%1$s: %2$5.2f ~ %3$5.2f [%4$5.2f - %5$5.2f - %6$5.2f] ms", name, avg, std, min, med, max));
             
         } catch (Exception e) {
-            Debug.warn("%1$s: ERROR", name);
             Debug.warn(e);
-            e.printStackTrace();
         }
     }
     

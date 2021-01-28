@@ -3,7 +3,8 @@ package jasper.math;
 public class Vector4 implements Vector {
     private static final long
         serialVersionUID = 1L;
-    
+    public static final String
+        FORMAT = "<%1$s, %2$s, %3$s, %4$s>";
     protected float
         x, y, z, w;
     
@@ -99,15 +100,11 @@ public class Vector4 implements Vector {
     
     @Override
     public String toString() {
-        return Vector4.toString(this, "%s");
+        return Vector4.toString(this, FORMAT);
     }
     
     public static String toString(Vector v, String f) {
-        return "<" +
-            String.format(f, v.x()) + ", " +
-            String.format(f, v.y()) + ", " +
-            String.format(f, v.z()) + ", " +
-            String.format(f, v.w()) + ">";
+        return String.format(f, v.x(), v .y(), v.z(), v.w());
     }
     
     public static class Mutable extends Vector4 implements Vector.Mutable {

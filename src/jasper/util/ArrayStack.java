@@ -28,7 +28,7 @@ public class ArrayStack<T> extends Array<T> implements List.Stack<T> {
     
     @Override
     public T get(int i) {
-        return i >= 0 && i < size ? Unsafe.cast(a[i]) : null;
+        return i >= 0 && i < size ? Unsafe.cast(a[i]    ) : null;
     }
     
     @Override
@@ -89,8 +89,8 @@ public class ArrayStack<T> extends Array<T> implements List.Stack<T> {
     @Override
     public void resize(int n) {
         int
-//            l = n > 15 ? n + 1 : 16,
-            m = n > 0 ? n : 0;
+//          l = n > 15 ? n + 1 : 16,
+            m = n >  0 ? n     :  0;
         Object[] b = new Object[n];
         System.arraycopy(a, 0, b, 0, m);
         a = b;
@@ -116,7 +116,7 @@ public class ArrayStack<T> extends Array<T> implements List.Stack<T> {
     
     @Override
     public T pull() {
-        return size > 0 ? Unsafe.cast(a[--size]) : null;
+        return size > 0 ? Unsafe.cast(a[ -- size]) : null;
     }
     
     @Override

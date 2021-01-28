@@ -90,7 +90,7 @@ public class Handle implements Serializable {
         }
         
         public void onAttach() {
-            for (Handle handle : attach)
+            for (Handle handle : attach )
                 onAttach(handle);
             for (Handle handle : handles)
                 handle.onAttach();
@@ -100,7 +100,7 @@ public class Handle implements Serializable {
         public void onDetach() {
             for (Handle handle : handles)
                 handle.onDetach();
-            for (Handle handle : detach)
+            for (Handle handle : detach )
                 onDetach(handle);
             detach.clear();
         }

@@ -5,6 +5,11 @@ import jasper.util.Copyable;
 import java.io.Serializable;
 
 public interface Vector extends Copyable<Vector>, Serializable {
+    public static final int
+        X = 0,
+        Y = 1,
+        Z = 2,
+        W = 3;
     public default float x() { return 0f; }
     public default float y() { return 0f; }
     public default float z() { return 0f; }

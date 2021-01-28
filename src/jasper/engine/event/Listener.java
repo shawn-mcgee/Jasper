@@ -12,8 +12,8 @@ public interface Listener<T> extends Serializable {
             serialVersionUID = 1L;
         protected final Set<Listener<T>>
             listeners = new HashSet<>(),
-            attach = new HashSet<>(),
-            detach = new HashSet<>();
+            attach    = new HashSet<>(),
+            detach    = new HashSet<>();
 
         public void attach(Listener<T> listener) {
             attach.add(listener);
