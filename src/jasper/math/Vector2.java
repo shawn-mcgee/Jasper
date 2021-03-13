@@ -1,10 +1,10 @@
 package jasper.math;
 
+import static jasper.util.StringToObject.stringToFloat;
+
 public class Vector2 implements Vector {
     private static final long
         serialVersionUID = 1L;
-    public static final String
-        FORMAT = "<%1$s, %2$s>";
     protected float
         x, y;
     
@@ -44,20 +44,36 @@ public class Vector2 implements Vector {
     
     @Override
     public String toString() {
-        return Vector2.toString(this, FORMAT);
+        return Vector2.toString(this);
     }
     
-    public static String toString(Vector v, String f) {
-        return String.format(f, v.x(), v.y());
+    public static String toString(Vector v) {
+        return "<" + v.x() + ", " + v.y() + ">";
     }
     
     public static Vector2 fromString(String s) {
         return Vector2.fromString(new Vector2(), s);
     }
     
-    protected static <V extends Vector2> V fromString(V v, String s) {
+    protected static <T extends Vector2> T fromString(T v, String s) {
         if(v != null && s != null) {
-        
+            int
+                i = s.indexOf("<"),
+                j = s.indexOf(">");
+            if (i >= 0 || j >= 0) {
+                if (j > i)
+                    s = s.substring(++ i, j);
+                else
+                    s = s.substring(++ i   );
+            }
+            
+            String[] t = s.split(",");
+            switch(t.length) {
+                default:
+                case 2: v.y = stringToFloat(t[Y]);
+                case 1: v.x = stringToFloat(t[X]);
+                case 0:
+            }
         }
         return v;
     }

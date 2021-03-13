@@ -1,12 +1,14 @@
 package jasper.math;
 
+import static jasper.util.StringToObject.stringToFloat;
+
 public class Matrix4 implements Matrix<Vector4, Vector4> {
     private static final long
         serialVersionUID = 1L;
     protected static final int
-        xx = 0, xy = 1, xz = 2, xw = 3,
-        yx = 4, yy = 5, yz = 6, yw = 7,
-        zx = 8, zy = 9, zz = 10, zw = 11,
+        xx =  0, xy =  1, xz =  2, xw =  3,
+        yx =  4, yy =  5, yz =  6, yw =  7,
+        zx =  8, zy =  9, zz = 10, zw = 11,
         wx = 12, wy = 13, wz = 14, ww = 15;
     protected final float[]
         m = new float[16];
@@ -299,15 +301,83 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
     
     @Override
     public String toString() {
-        return Matrix4.toString(this, "%s");
+        return Matrix4.toRowMajorString(this);
     }
     
-    public static String toString(Matrix<?, ?> m, String f) {
-        return
-            "[" + String.format(f, m.xx()) + ", " + String.format(f, m.xy()) + ", " + String.format(f, m.xz()) + ", " + String.format(f, m.xw()) + "]\n" +
-                "[" + String.format(f, m.yx()) + ", " + String.format(f, m.yy()) + ", " + String.format(f, m.yz()) + ", " + String.format(f, m.yw()) + "]\n" +
-                "[" + String.format(f, m.zx()) + ", " + String.format(f, m.zy()) + ", " + String.format(f, m.zz()) + ", " + String.format(f, m.zw()) + "]\n" +
-                "[" + String.format(f, m.wx()) + ", " + String.format(f, m.wy()) + ", " + String.format(f, m.wz()) + ", " + String.format(f, m.ww()) + "]";
+    public static String toString(Matrix<?, ?> m, int mode) {
+        switch(mode) {
+            default:
+            case ROW_MAJOR: return toRowMajorString(m);
+            case COL_MAJOR: return toColMajorString(m);
+        }
+    }
+    
+    public static String toRowMajorString(Matrix<?, ?> m) {
+        return "[" +
+            m.xx() + ", " + m.xy() + ", " + m.xz() + ", " + m.xw() + ", " +
+            m.yx() + ", " + m.yy() + ", " + m.yz() + ", " + m.yw() + ", " +
+            m.zx() + ", " + m.zy() + ", " + m.zz() + ", " + m.zw() + ", " +
+            m.wx() + ", " + m.wy() + ", " + m.wz() + ", " + m.ww() + "]";
+    }
+    
+    public static String toColMajorString(Matrix<?, ?> m) {
+        return "[" +
+            m.xx() + ", " + m.yx() + ", " + m.zx() + ", " + m.wx() + ", " +
+            m.xy() + ", " + m.yy() + ", " + m.zy() + ", " + m.wy() + ", " +
+            m.xz() + ", " + m.yz() + ", " + m.zz() + ", " + m.wz() + ", " +
+            m.xw() + ", " + m.yw() + ", " + m.zw() + ", " + m.ww() + "]";
+    }
+    
+    public static Matrix4 fromString(int mode, String s) {
+        return Matrix4.fromString(new Matrix4(), mode, s);
+    }
+    
+    public static Matrix4 fromRowMajorString(String s) {
+        return Matrix4.fromString(new Matrix4(), ROW_MAJOR, s);
+    }
+    
+    public static Matrix4 fromColMajorString(String s) {
+        return Matrix4.fromString(new Matrix4(), COL_MAJOR, s);
+    }
+    
+    protected static <T extends Matrix4> T fromString(T m, int mode, String s) {
+        if(m != null && s != null) {
+            int
+                i = s.indexOf("["),
+                j = s.indexOf("]");
+            if (i >= 0 || j >= 0) {
+                if (j > i)
+                    s = s.substring(++ i, j);
+                else
+                    s = s.substring(++ i   );
+            }
+            
+            String[] t = s.split(",");
+            float[]  u = new float[16];
+            int n = Math.min(t.length, u.length);
+            
+            for(int k = 0; k < n; k ++)
+                u[k] = stringToFloat(t[k]);
+            
+            switch(mode) {
+                default:
+                case ROW_MAJOR:
+                    m.mSetRowMajor(
+                        u[ 0], u[ 1], u[ 2], u[ 3],
+                        u[ 4], u[ 5], u[ 6], u[ 7],
+                        u[ 8], u[ 9], u[10], u[11],
+                        u[12], u[13], u[14], u[15]
+                    ); break;
+                case COL_MAJOR:
+                    m.mSetColMajor(
+                        u[ 0], u[ 1], u[ 2], u[ 3],
+                        u[ 4], u[ 5], u[ 6], u[ 7],
+                        u[ 8], u[ 9], u[10], u[11],
+                        u[12], u[13], u[14], u[15]
+                    ); break;
+            }
+        }
+        return m;
     }
     
     public static Matrix4 identity() {
@@ -522,6 +592,18 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
         @Override
         public Matrix4.Mutable copy() {
             return new Matrix4.Mutable(this);
+        }
+    
+        public static Matrix4.Mutable fromString(int mode, String s) {
+            return Matrix4.fromString(new Matrix4.Mutable(), mode, s);
+        }
+    
+        public static Matrix4.Mutable fromRowMajorString(String s) {
+            return Matrix4.fromString(new Matrix4.Mutable(), ROW_MAJOR, s);
+        }
+    
+        public static Matrix4.Mutable fromColMajorString(String s) {
+            return Matrix4.fromString(new Matrix4.Mutable(), COL_MAJOR, s);
         }
         
         public static Matrix4.Mutable identity() {

@@ -1,5 +1,7 @@
 package jasper.math;
 
+import static jasper.util.StringToObject.stringToFloat;
+
 public class Matrix3 implements Matrix<Vector3, Vector3> {
     private static final long
         serialVersionUID = 1L;
@@ -218,14 +220,79 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
     
     @Override
     public String toString() {
-        return Matrix3.toString(this, "%s");
+        return Matrix3.toRowMajorString(this);
     }
     
-    public static String toString(Matrix<?, ?> m, String f) {
-        return
-            "[" + String.format(f, m.xx()) + ", " + String.format(f, m.xy()) + ", " + String.format(f, m.xz()) + "]\n" +
-                "[" + String.format(f, m.yx()) + ", " + String.format(f, m.yy()) + ", " + String.format(f, m.yz()) + "]\n" +
-                "[" + String.format(f, m.zx()) + ", " + String.format(f, m.zy()) + ", " + String.format(f, m.zz()) + "]";
+    public static String toString(Matrix<?, ?> m, int mode) {
+        switch(mode) {
+            default:
+            case ROW_MAJOR: return toRowMajorString(m);
+            case COL_MAJOR: return toColMajorString(m);
+        }
+    }
+    
+    public static String toRowMajorString(Matrix<?, ?> m) {
+        return "[" +
+            m.xx() + ", " + m.xy() + ", " + m.xz() + ", " +
+            m.yx() + ", " + m.yy() + ", " + m.yz() + ", " +
+            m.zx() + ", " + m.zy() + ", " + m.zz() + "]";
+    }
+    
+    public static String toColMajorString(Matrix<?, ?> m) {
+        return "[" +
+            m.xx() + ", " + m.yx() + ", " + m.zx() + ", " +
+            m.xy() + ", " + m.yy() + ", " + m.zy() + ", " +
+            m.xz() + ", " + m.yz() + ", " + m.zz() + "]";
+    }
+    
+    public static Matrix3 fromString(int mode, String s) {
+        return Matrix3.fromString(new Matrix3(), mode, s);
+    }
+    
+    public static Matrix3 fromRowMajorString(String s) {
+        return Matrix3.fromString(new Matrix3(), ROW_MAJOR, s);
+    }
+    
+    public static Matrix3 fromColMajorString(String s) {
+        return Matrix3.fromString(new Matrix3(), COL_MAJOR, s);
+    }
+    
+    protected static <T extends Matrix3> T fromString(T m, int mode, String s) {
+        if(m != null && s != null) {
+            int
+                i = s.indexOf("["),
+                j = s.indexOf("]");
+            if (i >= 0 || j >= 0) {
+                if (j > i)
+                    s = s.substring(++ i, j);
+                else
+                    s = s.substring(++ i   );
+            }
+            
+            String[] t = s.split(",");
+            float[]  u = new float[9];
+            int n = Math.min(t.length, u.length);
+            
+            for(int k = 0; k < n; k ++)
+                u[k] = stringToFloat(t[k]);
+            
+            switch(mode) {
+                default:
+                case ROW_MAJOR:
+                    m.mSetRowMajor(
+                        u[0], u[1], u[2],
+                        u[3], u[4], u[5],
+                        u[6], u[7], u[8]
+                    ); break;
+                case COL_MAJOR:
+                    m.mSetColMajor(
+                        u[0], u[1], u[2],
+                        u[3], u[4], u[5],
+                        u[6], u[7], u[8]
+                    ); break;
+            }
+        }
+        return m;
     }
     
     public static Matrix3 identity() {
@@ -394,6 +461,18 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
         @Override
         public Matrix3.Mutable copy() {
             return new Matrix3.Mutable(this);
+        }
+    
+        public static Matrix3.Mutable fromString(int mode, String s) {
+            return Matrix3.fromString(new Matrix3.Mutable(), mode, s);
+        }
+    
+        public static Matrix3.Mutable fromRowMajorString(String s) {
+            return Matrix3.fromString(new Matrix3.Mutable(), ROW_MAJOR, s);
+        }
+    
+        public static Matrix3.Mutable fromColMajorString(String s) {
+            return Matrix3.fromString(new Matrix3.Mutable(), COL_MAJOR, s);
         }
         
         public static Matrix3.Mutable identity() {

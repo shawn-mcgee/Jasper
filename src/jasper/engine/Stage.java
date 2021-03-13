@@ -1,4 +1,8 @@
 package jasper.engine;
 
-public class Stage {
+public class Stage extends Process {
+
+
+
+
 }

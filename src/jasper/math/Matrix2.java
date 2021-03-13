@@ -1,5 +1,7 @@
 package jasper.math;
 
+import static jasper.util.StringToObject.stringToFloat;
+
 public class Matrix2 implements Matrix<Vector2, Vector2> {
     private static final long
         serialVersionUID = 1L;
@@ -157,13 +159,75 @@ public class Matrix2 implements Matrix<Vector2, Vector2> {
     
     @Override
     public String toString() {
-        return Matrix2.toString(this, "%s");
+        return Matrix2.toRowMajorString(this);
     }
     
-    public static String toString(Matrix<?, ?> m, String f) {
-        return
-            "[" + String.format(f, m.xx()) + ", " + String.format(f, m.xy()) + "]\n" +
-                "[" + String.format(f, m.yx()) + ", " + String.format(f, m.yy()) + "]";
+    public static String toString(Matrix<?, ?> m, int mode) {
+        switch(mode) {
+            default:
+            case ROW_MAJOR: return toRowMajorString(m);
+            case COL_MAJOR: return toColMajorString(m);
+        }
+    }
+    
+    public static String toRowMajorString(Matrix<?, ?> m) {
+        return "[" +
+            m.xx() + ", " + m.xy() + ", " +
+            m.yx() + ", " + m.yy() + "]";
+    }
+    
+    public static String toColMajorString(Matrix<?, ?> m) {
+        return "[" +
+            m.xx() + ", " + m.yx() + ", " +
+            m.xy() + ", " + m.yy() + "]";
+    }
+    
+    public static Matrix2 fromString(int mode, String s) {
+        return Matrix2.fromString(new Matrix2(), mode, s);
+    }
+    
+    public static Matrix2 fromRowMajorString(String s) {
+        return Matrix2.fromString(new Matrix2(), ROW_MAJOR, s);
+    }
+    
+    public static Matrix2 fromColMajorString(String s) {
+        return Matrix2.fromString(new Matrix2(), COL_MAJOR, s);
+    }
+    
+    protected static <T extends Matrix2> T fromString(T m, int mode, String s) {
+        if(m != null && s != null) {
+            int
+                i = s.indexOf("["),
+                j = s.indexOf("]");
+            if (i >= 0 || j >= 0) {
+                if (j > i)
+                    s = s.substring(++ i, j);
+                else
+                    s = s.substring(++ i   );
+            }
+            
+            String[] t = s.split(",");
+            float[]  u = new float[4];
+            int n = Math.min(t.length, u.length);
+            
+            for(int k = 0; k < n; k ++)
+                u[k] = stringToFloat(t[k]);
+            
+            switch(mode) {
+                default:
+                case ROW_MAJOR:
+                    m.mSetRowMajor(
+                        u[0], u[1],
+                        u[2], u[3]
+                    ); break;
+                case COL_MAJOR:
+                    m.mSetColMajor(
+                        u[0], u[1],
+                        u[2], u[3]
+                    ); break;
+            }
+        }
+        return m;
     }
     
     public static Matrix2 identity() {
@@ -298,6 +362,18 @@ public class Matrix2 implements Matrix<Vector2, Vector2> {
             return new Matrix2.Mutable(this);
         }
         
+        public static Matrix2.Mutable fromString(int mode, String s) {
+            return Matrix2.fromString(new Matrix2.Mutable(), mode, s);
+        }
+    
+        public static Matrix2.Mutable fromRowMajorString(String s) {
+            return Matrix2.fromString(new Matrix2.Mutable(), ROW_MAJOR, s);
+        }
+    
+        public static Matrix2.Mutable fromColMajorString(String s) {
+            return Matrix2.fromString(new Matrix2.Mutable(), COL_MAJOR, s);
+        }
+    
         public static Matrix2.Mutable identity() {
             return new Matrix2.Mutable(
                 ROW_MAJOR,

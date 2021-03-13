@@ -1,10 +1,10 @@
 package jasper.math;
 
+import static jasper.util.StringToObject.stringToFloat;
+
 public class Vector4 implements Vector {
     private static final long
         serialVersionUID = 1L;
-    public static final String
-        FORMAT = "<%1$s, %2$s, %3$s, %4$s>";
     protected float
         x, y, z, w;
     
@@ -100,11 +100,40 @@ public class Vector4 implements Vector {
     
     @Override
     public String toString() {
-        return Vector4.toString(this, FORMAT);
+        return Vector4.toString(this);
     }
     
-    public static String toString(Vector v, String f) {
-        return String.format(f, v.x(), v .y(), v.z(), v.w());
+    public static String toString(Vector v) {
+        return "<" + v.x() + ", " + v.y() + ", " + v.z() + ", " + v.w() + ">";
+    }
+    
+    public static Vector4 fromString(String s) {
+        return Vector4.fromString(new Vector4(), s);
+    }
+    
+    protected static <T extends Vector4> T fromString(T v, String s) {
+        if(v != null && s != null) {
+            int
+                i = s.indexOf("<"),
+                j = s.indexOf(">");
+            if (i >= 0 || j >= 0) {
+                if (j > i)
+                    s = s.substring(++ i, j);
+                else
+                    s = s.substring(++ i   );
+            }
+            
+            String[] t = s.split(",");
+            switch(t.length) {
+                default:
+                case 4: v.w = stringToFloat(t[W]);
+                case 3: v.z = stringToFloat(t[Z]);
+                case 2: v.y = stringToFloat(t[Y]);
+                case 1: v.x = stringToFloat(t[X]);
+                case 0:
+            }
+        }
+        return v;
     }
     
     public static class Mutable extends Vector4 implements Vector.Mutable {
@@ -234,6 +263,10 @@ public class Vector4 implements Vector {
         @Override
         public Vector4.Mutable copy() {
             return new Vector4.Mutable(this);
+        }
+        
+        public static Vector4.Mutable fromString(String s) {
+            return Vector4.fromString(new Vector4.Mutable(), s);
         }
     }
 }

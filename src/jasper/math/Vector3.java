@@ -1,10 +1,10 @@
 package jasper.math;
 
+import static jasper.util.StringToObject.stringToFloat;
+
 public class Vector3 implements Vector {
     private static final long
         serialVersionUID = 1L;
-    public static final String
-        FORMAT = "<%1$s, %2$s, %3$s>";
     protected float
         x, y, z;
     
@@ -63,11 +63,39 @@ public class Vector3 implements Vector {
     
     @Override
     public String toString() {
-        return Vector3.toString(this, FORMAT);
+        return Vector3.toString(this);
     }
     
-    public static String toString(Vector v, String f) {
-        return String.format(f, v.x(), v.y(), v.z());
+    public static String toString(Vector v) {
+        return "<" + v.x() + ", " + v.y() + ", " + v.z() + ">";
+    }
+    
+    public static Vector3 fromString(String s) {
+        return Vector3.fromString(new Vector3(), s);
+    }
+    
+    protected static <T extends Vector3> T fromString(T v, String s) {
+        if(v != null && s != null) {
+            int
+                i = s.indexOf("<"),
+                j = s.indexOf(">");
+            if (i >= 0 || j >= 0) {
+                if (j > i)
+                    s = s.substring(++ i, j);
+                else
+                    s = s.substring(++ i   );
+            }
+            
+            String[] t = s.split(",");
+            switch(t.length) {
+                default:
+                case 3: v.z = stringToFloat(t[Z]);
+                case 2: v.y = stringToFloat(t[Y]);
+                case 1: v.x = stringToFloat(t[X]);
+                case 0:
+            }
+        }
+        return v;
     }
     
     public static class Mutable extends Vector3 implements Vector.Mutable {
@@ -140,6 +168,10 @@ public class Vector3 implements Vector {
         @Override
         public Vector3.Mutable copy() {
             return new Vector3.Mutable(this);
+        }
+        
+        public static Vector3.Mutable fromString(String s) {
+            return Vector3.fromString(new Vector3.Mutable(), s);
         }
     }
 }

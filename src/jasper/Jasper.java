@@ -1,23 +1,32 @@
 package jasper;
 
-import jasper.math.Region2;
-import jasper.math.Vector4;
-import jasper.util.Debug;
-import jasper.util.Version;
+import jasper.data.ArrayDeque;
+import jasper.data.ArrayStack;
+import jasper.data.Stack;
+import jasper.engine.Event;
+import jasper.math.Matrix2;
+import jasper.math.Matrix4;
+import jasper.math.Vector2;
+import jasper.util.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static jasper.util.StringToObject.*;
+import static jasper.util.Utility.configure;
+import static jasper.util.Utility.getProperty;
 
 public class Jasper {
     public static final Version
-        VERSION = new Version("Jasper", 0, 0, 2);
+        VERSION = new Version("Jasper", 0, 1, 1);
     
     public static void main(String[] args) {
         Debug.info(VERSION);
         
-        Debug.info(new Vector4(1, 2, 3, 4));
-        Debug.info(new Region2(1, 2, 3, 4));
-        
-        
+        Debug.info(new Vector2()        );
+        Debug.info(new Vector2.Mutable());
 
 //        Debug.info("");
 //        test(1000, "ArrayList.add", () -> {
@@ -65,6 +74,18 @@ public class Jasper {
 //            ArrayDeque<Integer> a = new ArrayDeque<>();
 //            for(int i = 0; i < 100000; i ++)
 //                a.pushTail(i);
+//        });
+//
+//        Debug.info("");
+//        test(1000, "Stack.i32.push", () -> {
+//            Stack.i32 a = new Stack.i32();
+//            for(int i = 0; i < 100000; i ++)
+//                a.push(i);
+//        });
+//        test(1000, "Stack.i32.push", () -> {
+//            Stack.i32 a = new Stack.i32();
+//            for(int i = 0; i < 100000; i ++)
+//                a.push(i);
 //        });
     }
     
