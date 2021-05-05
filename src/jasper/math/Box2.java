@@ -10,6 +10,34 @@ public interface Box2 extends Box {
     @Override
     public abstract Box2 copy();
     
+    public default boolean includes(Box2   b, boolean edge) {
+        return Box.includes(this, b, edge);
+    }
+    
+    public default boolean includes(Vector b, boolean edge) {
+        return Box.includes(this, b, edge);
+    }
+    
+    public default boolean includes(float x, float y, boolean edge) {
+        return Box.includes(this, x, y, edge);
+    }
+    
+    public default boolean excludes(Box2   b, boolean edge) {
+        return Box.excludes(this, b, edge);
+    }
+    
+    public default boolean excludes(Vector b, boolean edge) {
+        return Box.excludes(this, b, edge);
+    }
+    
+    public default boolean excludes(float x, float y, boolean edge) {
+        return Box.excludes(this, x, y, edge);
+    }
+    
+    public default boolean intersects(Box2 b, boolean edge) {
+        return Box.intersects(this, b, edge);
+    }
+    
     public static interface Mutable extends Box2, Box.Mutable {
         public default Vector2  xy(float  x, float  y) { return new Vector2( x( x),  y( y)); }
         public default Vector2  wh(float  w, float  h) { return new Vector2( w( w),  h( h)); }

@@ -1,6 +1,7 @@
 package jasper.math;
 
 import static jasper.util.StringToObject.stringToFloat;
+import static jasper.util.Utility.parse;
 
 public class Matrix3 implements Matrix<Vector3, Vector3> {
     private static final long
@@ -57,15 +58,9 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
     protected void mSet(
         Matrix<?, ?> m
     ) {
-        this.m[xx] = m.xx();
-        this.m[xy] = m.xy();
-        this.m[xz] = m.xz();
-        this.m[yx] = m.yx();
-        this.m[yy] = m.yy();
-        this.m[yz] = m.yz();
-        this.m[zx] = m.zx();
-        this.m[zy] = m.zy();
-        this.m[zz] = m.zz();
+        this.m[xx] = m.xx(); this.m[xy] = m.xy(); this.m[xz] = m.xz();
+        this.m[yx] = m.yx(); this.m[yy] = m.yy(); this.m[yz] = m.yz();
+        this.m[zx] = m.zx(); this.m[zy] = m.zy(); this.m[zz] = m.zz();
     }
     
     protected void mSetRowMajor(
@@ -73,15 +68,9 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
         Vector r1,
         Vector r2
     ) {
-        m[xx] = r0.x();
-        m[xy] = r0.y();
-        m[xz] = r0.z();
-        m[yx] = r1.x();
-        m[yy] = r1.y();
-        m[yz] = r1.z();
-        m[zx] = r2.x();
-        m[zy] = r2.y();
-        m[zz] = r2.z();
+        m[xx] = r0.x(); m[xy] = r0.y(); m[xz] = r0.z();
+        m[yx] = r1.x(); m[yy] = r1.y(); m[yz] = r1.z();
+        m[zx] = r2.x(); m[zy] = r2.y(); m[zz] = r2.z();
     }
     
     protected void mSetColMajor(
@@ -89,15 +78,9 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
         Vector c1,
         Vector c2
     ) {
-        m[xx] = c0.x();
-        m[xy] = c1.x();
-        m[xz] = c2.x();
-        m[yx] = c0.y();
-        m[yy] = c1.y();
-        m[yz] = c2.y();
-        m[zx] = c0.z();
-        m[zy] = c1.z();
-        m[zz] = c2.z();
+        m[xx] = c0.x(); m[xy] = c1.x(); m[xz] = c2.x();
+        m[yx] = c0.y(); m[yy] = c1.y(); m[yz] = c2.y();
+        m[zx] = c0.z(); m[zy] = c1.z(); m[zz] = c2.z();
     }
     
     protected void mSetRowMajor(
@@ -105,15 +88,9 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
         float d, float e, float f,
         float g, float h, float i
     ) {
-        m[xx] = a;
-        m[xy] = b;
-        m[xz] = c;
-        m[yx] = d;
-        m[yy] = e;
-        m[yz] = f;
-        m[zx] = g;
-        m[zy] = h;
-        m[zz] = i;
+        m[xx] = a; m[xy] = b; m[xz] = c;
+        m[yx] = d; m[yy] = e; m[yz] = f;
+        m[zx] = g; m[zy] = h; m[zz] = i;
     }
     
     protected void mSetColMajor(
@@ -121,15 +98,9 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
         float d, float e, float f,
         float g, float h, float i
     ) {
-        m[xx] = a;
-        m[xy] = d;
-        m[xz] = g;
-        m[yx] = b;
-        m[yy] = e;
-        m[yz] = h;
-        m[zx] = c;
-        m[zy] = f;
-        m[zz] = i;
+        m[xx] = a; m[xy] = d; m[xz] = g;
+        m[yx] = b; m[yy] = e; m[yz] = h;
+        m[zx] = c; m[zy] = f; m[zz] = i;
     }
     
     @Override
@@ -226,8 +197,8 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
     public static String toString(Matrix<?, ?> m, int mode) {
         switch(mode) {
             default:
-            case ROW_MAJOR: return toRowMajorString(m);
-            case COL_MAJOR: return toColMajorString(m);
+            case ROW_MAJOR: return Matrix3.toRowMajorString(m);
+            case COL_MAJOR: return Matrix3.toColMajorString(m);
         }
     }
     
@@ -257,7 +228,10 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
         return Matrix3.fromString(new Matrix3(), COL_MAJOR, s);
     }
     
-    protected static <T extends Matrix3> T fromString(T m, int mode, String s) {
+    protected static final String[]
+        row_major = { "xx", "xy", "xz", "yx", "yy", "yz", "zx", "zy", "zz" },
+        col_major = { "xx", "yx", "zx", "xy", "yy", "zy", "xz", "yz", "zz" };
+    protected static <M extends Matrix3> M fromString(M m, int mode, String s) {
         if(m != null && s != null) {
             int
                 i = s.indexOf("["),
@@ -268,13 +242,16 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
                 else
                     s = s.substring(++ i   );
             }
-            
-            String[] t = s.split(",");
-            float[]  u = new float[9];
-            int n = Math.min(t.length, u.length);
-            
-            for(int k = 0; k < n; k ++)
-                u[k] = stringToFloat(t[k]);
+    
+            String[] t;
+            switch(mode) {
+                default:
+                case ROW_MAJOR: t = parse(s, row_major); break;
+                case COL_MAJOR: t = parse(s, col_major); break;
+            }
+            float[] u = new float[9];
+            for(int n = 0; n < 9; n ++)
+                u[n] = stringToFloat(t[n]);
             
             switch(mode) {
                 default:

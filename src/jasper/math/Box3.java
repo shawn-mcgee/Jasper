@@ -10,6 +10,34 @@ public interface Box3 extends Box {
     @Override
     public abstract Box3 copy();
     
+    public default boolean includes(Box3   b, boolean edge) {
+        return Box.includes(this, b, edge);
+    }
+    
+    public default boolean includes(Vector b, boolean edge) {
+        return Box.includes(this, b, edge);
+    }
+    
+    public default boolean includes(float x, float y, float z, boolean edge) {
+        return Box.includes(this, x, y, z, edge);
+    }
+    
+    public default boolean excludes(Box3   b, boolean edge) {
+        return Box.excludes(this, b, edge);
+    }
+    
+    public default boolean excludes(Vector b, boolean edge) {
+        return Box.excludes(this, b, edge);
+    }
+    
+    public default boolean excludes(float x, float y, float z, boolean edge) {
+        return Box.excludes(this, x, y, z, edge);
+    }
+    
+    public default boolean intersects(Box3 b, boolean edge) {
+        return Box.intersects(this, b, edge);
+    }
+    
     public static interface Mutable extends Box3, Box.Mutable {
         public default Vector3  xyz(float  x, float  y, float  z) { return new Vector3( x( x),  y( y),  z( z)); }
         public default Vector3  whd(float  w, float  h, float  d) { return new Vector3( w( w),  h( h),  d( d)); }

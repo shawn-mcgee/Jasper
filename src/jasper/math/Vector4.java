@@ -1,6 +1,7 @@
 package jasper.math;
 
 import static jasper.util.StringToObject.stringToFloat;
+import static jasper.util.Utility.parse;
 
 public class Vector4 implements Vector {
     private static final long
@@ -103,6 +104,23 @@ public class Vector4 implements Vector {
         return Vector4.toString(this);
     }
     
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Vector4 && Vector.equals(this, (Vector4) o, EPSILON);
+    }
+    
+    public boolean equals(Vector2 b) {
+        return Vector.equals(this, b, EPSILON);
+    }
+    
+    public boolean equals(Vector3 b) {
+        return Vector.equals(this, b, EPSILON);
+    }
+    
+    public boolean equals(Vector4 b) {
+        return Vector.equals(this, b, EPSILON);
+    }
+    
     public static String toString(Vector v) {
         return "<" + v.x() + ", " + v.y() + ", " + v.z() + ", " + v.w() + ">";
     }
@@ -111,7 +129,7 @@ public class Vector4 implements Vector {
         return Vector4.fromString(new Vector4(), s);
     }
     
-    protected static <T extends Vector4> T fromString(T v, String s) {
+    protected static <V extends Vector4> V fromString(V v, String s) {
         if(v != null && s != null) {
             int
                 i = s.indexOf("<"),
@@ -122,16 +140,12 @@ public class Vector4 implements Vector {
                 else
                     s = s.substring(++ i   );
             }
-            
-            String[] t = s.split(",");
-            switch(t.length) {
-                default:
-                case 4: v.w = stringToFloat(t[W]);
-                case 3: v.z = stringToFloat(t[Z]);
-                case 2: v.y = stringToFloat(t[Y]);
-                case 1: v.x = stringToFloat(t[X]);
-                case 0:
-            }
+    
+            String[] t = parse(s, "x", "y", "z", "w");
+            v.w = stringToFloat(t[W]);
+            v.z = stringToFloat(t[Z]);
+            v.y = stringToFloat(t[Y]);
+            v.x = stringToFloat(t[X]);
         }
         return v;
     }

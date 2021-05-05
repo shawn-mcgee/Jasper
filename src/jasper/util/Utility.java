@@ -1,14 +1,19 @@
 package jasper.util;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Map;
 
-import static jasper.util.ObjectToString.objectToString;
-import static jasper.util.StringToObject.stringToObject;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 
 public final class Utility {
+    
+    private Utility() {
+        // do nothing
+    }
+    
+    public static <T> Class<T> typeOf(T t) {
+        return Unsafe.cast(t.getClass());
+    }
     
     public static <T> T copyOf(T t) {
         if (t instanceof Copyable) {
@@ -19,126 +24,112 @@ public final class Utility {
         return t;
     }
     
-    public static <T> Class<T> typeOf(T t) {
-        return Unsafe.cast(t.getClass());
+    public static GraphicsDevice getGraphicsDevice(int i) {
+        GraphicsDevice[] gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+        if(i >= 0 && i < gd.length)
+            return gd[i];
+        else if (gd.length > 0)
+            return gd[0];
+        else
+            return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     }
     
-    public static File requestFile(URL    path) {
-        try {
-            return new File(path.toURI()  );
-        } catch (URISyntaxException use) {
-            return new File(path.getPath());
-        } catch(Exception e) {
-            Debug.warn(new Object() {/* trace */}, "Unable to convert path '" + path + "' to file.");
-        }
-        return null;
+    public static BufferedImage createBufferedImage(int i, int w, int h) {
+        return Utility.createBufferedImage(i, w, h, Transparency.BITMASK);
     }
     
-    public static File requestFile(String path) {
-        try {
-            return new File(path);
-        } catch(Exception e) {
-            Debug.warn(new Object() {/* trace */}, "Unable to convert path '" + path + "' to file.");
-        }
-        return null;
+    public static VolatileImage createVolatileImage(int i, int w, int h) {
+        return Utility.createVolatileImage(i, w, h, Transparency.BITMASK);
     }
     
-    public static File requireFile(URL    path) {
-        return requireFile(requestFile(path));
+    public static BufferedImage createBufferedImage(int i, int w, int h, int t) {
+        GraphicsDevice        gd = Utility.getGraphicsDevice(i);
+        GraphicsConfiguration gc = gd.getDefaultConfiguration();
+        
+        return gc.createCompatibleImage(w, h, t);
     }
     
-    public static File requireFile(String path) {
-        return requireFile(requestFile(path));
+    public static VolatileImage createVolatileImage(int i, int w, int h, int t) {
+        GraphicsDevice        gd = Utility.getGraphicsDevice(i);
+        GraphicsConfiguration gc = gd.getDefaultConfiguration();
+        
+        return gc.createCompatibleVolatileImage(w, h, t);
     }
     
-    public static File requireFile(File file) {
-        if(file != null && !file.exists())
-            try {
-                if(file.getParentFile() != null)
-                    file.getParentFile().mkdirs();
-                file.createNewFile();
-            } catch(Exception e) {
-                Debug.warn(new Object() {/* trace */}, "Unable to create file \"" + file + "\"");
-            }
-        return file;
-    }
-    
-    
-    public static void deleteFile(URL    path) {
-    
-    }
-    
-    public static void deleteFile(String path) {
-    
-    }
-    
-    public static void deleteFile(File file) {
-    
-    }
-    
-    public static Map<String, String> configure(Map<String, String> cfg, Object... args) {
+    public static String[] parse(String s, String... tags) {
+        String[]
+            // split s at commas, append " " for edge case when string ends with comma
+            t  = (s.strip() + " ").split(","),
+            u0 = new String[t.length], // split labels
+            u1 = new String[t.length]; // split values
         int
-            n = args.length & 1,
-            m = args.length - n;
-        for(int i = 0; i < m; i += 2) {
-            int
-                a = i + 0,
-                b = i + 1;
-            setProperty(cfg, args[a], args[b]);
+            l = tags.length, // cached length
+            m =    t.length; // cached length
+        
+        // split t into u0 and u1, and count labeled values
+        int i, j;
+        int a0 = 0, a1; // number of labeled and unlabeled value
+        for(i = 0; i < m; i ++) {
+            // split t[i] at colons, append " " for edge case when string ends with colon
+            String[] u = (t[i] += " ").split(":");
+            if(u.length > 1) { // a label is being used     (e.g. label:value)
+                u0[i] = u[0].strip();
+                u1[i] = u[1].strip();
+                a0 ++;
+            } else             // a label is not being used (e.g.       value)
+                u1[i] = u[0].strip();
         }
-        return cfg;
-    }
-    
-    public static String setProperty(Map<String, String> cfg, Object key, Object val) {
-        if(cfg != null) {
-            String
-                _key = key != null ? key.toString() : null,
-                _val = val != null ? val.toString() : null;
-            cfg.put(_key, _val);
-            return        _val ;
-        } else
-            return        null ;
-    }
-    
-    public static <OBJECT> String setProperty(Map<String, String> cfg, Object key, ObjectToString<OBJECT> o2s, OBJECT val            ) {
-        return setProperty(cfg, key, objectToString(o2s, val, null));
-    }
-    
-    public static <OBJECT> String setProperty(Map<String, String> cfg, Object key, ObjectToString<OBJECT> o2s, OBJECT val, String alt) {
-        return setProperty(cfg, key, objectToString(o2s, val, alt ));
-    }
-    
-    public static String getProperty(Map<String, String> cfg, Object key            ) {
-        return getProperty(cfg, key, (Object)null);
-    }
-    
-    public static String getProperty(Map<String, String> cfg, Object key, Object alt) {
-        String
-            _key = key != null ? key.toString() : null,
-            _alt = alt != null ? alt.toString() : null;
-        try {
-            String _val = cfg.get(_key);
-            return _val != null ? _val : _alt;
-        } catch(Exception na) {
-            return                       _alt;
-        }
-    }
-    
-    public static <OBJECT> OBJECT getProperty(Map<String, String> cfg, Object key, StringToObject<OBJECT> s2o            ) {
-        return getProperty(cfg, key, s2o, null);
-    }
-    
-    public static <OBJECT> OBJECT getProperty(Map<String, String> cfg, Object key, StringToObject<OBJECT> s2o, OBJECT alt) {
-        String _key = key != null ? key.toString() : null;
-        try {
-            String _val = cfg.get(_key);
-            return _val != null ? stringToObject(s2o, _val, alt) : alt;
-        } catch(Exception na) {
-            return                                                 alt;
-        }
-    }
-    
-    private Utility() {
-        // do nothing
+        a1 = m - a0;
+        
+        t = new String[l]; // recycle t
+        
+        // find, move, and count matching labels
+        int b0 = 0, b1; // number of matched and unmatched tags
+        for(i = 0; i < l; i ++)
+            for(j = 0; j < m; j ++) {
+                if (u0[j] != null && u0[j].equals(tags[i])) {
+                    t[i] = u1[j];
+                    u0[j] = null;
+                    u1[j] = null;
+                    b0 ++;
+                    break;
+                }
+            }
+        b1 = l - b0;
+        
+        // compute final array size
+        String[] u = new String[
+            l + // number of tags
+            Math.max(a1 - b1, 0) + // number of remaining unlabeled values
+            Math.max(a0 - b0, 0)   // number of remaining   labeled values
+        ];
+        
+        // fill empty slots with unlabeled values
+        j = 0;
+        for(i = 0; i < l; i ++)
+            if(t[i] != null)
+                u[i] = t[i];
+            else
+                for(; j < m; j ++)
+                    if(u0[j] == null && u1[j] != null) {
+                        u[i] = u1[j];
+                        u0[j] = null;
+                        u1[j] = null;
+                        break;
+                    }
+        
+        // fill empty slots with remaining values
+        j = 0;
+        for(i = l; i < u.length; i ++)
+            if(u[i] == null)
+                for(; j < m; j ++)
+                    if(u1[j] != null) {
+                        u[i] = u1[j];
+                        u0[j] = null;
+                        u1[j] = null;
+                        break;
+                    }
+        
+        return u;
     }
 }

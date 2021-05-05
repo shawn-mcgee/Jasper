@@ -1,10 +1,13 @@
 package jasper.math;
 
+import jasper.util.Utility;
+
+import static jasper.util.StringToObject.stringToFloat;
+import static jasper.util.Utility.parse;
+
 public class Region2 implements Box2, Region {
     private static final long
         serialVersionUID = 1L;
-    public static final String
-        FORMAT = "[%1$s, %2$s, %3$s, %4$s]";
     protected float
         x, y,
         w, h;
@@ -16,14 +19,47 @@ public class Region2 implements Box2, Region {
     public Region2(
         Box b
     ) {
-        mSet(b);
+        mSet(
+            b.x(), b.y(),
+            b.w(), b.h()
+        );
+    }
+    
+    public Region2(
+        Vector wh
+    ) {
+        mSet(
+            0f    , 0f    ,
+            wh.x(), wh.y()
+        );
     }
     
     public Region2(
         Vector xy,
         Vector wh
     ) {
-        mSet(xy, wh);
+        mSet(
+            xy.x(), xy.y(),
+            wh.x(), wh.y()
+        );
+    }
+    
+    public Region2(
+        float x, float y, Vector wh
+    ) {
+        mSet(x, y, wh.x(), wh.y());
+    }
+    
+    public Region2(
+        Vector xy, float w, float h
+    ) {
+        mSet(xy.x(), xy.y(), w, h);
+    }
+    
+    public Region2(
+        float w, float h
+    ) {
+        mSet(0f, 0f, w, h);
     }
     
     public Region2(
@@ -31,21 +67,6 @@ public class Region2 implements Box2, Region {
         float w, float h
     ) {
         mSet(x, y, w, h);
-    }
-    
-    protected void mSet(
-        Box b
-    ) {
-        x = b.x(); y = b.y();
-        w = b.w(); h = b.h();
-    }
-    
-    protected void mSet(
-        Vector xy,
-        Vector wh
-    ) {
-        x = xy.x(); y = xy.y();
-        w = wh.x(); h = wh.y();
     }
     
     protected void mSet(
@@ -73,11 +94,38 @@ public class Region2 implements Box2, Region {
     
     @Override
     public String toString() {
-        return Region2.toString(this, FORMAT);
+        return Region2.toString(this);
     }
     
-    public static String toString(Box b, String f) {
-        return String.format(f, b.x(), b.y(), b.w(), b.h());
+    public static String toString(Box b) {
+        return "[" +
+            b.x() + ", " + b.y() + ", " +
+            b.w() + ", " + b.h() + "]";
+    }
+    
+    public static Region2 fromString(String s) {
+        return Region2.fromString(new Region2(), s);
+    }
+    
+    protected static <B extends Region2> B fromString(B b, String s) {
+        if(b != null && s != null) {
+            int
+                i = s.indexOf("["),
+                j = s.indexOf("]");
+            if (i >= 0 || j >= 0) {
+                if (j > i)
+                    s = s.substring(++ i, j);
+                else
+                    s = s.substring(++ i   );
+            }
+        
+            String[] t = parse(s, "x", "y", "w", "h");
+            b.x = stringToFloat(t[0]);
+            b.y = stringToFloat(t[1]);
+            b.w = stringToFloat(t[2]);
+            b.h = stringToFloat(t[3]);
+        }
+        return b;
     }
     
     public static class Mutable extends Region2 implements Region.Mutable {
@@ -95,10 +143,34 @@ public class Region2 implements Box2, Region {
         }
         
         public Mutable(
+            Vector wh
+        ) {
+            super(wh);
+        }
+        
+        public Mutable(
             Vector xy,
             Vector wh
         ) {
             super(xy, wh);
+        }
+        
+        public Mutable(
+            float x, float y, Vector wh
+        ) {
+            super(x, y, wh);
+        }
+        
+        public Mutable(
+            Vector xy, float w, float h
+        ) {
+            super(xy, w, h);
+        }
+        
+        public Mutable(
+            float w, float h
+        ) {
+            super(w, h);
         }
         
         public Mutable(
@@ -117,5 +189,74 @@ public class Region2 implements Box2, Region {
         public float w(float w) { return this.w = w; }
         @Override
         public float h(float h) { return this.h = h; }
+        
+        public Region2.Mutable set(
+            Box b
+        ) {
+            mSet(
+                b.x(), b.y(),
+                b.w(), b.h()
+            );
+            return this;
+        }
+        
+        public Region2.Mutable set(
+            Vector wh
+        ) {
+            mSet(
+                0f    , 0f    ,
+                wh.x(), wh.y()
+            );
+            return this;
+        }
+        
+        public Region2.Mutable set(
+            Vector xy,
+            Vector wh
+        ) {
+            mSet(
+                xy.x(), xy.y(),
+                wh.x(), wh.y()
+            );
+            return this;
+        }
+        
+        public Region2.Mutable set(
+            float x, float y, Vector wh
+        ) {
+            mSet(x, y, wh.x(), wh.y());
+            return this;
+        }
+    
+        public Region2.Mutable set(
+            Vector xy, float w, float h
+        ) {
+            mSet(xy.x(), xy.y(), w, h);
+            return this;
+        }
+        
+        public Region2.Mutable set(
+            float w, float h
+        ) {
+            mSet(0f, 0f, w, h);
+            return this;
+        }
+        
+        public Region2.Mutable set(
+            float x, float y,
+            float w, float h
+        ) {
+            mSet(x, y, w, h);
+            return this;
+        }
+    
+        @Override
+        public Region2.Mutable copy() {
+            return new Region2.Mutable(this);
+        }
+        
+        public static Region2.Mutable fromString(String s) {
+            return Region2.fromString(new Region2.Mutable(), s);
+        }
     }
 }

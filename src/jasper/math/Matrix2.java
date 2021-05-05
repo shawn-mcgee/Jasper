@@ -1,6 +1,7 @@
 package jasper.math;
 
 import static jasper.util.StringToObject.stringToFloat;
+import static jasper.util.Utility.parse;
 
 public class Matrix2 implements Matrix<Vector2, Vector2> {
     private static final long
@@ -12,7 +13,7 @@ public class Matrix2 implements Matrix<Vector2, Vector2> {
         m = new float[4];
     
     public Matrix2() {
-        //do nothing
+        // do nothing
     }
     
     public Matrix2(
@@ -54,50 +55,40 @@ public class Matrix2 implements Matrix<Vector2, Vector2> {
     protected void mSet(
         Matrix<?, ?> m
     ) {
-        this.m[xx] = m.xx();
-        this.m[xy] = m.xy();
-        this.m[yx] = m.yx();
-        this.m[yy] = m.yy();
+        this.m[xx] = m.xx(); this.m[xy] = m.xy();
+        this.m[yx] = m.yx(); this.m[yy] = m.yy();
     }
     
     protected void mSetRowMajor(
         Vector r0,
         Vector r1
     ) {
-        m[xx] = r0.x();
-        m[xy] = r0.y();
-        m[yx] = r1.x();
-        m[yy] = r1.y();
+        m[xx] = r0.x(); m[xy] = r0.y();
+        m[yx] = r1.x(); m[yy] = r1.y();
     }
     
     protected void mSetColMajor(
         Vector c0,
         Vector c1
     ) {
-        m[xx] = c0.x();
-        m[xy] = c1.x();
-        m[yx] = c0.y();
-        m[yy] = c1.y();
+        m[xx] = c0.x(); m[xy] = c1.x();
+        m[yx] = c0.y(); m[yy] = c1.y();
     }
     
     protected void mSetRowMajor(
         float a, float b,
         float c, float d
     ) {
-        m[xx] = a;
-        m[xy] = b;
-        m[yx] = c;
-        m[yy] = d;
+        m[xx] = a; m[xy] = b;
+        m[yx] = c; m[yy] = d;
     }
     
     protected void mSetColMajor(
         float a, float b,
         float c, float d
     ) {
-        m[xx] = a;
-        m[xy] = c;
-        m[yx] = b;
-        m[yy] = d;
+        m[xx] = a; m[xy] = c;
+        m[yx] = b; m[yy] = d;
     }
     
     @Override
@@ -165,8 +156,8 @@ public class Matrix2 implements Matrix<Vector2, Vector2> {
     public static String toString(Matrix<?, ?> m, int mode) {
         switch(mode) {
             default:
-            case ROW_MAJOR: return toRowMajorString(m);
-            case COL_MAJOR: return toColMajorString(m);
+            case ROW_MAJOR: return Matrix2.toRowMajorString(m);
+            case COL_MAJOR: return Matrix2.toColMajorString(m);
         }
     }
     
@@ -194,7 +185,10 @@ public class Matrix2 implements Matrix<Vector2, Vector2> {
         return Matrix2.fromString(new Matrix2(), COL_MAJOR, s);
     }
     
-    protected static <T extends Matrix2> T fromString(T m, int mode, String s) {
+    protected static final String[]
+        row_major = { "xx", "xy", "yx", "yy"},
+        col_major = { "xx", "yx", "xy", "yy"};
+    protected static <M extends Matrix2> M fromString(M m, int mode, String s) {
         if(m != null && s != null) {
             int
                 i = s.indexOf("["),
@@ -206,12 +200,15 @@ public class Matrix2 implements Matrix<Vector2, Vector2> {
                     s = s.substring(++ i   );
             }
             
-            String[] t = s.split(",");
-            float[]  u = new float[4];
-            int n = Math.min(t.length, u.length);
-            
-            for(int k = 0; k < n; k ++)
-                u[k] = stringToFloat(t[k]);
+            String[] t;
+            switch(mode) {
+                default:
+                case ROW_MAJOR: t = parse(s, row_major); break;
+                case COL_MAJOR: t = parse(s, col_major); break;
+            }
+            float[] u = new float[4];
+            for(int n = 0; n < 4; n ++)
+                u[n] = stringToFloat(t[n]);
             
             switch(mode) {
                 default:

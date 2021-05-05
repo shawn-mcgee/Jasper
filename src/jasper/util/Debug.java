@@ -14,67 +14,78 @@ public class Debug {
         // do nothing
     }
     
-    public static void info(Object event) {
+    public static String info(Object event) {
         if(info != null)
-            info.log("Info", event);
+            return info.log("Info", event);
+        else
+            return null;
     }
     
-    public static void info(Object trace, Object event) {
+    public static String info(Object trace, Object event) {
         if(info != null)
-            info.log(trace, event);
+            return info.log(trace, event);
+        else
+            return null;
     }
     
-    public static void warn(Object event) {
+    public static String warn(Object event) {
         if(warn != null)
-            warn.log("Warn", event);
+            return warn.log("Warn", event);
+        else
+            return null;
     }
     
-    public static void warn(Object trace, Object event) {
+    public static String warn(Object trace, Object event) {
         if(warn != null)
-            warn.log(trace, event);
+            return warn.log(trace, event);
+        else
+            return null;
+    }
+    
+    public static String trace(Object trace) {
+        return trace(trace, "");
+    }
+    
+    public static String trace(Object trace, Object event, Object... args) {
+        String format;
+        if (trace instanceof String) {
+            format = (String)trace;
+            if(!format.isBlank())
+                format = String.format("[%1$s]", trace);
+        } else {
+            try {
+                String
+                    _class = trace.getClass().getEnclosingMethod().getDeclaringClass().getName(),
+                    _trace = trace.getClass().getEnclosingMethod()                    .getName();
+                format = String.format("[%1$s.%2$s]", _class, _trace);
+            } catch (Exception na) {
+                format = String.format("[%1$s]", LocalDateTime.now());
+            }
+        }
+    
+        StringBuilder sb = new StringBuilder();
+        String
+            s0 = Objects.toString(event),
+            s1 = String.format(s0, args);
+        format += " %s%n";
+        for(String u: s1.strip().split("\\n"))
+            sb.append(String.format(format, u));
+        return sb.toString();
     }
     
     public interface Logger {
-        public void log(Object trace, Object event, Object... args);
+        public String log(Object trace, Object event, Object... args);
         
-        public static void log(PrintStream out, Object trace, Object event, Object...args) {
-            String prefix;
-            if (trace instanceof String)
-                prefix = String.format("[%1$s]", trace);
-            else {
-                try {
-                    String
-                        _class = trace.getClass().getEnclosingMethod().getDeclaringClass().getName(),
-                        _trace = trace.getClass().getEnclosingMethod()                    .getName();
-                    prefix = String.format("[%1$s.%2$s]", _class, _trace);
-                } catch (Exception na) {
-                    prefix = String.format("[%1$s]", LocalDateTime.now());
-                }
-            }
-            for (String message : format(event, args))
-                out.printf("%1$s %2$s%n", prefix, message);
+        public static String log(PrintStream out, Object trace, Object event, Object... args) {
+            String string = Debug.trace(trace, event, args);
+            out.print(string);
+            return string;
         }
         
-        public static void log(PrintWriter out, Object trace, Object event, Object... args) {
-            String prefix;
-            if (trace instanceof String)
-                prefix = String.format("[%1$s]", trace);
-            else {
-                try {
-                    String
-                        _class = trace.getClass().getEnclosingMethod().getDeclaringClass().getName(),
-                        _trace = trace.getClass().getEnclosingMethod()                    .getName();
-                    prefix = String.format("[%1$s.%2$s]", _class, _trace);
-                } catch (Exception na) {
-                    prefix = String.format("[%1$s]", LocalDateTime.now());
-                }
-            }
-            for (String message : format(event, args))
-                out.printf("%1$s %2$s%n", prefix, message);
-        }
-    
-        private static String[] format(Object event, Object... args) {
-            return String.format(Objects.toString(event), args).split("\n");
+        public static String log(PrintWriter out, Object trace, Object event, Object... args) {
+            String string = Debug.trace(trace, event, args);
+            out.print(string);
+            return string;
         }
         
         public static Logger create(PrintStream out) {

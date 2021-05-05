@@ -1,6 +1,11 @@
 package jasper.math;
 
+import jasper.util.Debug;
+
+import java.util.Arrays;
+
 import static jasper.util.StringToObject.stringToFloat;
+import static jasper.util.Utility.parse;
 
 public class Matrix4 implements Matrix<Vector4, Vector4> {
     private static final long
@@ -60,22 +65,10 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
     protected void mSet(
         Matrix<?, ?> m
     ) {
-        this.m[xx] = m.xx();
-        this.m[xy] = m.xy();
-        this.m[xz] = m.xz();
-        this.m[xw] = m.xw();
-        this.m[yx] = m.yx();
-        this.m[yy] = m.yy();
-        this.m[yz] = m.yz();
-        this.m[yw] = m.yw();
-        this.m[zx] = m.zx();
-        this.m[zy] = m.zy();
-        this.m[zz] = m.zz();
-        this.m[zw] = m.zw();
-        this.m[wx] = m.wx();
-        this.m[wy] = m.wy();
-        this.m[wz] = m.wz();
-        this.m[ww] = m.ww();
+        this.m[xx] = m.xx(); this.m[xy] = m.xy(); this.m[xz] = m.xz(); this.m[xw] = m.xw();
+        this.m[yx] = m.yx(); this.m[yy] = m.yy(); this.m[yz] = m.yz(); this.m[yw] = m.yw();
+        this.m[zx] = m.zx(); this.m[zy] = m.zy(); this.m[zz] = m.zz(); this.m[zw] = m.zw();
+        this.m[wx] = m.wx(); this.m[wy] = m.wy(); this.m[wz] = m.wz(); this.m[ww] = m.ww();
     }
     
     protected void mSetRowMajor(
@@ -84,22 +77,10 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
         Vector r2,
         Vector r3
     ) {
-        m[xx] = r0.x();
-        m[xy] = r0.y();
-        m[xz] = r0.z();
-        m[xw] = r0.w();
-        m[yx] = r1.x();
-        m[yy] = r1.y();
-        m[yz] = r1.z();
-        m[yw] = r1.w();
-        m[zx] = r2.x();
-        m[zy] = r2.y();
-        m[zz] = r2.z();
-        m[zw] = r2.w();
-        m[wx] = r3.x();
-        m[wy] = r3.y();
-        m[wz] = r3.z();
-        m[ww] = r3.w();
+        m[xx] = r0.x(); m[xy] = r0.y(); m[xz] = r0.z(); m[xw] = r0.w();
+        m[yx] = r1.x(); m[yy] = r1.y(); m[yz] = r1.z(); m[yw] = r1.w();
+        m[zx] = r2.x(); m[zy] = r2.y(); m[zz] = r2.z(); m[zw] = r2.w();
+        m[wx] = r3.x(); m[wy] = r3.y(); m[wz] = r3.z(); m[ww] = r3.w();
     }
     
     protected void mSetColMajor(
@@ -108,22 +89,10 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
         Vector c2,
         Vector c3
     ) {
-        m[xx] = c0.x();
-        m[xy] = c1.x();
-        m[xz] = c2.x();
-        m[xw] = c3.x();
-        m[yx] = c0.y();
-        m[yy] = c1.y();
-        m[yz] = c2.y();
-        m[yw] = c3.y();
-        m[zx] = c0.z();
-        m[zy] = c1.z();
-        m[zz] = c2.z();
-        m[zw] = c3.z();
-        m[wx] = c0.w();
-        m[wy] = c1.w();
-        m[wz] = c2.w();
-        m[ww] = c3.w();
+        m[xx] = c0.x(); m[xy] = c1.x(); m[xz] = c2.x(); m[xw] = c3.x();
+        m[yx] = c0.y(); m[yy] = c1.y(); m[yz] = c2.y(); m[yw] = c3.y();
+        m[zx] = c0.z(); m[zy] = c1.z(); m[zz] = c2.z(); m[zw] = c3.z();
+        m[wx] = c0.w(); m[wy] = c1.w(); m[wz] = c2.w(); m[ww] = c3.w();
     }
     
     protected void mSetRowMajor(
@@ -132,22 +101,10 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
         float i, float j, float k, float l,
         float m, float n, float o, float p
     ) {
-        this.m[xx] = a;
-        this.m[xy] = b;
-        this.m[xz] = c;
-        this.m[xw] = d;
-        this.m[yx] = e;
-        this.m[yy] = f;
-        this.m[yz] = g;
-        this.m[yw] = h;
-        this.m[zx] = i;
-        this.m[zy] = j;
-        this.m[zz] = k;
-        this.m[zw] = l;
-        this.m[wx] = m;
-        this.m[wy] = n;
-        this.m[wz] = o;
-        this.m[ww] = p;
+        this.m[xx] = a; this.m[xy] = b; this.m[xz] = c; this.m[xw] = d;
+        this.m[yx] = e; this.m[yy] = f; this.m[yz] = g; this.m[yw] = h;
+        this.m[zx] = i; this.m[zy] = j; this.m[zz] = k; this.m[zw] = l;
+        this.m[wx] = m; this.m[wy] = n; this.m[wz] = o; this.m[ww] = p;
     }
     
     protected void mSetColMajor(
@@ -156,22 +113,10 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
         float i, float j, float k, float l,
         float m, float n, float o, float p
     ) {
-        this.m[xx] = a;
-        this.m[xy] = e;
-        this.m[xz] = i;
-        this.m[xw] = m;
-        this.m[yx] = b;
-        this.m[yy] = f;
-        this.m[yz] = j;
-        this.m[yw] = n;
-        this.m[zx] = c;
-        this.m[zy] = g;
-        this.m[zz] = k;
-        this.m[zw] = o;
-        this.m[wx] = d;
-        this.m[wy] = h;
-        this.m[wz] = l;
-        this.m[ww] = p;
+        this.m[xx] = a; this.m[xy] = e; this.m[xz] = i; this.m[xw] = m;
+        this.m[yx] = b; this.m[yy] = f; this.m[yz] = j; this.m[yw] = n;
+        this.m[zx] = c; this.m[zy] = g; this.m[zz] = k; this.m[zw] = o;
+        this.m[wx] = d; this.m[wy] = h; this.m[wz] = l; this.m[ww] = p;
     }
     
     @Override
@@ -307,8 +252,8 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
     public static String toString(Matrix<?, ?> m, int mode) {
         switch(mode) {
             default:
-            case ROW_MAJOR: return toRowMajorString(m);
-            case COL_MAJOR: return toColMajorString(m);
+            case ROW_MAJOR: return Matrix4.toRowMajorString(m);
+            case COL_MAJOR: return Matrix4.toColMajorString(m);
         }
     }
     
@@ -340,7 +285,10 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
         return Matrix4.fromString(new Matrix4(), COL_MAJOR, s);
     }
     
-    protected static <T extends Matrix4> T fromString(T m, int mode, String s) {
+    protected static final String[]
+        row_major = { "xx", "xy", "xz", "xw", "yx", "yy", "yz", "yw", "zx", "zy", "zz", "zw", "wx", "wy", "wz", "ww" },
+        col_major = { "xx", "yx", "zx", "wx", "xy", "yy", "zy", "wy", "xz", "yz", "zz", "wz", "xw", "yw", "zw", "ww" };
+    protected static <M extends Matrix4> M fromString(M m, int mode, String s) {
         if(m != null && s != null) {
             int
                 i = s.indexOf("["),
@@ -351,13 +299,16 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
                 else
                     s = s.substring(++ i   );
             }
-            
-            String[] t = s.split(",");
-            float[]  u = new float[16];
-            int n = Math.min(t.length, u.length);
-            
-            for(int k = 0; k < n; k ++)
-                u[k] = stringToFloat(t[k]);
+    
+            String[] t;
+            switch(mode) {
+                default:
+                case ROW_MAJOR: t = parse(s, row_major); break;
+                case COL_MAJOR: t = parse(s, col_major); break;
+            }
+            float[] u = new float[16];
+            for(int n = 0; n < 16; n ++)
+                u[n] = stringToFloat(t[n]);
             
             switch(mode) {
                 default:

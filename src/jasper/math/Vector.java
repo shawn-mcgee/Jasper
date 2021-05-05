@@ -1,11 +1,12 @@
 package jasper.math;
 
 import jasper.util.Copyable;
-import jasper.util.StringToObject;
 
 import java.io.Serializable;
 
 public interface Vector extends Copyable<Vector>, Serializable {
+    public static final float
+        EPSILON = .001f;
     public static final int
         X = 0,
         Y = 1,
@@ -23,6 +24,63 @@ public interface Vector extends Copyable<Vector>, Serializable {
         public default float y(float y) { return y(); }
         public default float z(float z) { return z(); }
         public default float w(float w) { return w(); }
+    }
+    
+    public static boolean equals(Vector2 a, Vector2 b, float e) {
+        return equals(a.x(), a.y(), b.x(), b.y(), e);
+    }
+    
+    public static boolean equals(Vector2 a, Vector3 b, float e) {
+        return equals(a.x(), a.y(), 0f, b.x(), b.y(), b.z(), e);
+    }
+    
+    public static boolean equals(Vector3 a, Vector2 b, float e) {
+        return equals(a.x(), a.y(), a.z(), b.x(), b.y(), 0f, e);
+    }
+    
+    public static boolean equals(Vector3 a, Vector3 b, float e) {
+        return equals(a.x(), a.y(), a.z(), b.x(), b.y(), b.z(), e);
+    }
+    
+    public static boolean equals(Vector2 a, Vector4 b, float e) {
+        return equals(a.x(), a.y(), 0f, 0f, b.x(), b.y(), b.z(), b.w(), e);
+    }
+    
+    public static boolean equals(Vector4 a, Vector2 b, float e) {
+        return equals(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), 0f, 0f, e);
+    }
+    
+    public static boolean equals(Vector3 a, Vector4 b, float e) {
+        return equals(a.x(), a.y(), a.z(), 0f, b.x(), b.y(), b.z(), b.w(), e);
+    }
+    
+    public static boolean equals(Vector4 a, Vector3 b, float e) {
+        return equals(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), 0f, e);
+    }
+    
+    public static boolean equals(Vector4 a, Vector4 b, float e) {
+        return equals(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w(), e);
+    }
+    
+    public static boolean equals(float x0, float y0, float x1, float y1, float e) {
+        return
+            (x0 >= x1 ? x0 - x1 : x1 - x0) < e &&
+            (y0 >= y1 ? y0 - y1 : y1 - y0) < e;
+    }
+    
+    public static boolean equals(float x0, float y0, float z0, float x1, float y1, float z1, float e) {
+        return
+            (x0 >= x1 ? x0 - x1 : x1 - x0) < e &&
+            (y0 >= y1 ? y0 - y1 : y1 - y0) < e &&
+            (z0 >= z1 ? z0 - z1 : z1 - z0) < e;
+    }
+    
+    public static boolean equals(float x0, float y0, float z0, float w0, float x1, float y1, float z1, float w1, float e) {
+        return
+            (x0 >= x1 ? x0 - x1 : x1 - x0) < e &&
+            (y0 >= y1 ? y0 - y1 : y1 - y0) < e &&
+            (z0 >= z1 ? z0 - z1 : z1 - z0) < e &&
+            (w0 >= w1 ? w0 - w1 : w1 - w0) < e;
     }
     
     public static Vector2 add(Vector2 a, Vector2 b) {
@@ -641,6 +699,242 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.z(z0 * z1);
         m.w(w0 * w1);
         return m;
+    }
+    
+    public static Vector2 mul(Matrix2 a, Vector2 b) {
+        return Vector.mul(a, b.x(), b.y());
+    }
+    
+    public static Vector2 mul(Vector2 a, Matrix2 b) {
+        return Vector.mul(a.x(), a.y(), b);
+    }
+    
+    public static Vector2 mul(Matrix3 a, Vector2 b) {
+        return Vector.mul(a, b.x(), b.y());
+    }
+    
+    public static Vector2 mul(Vector3 a, Matrix2 b) {
+        return Vector.mul(a.x(), a.y(), b);
+    }
+    
+    public static Vector3 mul(Matrix3 a, Vector3 b) {
+        return Vector.mul(a, b.x(), b.y(), b.z());
+    }
+    
+    public static Vector3 mul(Vector3 a, Matrix3 b) {
+        return Vector.mul(a.x(), a.y(), a.z(), b);
+    }
+    
+    public static Vector3 mul(Matrix4 a, Vector3 b) {
+        return Vector.mul(a, b.x(), b.y(), b.z());
+    }
+    
+    public static Vector3 mul(Vector3 a, Matrix4 b) {
+        return Vector.mul(a.x(), a.y(), a.z(), b);
+    }
+    
+    public static Vector4 mul(Matrix4 a, Vector4 b) {
+        return Vector.mul(a, b.x(), b.y(), b.z(), b.w());
+    }
+    
+    public static Vector4 mul(Vector4 a, Matrix4 b) {
+        return Vector.mul(a.x(), a.y(), a.z(), a.w(), b);
+    }
+    
+    public static Vector2.Mutable mul(Matrix2 a, Vector2 b, Vector2.Mutable m) {
+        return Vector.mul(a, b.x(), b.y(), m);
+    }
+    
+    public static Vector2.Mutable mul(Vector2 a, Matrix2 b, Vector2.Mutable m) {
+        return Vector.mul(a.x(), a.y(), b, m);
+    }
+    
+    public static Vector2.Mutable mul(Matrix3 a, Vector2 b, Vector2.Mutable m) {
+        return Vector.mul(a, b.x(), b.y(), m);
+    }
+    
+    public static Vector2.Mutable mul(Vector3 a, Matrix2 b, Vector2.Mutable m) {
+        return Vector.mul(a.x(), a.y(), b, m);
+    }
+    
+    public static Vector3.Mutable mul(Matrix3 a, Vector3 b, Vector3.Mutable m) {
+        return Vector.mul(a, b.x(), b.y(), b.z(), m);
+    }
+    
+    public static Vector3.Mutable mul(Vector3 a, Matrix3 b, Vector3.Mutable m) {
+        return Vector.mul(a.x(), a.y(), a.z(), b, m);
+    }
+    
+    public static Vector3.Mutable mul(Matrix4 a, Vector3 b, Vector3.Mutable m) {
+        return Vector.mul(a, b.x(), b.y(), b.z(), m);
+    }
+    
+    public static Vector3.Mutable mul(Vector3 a, Matrix4 b, Vector3.Mutable m) {
+        return Vector.mul(a.x(), a.y(), a.z(), b, m);
+    }
+    
+    public static Vector4.Mutable mul(Matrix4 a, Vector4 b, Vector4.Mutable m) {
+        return Vector.mul(a, b.x(), b.y(), b.z(), b.w(), m);
+    }
+    
+    public static Vector4.Mutable mul(Vector4 a, Matrix4 b, Vector4.Mutable m) {
+        return Vector.mul(a.x(), a.y(), a.z(), a.w(), b, m);
+    }
+    
+    public static Vector2 mul(Matrix2 a, float x, float y) {
+        return new Vector2(
+            a.xx() * x + a.xy() * y,
+            a.yx() * x + a.yy() * y
+        );
+    }
+    
+    public static Vector2 mul(float x, float y, Matrix2 b) {
+        return new Vector2(
+            x * b.xx() + y * b.yx(),
+            x * b.xy() + y * b.yy()
+        );
+    }
+    
+    public static Vector2 mul(Matrix3 a, float x, float y) {
+        return new Vector2(
+            a.xx() * x + a.xy() * y + a.xz(),
+            a.yx() * x + a.yy() * y + a.yz()
+        );
+    }
+    
+    public static Vector2 mul(float x, float y, Matrix3 b) {
+        return new Vector2(
+            x * b.xx() + y * b.yx() + b.zx(),
+            x * b.xy() + y * b.yy() + b.zy()
+        );
+    }
+    
+    public static Vector3 mul(Matrix3 a, float x, float y, float z) {
+        return new Vector3(
+            a.xx() * x + a.xy() * y + a.xz() * z,
+            a.yx() * x + a.yy() * y + a.yz() * z,
+            a.zx() * x + a.zy() * y + a.zz() * z
+        );
+    }
+    
+    public static Vector3 mul(float x, float y, float z, Matrix3 b) {
+        return new Vector3(
+            x * b.xx() + y * b.yx() + z * b.zx(),
+            x * b.xy() + y * b.yy() + z * b.zy(),
+            x * b.xz() + y * b.yz() + z * b.zz()
+        );
+    }
+    
+    public static Vector3 mul(Matrix4 a, float x, float y, float z) {
+        return new Vector3(
+            a.xx() * x + a.xy() * y + a.xz() * z + a.xw(),
+            a.yx() * x + a.yy() * y + a.yz() * z + a.yw(),
+            a.zx() * x + a.zy() * y + a.zz() * z + a.zw()
+        );
+    }
+    
+    public static Vector3 mul(float x, float y, float z, Matrix4 b) {
+        return new Vector3(
+            x * b.xx() + y * b.yx() + z * b.zx() + b.wx(),
+            x * b.xy() + y * b.yy() + z * b.zy() + b.wy(),
+            x * b.xz() + y * b.yz() + z * b.zz() + b.wz()
+        );
+    }
+    
+    public static Vector4 mul(Matrix4 a, float x, float y, float z, float w) {
+        return new Vector4(
+            a.xx() * x + a.xy() * y + a.xz() * z + a.xw() * w,
+            a.yx() * x + a.yy() * y + a.yz() * z + a.yw() * w,
+            a.zx() * x + a.zy() * y + a.zz() * z + a.zw() * w,
+            a.wx() * x + a.wy() * y + a.wz() * z + a.ww() * w
+        );
+    }
+    
+    public static Vector4 mul(float x, float y, float z, float w, Matrix4 b) {
+        return new Vector4(
+            x * b.xx() + y * b.yx() + z * b.zx() + w * b.wx(),
+            x * b.xy() + y * b.yy() + z * b.zy() + w * b.wy(),
+            x * b.xz() + y * b.yz() + z * b.zz() + w * b.wz(),
+            x * b.xw() + y * b.yw() + z * b.zw() + w * b.ww()
+        );
+    }
+    
+    public static Vector2.Mutable mul(Matrix2 a, float x, float y, Vector2.Mutable m) {
+        return m.set(
+            a.xx() * x + a.xy() * y,
+            a.yx() * x + a.yy() * y
+        );
+    }
+    
+    public static Vector2.Mutable mul(float x, float y, Matrix2 b, Vector2.Mutable m) {
+        return m.set(
+            x * b.xx() + y * b.yx(),
+            x * b.xy() + y * b.yy()
+        );
+    }
+    
+    public static Vector2.Mutable mul(Matrix3 a, float x, float y, Vector2.Mutable m) {
+        return m.set(
+            a.xx() * x + a.xy() * y + a.xz(),
+            a.yx() * x + a.yy() * y + a.yz()
+        );
+    }
+    
+    public static Vector2.Mutable mul(float x, float y, Matrix3 b, Vector2.Mutable m) {
+        return m.set(
+            x * b.xx() + y * b.yx() + b.zx(),
+            x * b.xy() + y * b.yy() + b.zy()
+        );
+    }
+    
+    public static Vector3.Mutable mul(Matrix3 a, float x, float y, float z, Vector3.Mutable m) {
+        return m.set(
+            a.xx() * x + a.xy() * y + a.xz() * z,
+            a.yx() * x + a.yy() * y + a.yz() * z,
+            a.zx() * x + a.zy() * y + a.zz() * z
+        );
+    }
+    
+    public static Vector3.Mutable mul(float x, float y, float z, Matrix3 b, Vector3.Mutable m) {
+        return m.set(
+            x * b.xx() + y * b.yx() + z * b.zx(),
+            x * b.xy() + y * b.yy() + z * b.zy(),
+            x * b.xz() + y * b.yz() + z * b.zz()
+        );
+    }
+    
+    public static Vector3.Mutable mul(Matrix4 a, float x, float y, float z, Vector3.Mutable m) {
+        return m.set(
+            a.xx() * x + a.xy() * y + a.xz() * z + a.xw(),
+            a.yx() * x + a.yy() * y + a.yz() * z + a.yw(),
+            a.zx() * x + a.zy() * y + a.zz() * z + a.zw()
+        );
+    }
+    
+    public static Vector3.Mutable mul(float x, float y, float z, Matrix4 b, Vector3.Mutable m) {
+        return m.set(
+            x * b.xx() + y * b.yx() + z * b.zx() + b.wx(),
+            x * b.xy() + y * b.yy() + z * b.zy() + b.wy(),
+            x * b.xz() + y * b.yz() + z * b.zz() + b.wz()
+        );
+    }
+    
+    public static Vector4.Mutable mul(Matrix4 a, float x, float y, float z, float w, Vector4.Mutable m) {
+        return m.set(
+            a.xx() * x + a.xy() * y + a.xz() * z + a.xw() * w,
+            a.yx() * x + a.yy() * y + a.yz() * z + a.yw() * w,
+            a.zx() * x + a.zy() * y + a.zz() * z + a.zw() * w,
+            a.wx() * x + a.wy() * y + a.wz() * z + a.ww() * w
+        );
+    }
+    
+    public static Vector4.Mutable mul(float x, float y, float z, float w, Matrix4 b, Vector4.Mutable m) {
+        return m.set(
+            x * b.xx() + y * b.yx() + z * b.zx() + w * b.wx(),
+            x * b.xy() + y * b.yy() + z * b.zy() + w * b.wy(),
+            x * b.xz() + y * b.yz() + z * b.zz() + w * b.wz(),
+            x * b.xw() + y * b.yw() + z * b.zw() + w * b.ww()
+        );
     }
     
     public static Vector2 div(Vector2 a, Vector2 b) {

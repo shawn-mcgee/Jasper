@@ -1,6 +1,7 @@
 package jasper.math;
 
 import static jasper.util.StringToObject.stringToFloat;
+import static jasper.util.Utility.parse;
 
 public class Vector2 implements Vector {
     private static final long
@@ -47,6 +48,23 @@ public class Vector2 implements Vector {
         return Vector2.toString(this);
     }
     
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Vector2 && Vector.equals(this, (Vector2) o, EPSILON);
+    }
+    
+    public boolean equals(Vector2 b) {
+        return Vector.equals(this, b, EPSILON);
+    }
+    
+    public boolean equals(Vector3 b) {
+        return Vector.equals(this, b, EPSILON);
+    }
+    
+    public boolean equals(Vector4 b) {
+        return Vector.equals(this, b, EPSILON);
+    }
+    
     public static String toString(Vector v) {
         return "<" + v.x() + ", " + v.y() + ">";
     }
@@ -55,7 +73,7 @@ public class Vector2 implements Vector {
         return Vector2.fromString(new Vector2(), s);
     }
     
-    protected static <T extends Vector2> T fromString(T v, String s) {
+    protected static <V extends Vector2> V fromString(V v, String s) {
         if(v != null && s != null) {
             int
                 i = s.indexOf("<"),
@@ -67,13 +85,9 @@ public class Vector2 implements Vector {
                     s = s.substring(++ i   );
             }
             
-            String[] t = s.split(",");
-            switch(t.length) {
-                default:
-                case 2: v.y = stringToFloat(t[Y]);
-                case 1: v.x = stringToFloat(t[X]);
-                case 0:
-            }
+            String[] t = parse(s, "x", "y");
+            v.y = stringToFloat(t[Y]);
+            v.x = stringToFloat(t[X]);
         }
         return v;
     }
