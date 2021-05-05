@@ -1,4 +1,4 @@
-package jasper.core.scene;
+package jasper.core.stage;
 
 import jasper.math.Vector2;
 import jasper.util.event.Broker;
@@ -12,14 +12,14 @@ import java.awt.event.MouseWheelListener;
 import static java.awt.event.KeyEvent.*;
 
 public class Input implements KeyListener, MouseListener, MouseWheelListener, MouseMotionListener {
-    public static final Class<Key>
-        KEY = Key.class;
-    public static final Class<Mouse>
-        MOUSE = Mouse.class;
-    public static final Class<MouseMoved>
-        MOUSE_MOVED = MouseMoved.class;
-    public static final Class<MouseWheel>
-        WHEEL_MOVED = MouseWheel.class;
+    public static final Class<KeyEvent>
+        KEY_EVENT = KeyEvent.class;
+    public static final Class<MouseEvent>
+        MOUSE_EVENT = MouseEvent.class;
+    public static final Class<MouseMovedEvent>
+        MOUSE_MOVED_EVENT = MouseMovedEvent.class;
+    public static final Class<MouseWheelEvent>
+        MOUSE_WHEEL_EVENT = MouseWheelEvent.class;
     
     protected static final int
         k = 128,
@@ -41,72 +41,23 @@ public class Input implements KeyListener, MouseListener, MouseWheelListener, Mo
     
     protected final Stage
         stage;
+    protected final Input
+        self = this;
     
     public Input(Stage stage) {
         this.stage = stage;
         
-        handle.attach(KEY  , this::onKey  );
-        handle.attach(MOUSE, this::onMouse);
-        handle.attach(MOUSE_MOVED, this::onMouseMoved);
-        handle.attach(WHEEL_MOVED, this::onMouseWheel);
+        handle.attach(KEY_EVENT  , this::onKeyEvent  );
+        handle.attach(MOUSE_EVENT, this::onMouseEvent);
+        handle.attach(MOUSE_MOVED_EVENT, this::onMouseMovedEvent);
+        handle.attach(MOUSE_WHEEL_EVENT, this::onMouseWheelEvent);
         
-        broker.onAttach(handle);
+        broker.attach(handle);
+        broker.attach(      );
     }
     
-    public void poll() {
-        wheel = 0f;
-        broker.poll();
-    }
-    
-    public void onKey(Key input) {
-        if(input.id >= 0 && input.id < k) {
-            if (input.isDown()) {
-                key1[input.id] = true;
-                stage.onKeyDown(input.id);
-            } else {
-                key1[input.id] = false;
-                stage.onKeyUp(input.id);
-            }
-            stage.flush(input);
-        }
-    }
-    
-    public void onMouse(Mouse input) {
-        if(input.id >= 0 && input.id < m) {
-            if(input.isDown()) {
-                mouse1[input.id] = true;
-                stage.onMouseDown(input.id);
-            } else {
-                mouse1[input.id] = false;
-                stage.onMouseUp(input.id);
-            }
-            stage.flush(input);
-        }
-    }
-    
-    public void onMouseMoved(MouseMoved input) {
-        stage.onMouseMoved(input.value);
-        stage.flush(input);
-    }
-    
-    public void onMouseWheel(MouseWheel input) {
-        stage.onMouseWheel(input.value);
-        stage.flush(input);
-    }
-    
-    public void onClose() {
-        // do nothing
-    }
-    
-    public void onFocus() {
-        // do nothing
-    }
-    
-    public void onUnfocus() {
-        for(int id = 0; id < k; id ++)
-            if(  key0[id]) broker.queue(new   Key(id, false));
-        for(int id = 0; id < m; id ++)
-            if(mouse0[id]) broker.queue(new Mouse(id, false));
+    public Stage getStage() {
+        return stage;
     }
     
     public boolean isKeyUp(int key) {
@@ -141,6 +92,68 @@ public class Input implements KeyListener, MouseListener, MouseWheelListener, Mo
         return getWheel() > 0;
     }
     
+    public <T extends Input.Event<?>> void queue(T event) {
+        broker.queue(event);
+    }
+    
+    public void poll() {
+        wheel = 0f;
+        broker.poll();
+    }
+    
+    public void onKeyEvent(KeyEvent event) {
+        if(event.id >= 0 && event.id < k) {
+            if (event.isDown()) {
+                key1[event.id] = true;
+                stage.onKeyDown(event.id);
+            } else {
+                key1[event.id] = false;
+                stage.onKeyUp(event.id);
+            }
+            stage.flush(event);
+        }
+    }
+    
+    public void onMouseEvent(MouseEvent event) {
+        if(event.id >= 0 && event.id < m) {
+            if(event.isDown()) {
+                mouse1[event.id] = true;
+                stage.onMouseDown(event.id);
+            } else {
+                mouse1[event.id] = false;
+                stage.onMouseUp(event.id);
+            }
+            stage.flush(event);
+        }
+    }
+    
+    public void onMouseMovedEvent(MouseMovedEvent event) {
+        mouse.set(event.value);
+        stage.onMouseMoved(event.value);
+        stage.flush(event);
+    }
+    
+    public void onMouseWheelEvent(MouseWheelEvent event) {
+        wheel = event.value;
+        stage.onMouseWheel(event.value);
+        stage.flush(event);
+    }
+    
+    public void onClose() {
+        // do nothing
+    }
+    
+    public void onFocus() {
+        // do nothing
+    }
+    
+    public void onUnfocus() {
+        for(int id = 0; id < k; id ++)
+            if(  key0[id]) queue(  new KeyEvent(self, false, id));
+        for(int id = 0; id < m; id ++)
+            if(mouse0[id]) queue(new MouseEvent(self, false, id));
+    }
+    
     @Override
     public void keyTyped(java.awt.event.KeyEvent ke) {
         // do nothing
@@ -148,19 +161,19 @@ public class Input implements KeyListener, MouseListener, MouseWheelListener, Mo
     
     @Override
     public void keyPressed(java.awt.event.KeyEvent ke) {
-        int id = Key.from(ke);
+        int id = KeyEvent.from(ke);
         if(!key0[id]) {
             key0[id] = true;
-            broker.queue(new Key(id, true));
+            queue(new KeyEvent(self, true , id));
         }
     }
     
     @Override
     public void keyReleased(java.awt.event.KeyEvent ke) {
-        int id = Key.from(ke);
+        int id = KeyEvent.from(ke);
         if( key0[id]) {
             key0[id] = false;
-            broker.queue(new Key(id, false));
+            queue(new KeyEvent(self, false, id));
         }
     }
     
@@ -171,19 +184,19 @@ public class Input implements KeyListener, MouseListener, MouseWheelListener, Mo
     
     @Override
     public void mousePressed(java.awt.event.MouseEvent me) {
-        int id = Mouse.from(me);
+        int id = MouseEvent.from(me);
         if(!mouse0[id]) {
             mouse0[id] = true;
-            broker.queue(new Mouse(id, true));
+            queue(new MouseEvent(self, true , id));
         }
     }
     
     @Override
     public void mouseReleased(java.awt.event.MouseEvent me) {
-        int id = Mouse.from(me);
+        int id = MouseEvent.from(me);
         if( mouse0[id]) {
             mouse0[id] = false;
-            broker.queue(new Mouse(id, false));
+            queue(new MouseEvent(self, false, id));
         }
     }
     
@@ -199,42 +212,39 @@ public class Input implements KeyListener, MouseListener, MouseWheelListener, Mo
     
     @Override
     public void mouseDragged(java.awt.event.MouseEvent me) {
-        Vector2 _mouse = stage.logicalToVirtual(me.getX(), me.getY());
-        if(!mouse.equals(_mouse)) {
-            mouse.set(_mouse);
-            broker.queue(new MouseMoved(_mouse));
-        }
+        Vector2 mouse = stage.logicalToVirtual(me.getX(), me.getY());
+        queue(new MouseMovedEvent(self, mouse));
     }
     
     @Override
     public void mouseMoved(java.awt.event.MouseEvent me) {
-        Vector2 _mouse = stage.logicalToVirtual(me.getX(), me.getY());
-        if(!mouse.equals(_mouse)) {
-            mouse.set(_mouse);
-            broker.queue(new MouseMoved(_mouse));
-        }
+        Vector2 mouse = stage.logicalToVirtual(me.getX(), me.getY());
+        queue(new MouseMovedEvent(self, mouse));
     }
     
     @Override
     public void mouseWheelMoved(java.awt.event.MouseWheelEvent mwe) {
-        broker.queue(new MouseWheel(mwe.getWheelRotation()));
+        queue(new MouseWheelEvent(self, mwe.getWheelRotation()));
     }
     
     public static class Event<T> {
+        public final Input
+            input;
         public final T
             value;
         
-        public Event(T value) {
+        public Event(Input input, T value) {
+            this.input = input;
             this.value = value;
         }
     }
     
-    public static class Key extends Input.Event<Boolean> {
+    public static class KeyEvent extends Input.Event<Boolean> {
         public final int
             id;
         
-        public Key(int id, boolean value) {
-            super(value);
+        public KeyEvent(Input input, boolean value, int id) {
+            super(input, value);
             this.id = id;
         }
         
@@ -319,12 +329,12 @@ public class Input implements KeyListener, MouseListener, MouseWheelListener, Mo
         }
     }
     
-    public static class Mouse extends Input.Event<Boolean> {
+    public static class MouseEvent extends Input.Event<Boolean> {
         public final int
             id;
         
-        public Mouse(int id, boolean value) {
-            super(value);
+        public MouseEvent(Input input, boolean value, int id) {
+            super(input, value);
             this.id = id;
         }
         
@@ -352,15 +362,15 @@ public class Input implements KeyListener, MouseListener, MouseWheelListener, Mo
         }
     }
     
-    public static class MouseMoved extends Input.Event<Vector2> {
-        public MouseMoved(Vector2 value) {
-            super(value);
+    public static class MouseMovedEvent extends Input.Event<Vector2> {
+        public MouseMovedEvent(Input input, Vector2 value) {
+            super(input, value);
         }
     }
     
-    public static class MouseWheel extends Input.Event<Float  > {
-        public MouseWheel(float value) {
-            super(value);
+    public static class MouseWheelEvent extends Input.Event<Float  > {
+        public MouseWheelEvent(Input input, float value) {
+            super(input, value);
         }
     
         public boolean isDown() {

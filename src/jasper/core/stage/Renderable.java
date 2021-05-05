@@ -1,4 +1,4 @@
-package jasper.core.scene;
+package jasper.core.stage;
 
 import jasper.core.Colors;
 import jasper.math.Box2;

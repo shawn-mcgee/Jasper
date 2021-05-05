@@ -1,4 +1,4 @@
-package jasper.core.scene;
+package jasper.core.stage;
 
 import jasper.Jasper;
 import jasper.core.Layout;
@@ -19,6 +19,12 @@ import static jasper.util.StringToObject.BOOLEAN;
 import static jasper.util.StringToObject.INTEGER;
 
 public class Stage extends Server {
+    public static final Class<WindowEvent>
+        WINDOW_EVENT = WindowEvent.class;
+    public static final Class<CanvasEvent>
+        CANVAS_EVENT = CanvasEvent.class;
+    public static final Class<SceneEvent>
+        SCENE_EVENT = SceneEvent.class;
     // configuration variables
     protected Vector4
         canvas_background = color4i(Color.WHITE);
@@ -40,9 +46,9 @@ public class Stage extends Server {
     protected Vector4
         window_background = color4i(Color.BLACK);
     protected boolean
-        window_border;
+        window_border = true;
     protected int
-        window_device;
+        window_device = 0;
     protected Layout
         window_layout = new Layout();
     protected String
@@ -89,6 +95,9 @@ public class Stage extends Server {
     // debug info
     protected final LinkedHashMap<String, String>
         dbg  =  new LinkedHashMap<String, String>();
+    // alias for anonymous inner classes
+    protected final Stage
+        self = this;
     
     public Stage() {
         super();
@@ -100,9 +109,10 @@ public class Stage extends Server {
             WINDOW_LAYOUT, window_layout
         );
         
-        handle.onAttach(SceneEvent.class, this::onSceneEvent);
-        handle.onAttach(WindowEvent.class, this::onWindowEvent);
-        handle.onAttach(CanvasEvent.class, this::onCanvasEvent);
+        handle.attach(SceneEvent.class, this::onSceneEvent);
+        handle.attach(WindowEvent.class, this::onWindowEvent);
+        handle.attach(CanvasEvent.class, this::onCanvasEvent);
+        handle.attach();
         
         input = new Input(this);
         
@@ -114,7 +124,15 @@ public class Stage extends Server {
     }
     
     public void setScene(Scene scene) {
-        queue(new SceneEvent(scene));
+        queue(new SceneEvent(self, scene));
+    }
+    
+    public Scene getScene() {
+        return scene;
+    }
+    
+    public Input getInput() {
+        return input;
     }
     
     public Vector2 getLogicalCanvasSize() {
@@ -302,18 +320,18 @@ public class Stage extends Server {
         window.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent we) {
-                queue(WindowEvent.ON_CLOSE);
+                queue(new WindowEvent(self, WindowEvent.ON_CLOSE));
             }
         });
         window.addWindowFocusListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowGainedFocus(java.awt.event.WindowEvent we) {
-                queue(WindowEvent.ON_FOCUS);
+                queue(new WindowEvent(self, WindowEvent.ON_FOCUS));
             }
     
             @Override
             public void windowLostFocus(java.awt.event.WindowEvent we) {
-                queue(WindowEvent.ON_UNFOCUS);
+                queue(new WindowEvent(self, WindowEvent.ON_UNFOCUS));
             }
         });
         
@@ -328,6 +346,7 @@ public class Stage extends Server {
             @Override
             public void componentResized(java.awt.event.ComponentEvent ce) {
                 queue(new CanvasEvent(
+                    self,
                     ce.getComponent().getWidth() ,
                     ce.getComponent().getHeight()
                 ));
@@ -620,18 +639,18 @@ public class Stage extends Server {
     }
     
     public void onWindowEvent(WindowEvent event) {
-        switch(event) {
-            case ON_CLOSE:
+        switch(event.value) {
+            case WindowEvent.ON_CLOSE:
                 input.onClose();
                 if(scene != null)
                     scene.onClose();
                 break;
-            case ON_FOCUS:
+            case WindowEvent.ON_FOCUS:
                 input.onFocus();
                 if(scene != null)
                     scene.onFocus();
                 break;
-            case ON_UNFOCUS:
+            case WindowEvent.ON_UNFOCUS:
                 input.onUnfocus();
                 if(scene != null)
                     scene.onUnfocus();
@@ -642,8 +661,8 @@ public class Stage extends Server {
     public void onCanvasEvent(CanvasEvent event) {
         Region2
             logical_canvas_region = new Region2(
-                logical_canvas_w = event.logical_canvas_w,
-                logical_canvas_h = event.logical_canvas_h
+                logical_canvas_w = event.canvas_w,
+                logical_canvas_h = event.canvas_h
             ),
             virtual_canvas_region = Layout.region(canvas_layout, logical_canvas_region);
         
@@ -717,31 +736,60 @@ public class Stage extends Server {
     }
     
     public static class SceneEvent {
+        public final Stage
+            stage;
         public final Scene
             scene;
         
-        public SceneEvent(Scene scene) {
+        public SceneEvent(Stage stage, Scene scene) {
+            this.stage = stage;
             this.scene = scene;
         }
     }
     
-    public static enum WindowEvent {
-        ON_CLOSE,
-        ON_FOCUS,
-        ON_UNFOCUS;
+    public static class WindowEvent {
+        public static final int
+            ON_CLOSE   = 0x01,
+            ON_FOCUS   = 0x02,
+            ON_UNFOCUS = 0x03;
+        
+        public final Stage
+            stage;
+        public final int
+            value;
+        
+        public WindowEvent(Stage stage, int value) {
+            this.stage = stage;
+            this.value = value;
+        }
+        
+        public boolean isClose() {
+            return value == ON_CLOSE;
+        }
+    
+        public boolean isFocus() {
+            return value == ON_FOCUS;
+        }
+    
+        public boolean isUnfocus() {
+            return value == ON_UNFOCUS;
+        }
     }
     
     public static class CanvasEvent {
+        public Stage
+            stage;
         public final int
-            logical_canvas_w,
-            logical_canvas_h;
+            canvas_w,
+            canvas_h;
         
         public CanvasEvent(
-            int canvas_logical_w,
-            int canvas_logical_h
+            Stage stage,
+            int canvas_w,
+            int canvas_h
         ) {
-            this.logical_canvas_w = canvas_logical_w;
-            this.logical_canvas_h = canvas_logical_h;
+            this.canvas_w = canvas_w;
+            this.canvas_h = canvas_h;
         }
     }
     

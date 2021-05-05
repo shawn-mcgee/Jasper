@@ -1,7 +1,7 @@
 package jasper.util;
 
-public class PRNG {
-    private PRNG() {
+public class Random {
+    private Random() {
         // do nothing
     }
     
