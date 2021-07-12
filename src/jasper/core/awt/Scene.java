@@ -1,4 +1,4 @@
-package jasper.core.stage;
+package jasper.core.awt;
 
 import jasper.math.Vector2;
 
@@ -16,6 +16,9 @@ public class Scene implements Serializable, Renderable, Updateable {
     public Scene() {
         onCreate();
     }
+    
+    public Stage getStage() { return stage; }
+    public Input getInput() { return input; }
     
     public void onCreate() { }
     public void onAttach() { }

@@ -28,25 +28,25 @@ public interface Box extends Copyable<Box>, Serializable {
     
     public static interface Mutable extends Box {
         
-        public default float x(float x) { return x(); }
-        public default float y(float y) { return y(); }
-        public default float z(float z) { return z(); }
+        public default Box.Mutable x(float x) { return this; }
+        public default Box.Mutable y(float y) { return this; }
+        public default Box.Mutable z(float z) { return this; }
     
-        public default float w(float w) { return w(); }
-        public default float h(float h) { return h(); }
-        public default float d(float d) { return d(); }
+        public default Box.Mutable w(float w) { return this; }
+        public default Box.Mutable h(float h) { return this; }
+        public default Box.Mutable d(float d) { return this; }
     
-        public default float x0(float x0) { return x0(); }
-        public default float y0(float y0) { return y0(); }
-        public default float z0(float z0) { return z0(); }
+        public default Box.Mutable x0(float x0) { return this; }
+        public default Box.Mutable y0(float y0) { return this; }
+        public default Box.Mutable z0(float z0) { return this; }
     
-        public default float x1(float x1) { return x1(); }
-        public default float y1(float y1) { return y1(); }
-        public default float z1(float z1) { return z1(); }
+        public default Box.Mutable x1(float x1) { return this; }
+        public default Box.Mutable y1(float y1) { return this; }
+        public default Box.Mutable z1(float z1) { return this; }
     
-        public default float x2(float x2) { return x2(); }
-        public default float y2(float y2) { return y2(); }
-        public default float z2(float z2) { return z2(); }
+        public default Box.Mutable x2(float x2) { return this; }
+        public default Box.Mutable y2(float y2) { return this; }
+        public default Box.Mutable z2(float z2) { return this; }
     }
     
     public static boolean includes(Box2 a, Box2   b, boolean edge) {

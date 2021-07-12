@@ -1,4 +1,4 @@
-package jasper.core.stage;
+package jasper.core.awt;
 
 public interface Updateable {
     public void onUpdate(UpdateContext context);

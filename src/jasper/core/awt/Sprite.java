@@ -1,4 +1,4 @@
-package jasper.core.stage;
+package jasper.core.awt;
 
 import jasper.math.Region2;
 
@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 public class Sprite implements Renderable, Updateable {
     protected final Region2.Mutable
-        bounds = new Region2.Mutable();
+        xywh = new Region2.Mutable();
     protected boolean
         flip,
         flop;

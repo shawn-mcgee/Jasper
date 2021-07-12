@@ -71,7 +71,7 @@ public final class Utility {
         int a0 = 0, a1; // number of labeled and unlabeled value
         for(i = 0; i < m; i ++) {
             // split t[i] at colons, append " " for edge case when string ends with colon
-            String[] u = (t[i] += " ").split(":");
+            String[] u = (t[i] + " ").split(":");
             if(u.length > 1) { // a label is being used     (e.g. label:value)
                 u0[i] = u[0].strip();
                 u1[i] = u[1].strip();
@@ -83,16 +83,30 @@ public final class Utility {
         
         t = new String[l]; // recycle t
         
+        // split tags into alias array
+        String[][] alias = new String[l][0];
+        for(i = 0; i < l; i ++) {
+            // split tags[i] at pipes, append " " for edge case when string ends with pipe
+            String[] a = (tags[i] + " ").split("\\|");
+            for(j = 0; j < a.length; j ++)
+                a[j] = a[j].strip();
+            alias[i] = a;
+        }
+        
         // find, move, and count matching labels
         int b0 = 0, b1; // number of matched and unmatched tags
         for(i = 0; i < l; i ++)
-            for(j = 0; j < m; j ++) {
-                if (u0[j] != null && u0[j].equals(tags[i])) {
-                    t[i] = u1[j];
-                    u0[j] = null;
-                    u1[j] = null;
-                    b0 ++;
-                    break;
+b:          for(j = 0; j < m; j ++) {
+//                if (u0[j] != null && u0[j].equals(tags[i])) {
+                if(u0[j] != null) {
+                    for(String tag: alias[i])
+                        if(u0[j].equals(tag)) {
+                            t[i] = u1[j];
+                            u0[j] = null;
+                            u1[j] = null;
+                            b0 ++;
+                            continue b;
+                        }
                 }
             }
         b1 = l - b0;

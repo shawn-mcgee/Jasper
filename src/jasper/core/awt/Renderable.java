@@ -1,6 +1,5 @@
-package jasper.core.stage;
+package jasper.core.awt;
 
-import jasper.core.Colors;
 import jasper.math.Box2;
 import jasper.math.Vector;
 

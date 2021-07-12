@@ -165,47 +165,47 @@ public class Bounds2 implements Box2, Bounds {
         }
         
         @Override
-        public float x0(float x0) {
+        public Bounds2.Mutable x0(float x0) {
             if(x0 <= x1)
                 this.x0 = x0;
             else {
                 this.x0 = x1;
                 this.x1 = x0;
             }
-            return x0;
+            return this;
         }
     
         @Override
-        public float y0(float y0) {
+        public Bounds2.Mutable y0(float y0) {
             if(y0 <= y1)
                 this.y0 = y0;
             else {
                 this.y0 = y1;
                 this.y1 = y0;
             }
-            return y0;
+            return this;
         }
     
         @Override
-        public float x1(float x1) {
+        public Bounds2.Mutable x1(float x1) {
             if(x1 >= x0)
                 this.x1 = x1;
             else {
                 this.x1 = x0;
                 this.x0 = x1;
             }
-            return x1;
+            return this;
         }
     
         @Override
-        public float y1(float y1) {
+        public Bounds2.Mutable y1(float y1) {
             if(y1 >= y0)
                 this.y1 = y1;
             else {
                 this.y1 = y0;
                 this.y0 = y1;
             }
-            return y1;
+            return this;
         }
         
         public Bounds2.Mutable set(

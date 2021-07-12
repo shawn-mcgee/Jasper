@@ -1,4 +1,4 @@
-package jasper.core;
+package jasper.core.awt;
 
 import jasper.math.Vector;
 import jasper.math.Vector3;

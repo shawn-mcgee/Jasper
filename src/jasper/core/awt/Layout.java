@@ -1,4 +1,4 @@
-package jasper.core;
+package jasper.core.awt;
 
 import jasper.math.Bounds2;
 import jasper.math.Box;
@@ -539,8 +539,8 @@ public class Layout implements Copyable<Layout>, Serializable {
         }
     }
     
-    public static Region2 region(Layout l, Box src) {
-        float[] layout = compute(l,
+    public static Region2 regionOf(Layout l, Box src) {
+        float[] layout = of(l,
             src.x(), src.y(),
             src.w(), src.h()
         );
@@ -550,8 +550,8 @@ public class Layout implements Copyable<Layout>, Serializable {
         );
     }
     
-    public static Region2.Mutable region(Layout l, Box src, Region2.Mutable dst) {
-        float[] layout = compute(l,
+    public static Region2.Mutable regionOf(Layout l, Box src, Region2.Mutable dst) {
+        float[] layout = of(l,
             src.x(), src.y(),
             src.w(), src.h()
         );
@@ -561,8 +561,8 @@ public class Layout implements Copyable<Layout>, Serializable {
         );
     }
     
-    public static Bounds2 bounds(Layout l, Box src) {
-        float[] layout = compute(l,
+    public static Bounds2 boundsOf(Layout l, Box src) {
+        float[] layout = of(l,
             src.x(), src.y(),
             src.w(), src.h()
         );
@@ -572,8 +572,8 @@ public class Layout implements Copyable<Layout>, Serializable {
         );
     }
     
-    public static Bounds2.Mutable bounds(Layout l, Box src, Bounds2.Mutable dst) {
-        float[] layout = compute(l,
+    public static Bounds2.Mutable boundsOf(Layout l, Box src, Bounds2.Mutable dst) {
+        float[] layout = Layout.of(l,
             src.x(), src.y(),
             src.w(), src.h()
         );
@@ -583,7 +583,7 @@ public class Layout implements Copyable<Layout>, Serializable {
         );
     }
     
-    protected static float[] compute(
+    public static float[] of(
         Layout l,
         float x, float y,
         float w, float h

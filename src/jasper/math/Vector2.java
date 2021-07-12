@@ -85,7 +85,7 @@ public class Vector2 implements Vector {
                     s = s.substring(++ i   );
             }
             
-            String[] t = parse(s, "x", "y");
+            String[] t = parse(s, "x|r", "y|g");
             v.y = stringToFloat(t[Y]);
             v.x = stringToFloat(t[X]);
         }
@@ -109,13 +109,15 @@ public class Vector2 implements Vector {
         }
         
         @Override
-        public float x(float x) {
-            return this.x = x;
+        public Vector2.Mutable x(float x) {
+            this.x = x;
+            return this;
         }
         
         @Override
-        public float y(float y) {
-            return this.y = y;
+        public Vector2.Mutable y(float y) {
+            this.y = y;
+            return this;
         }
         
         public Vector2.Mutable set(Vector xy) {

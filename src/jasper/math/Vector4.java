@@ -141,7 +141,7 @@ public class Vector4 implements Vector {
                     s = s.substring(++ i   );
             }
     
-            String[] t = parse(s, "x", "y", "z", "w");
+            String[] t = parse(s, "x|r", "y|g", "z|b", "w|a");
             v.w = stringToFloat(t[W]);
             v.z = stringToFloat(t[Z]);
             v.y = stringToFloat(t[Y]);
@@ -191,23 +191,27 @@ public class Vector4 implements Vector {
         }
         
         @Override
-        public float x(float x) {
-            return this.x = x;
+        public Vector4.Mutable x(float x) {
+            this.x = x;
+            return this;
         }
         
         @Override
-        public float y(float y) {
-            return this.y = y;
+        public Vector4.Mutable y(float y) {
+            this.y = y;
+            return this;
         }
         
         @Override
-        public float z(float z) {
-            return this.z = z;
+        public Vector4.Mutable z(float z) {
+            this.z = z;
+            return this;
         }
         
         @Override
-        public float w(float w) {
-            return this.w = w;
+        public Vector4.Mutable w(float w) {
+            this.w = w;
+            return this;
         }
         
         public Vector4.Mutable set(Vector xyzw) {

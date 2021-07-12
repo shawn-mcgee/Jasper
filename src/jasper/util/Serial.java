@@ -18,6 +18,8 @@ public interface Serial<T> extends Copyable<Serial<T>>, Iterable<T>, Serializabl
         return Serial.excludes(this, t);
     }
     
+    public default T[] toArray(T[] a) { return Serial.toArray(this, a); }
+    
     public static <T> String toString(Iterable<T> a) {
         return toString(a, "%s");
     }

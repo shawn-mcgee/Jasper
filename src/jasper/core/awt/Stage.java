@@ -1,8 +1,7 @@
-package jasper.core.stage;
+package jasper.core.awt;
 
 import jasper.Jasper;
-import jasper.core.Layout;
-import jasper.core.Server;
+import jasper.core.Module;
 import jasper.math.Bounds2;
 import jasper.math.Region2;
 import jasper.math.Vector2;
@@ -11,14 +10,15 @@ import jasper.util.*;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
-import java.nio.file.Path;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
-import static jasper.core.Colors.color4i;
+import static jasper.core.awt.Colors.color4i;
 import static jasper.util.StringToObject.BOOLEAN;
 import static jasper.util.StringToObject.INTEGER;
 
-public class Stage extends Server {
+public class Stage extends Module.Server implements Configurable {
     public static final Class<WindowEvent>
         WINDOW_EVENT = WindowEvent.class;
     public static final Class<CanvasEvent>
@@ -26,6 +26,8 @@ public class Stage extends Server {
     public static final Class<SceneEvent>
         SCENE_EVENT = SceneEvent.class;
     // configuration variables
+    protected final TreeMap<String, String>
+        cfg  =  new TreeMap<String, String>();
     protected Vector4
         canvas_background = color4i(Color.WHITE);
     protected Layout
@@ -116,11 +118,16 @@ public class Stage extends Server {
         
         input = new Input(this);
         
-        Configuration.configure(dbg,
-            DEBUG_UPDATE_INFO, null,
-            DEBUG_RENDER_INFO, null,
-            DEBUG_CANVAS_INFO, null
+        Configurable.configure(dbg,
+            DEBUG_PROPERTY_UPDATE, null,
+            DEBUG_PROPERTY_RENDER, null,
+            DEBUG_PROPERTY_CANVAS, null
         );
+    }
+    
+    @Override
+    public Map<String, String> getConfiguration() {
+        return cfg;
     }
     
     public void setScene(Scene scene) {
@@ -171,52 +178,145 @@ public class Stage extends Server {
         return virtualToLogical(v.x(), v.y());
     }
     
-    public void loadDebugInfo(Class<?> loader, String path) {
-        Configuration.load(dbg, loader, path);
+    public String setDebugProperty(Object key, Object val) {
+        return Configurable.setProperty(dbg, key, val);
     }
     
-    public void loadDebugInfo(String path) {
-        Configuration.load(dbg, path);
+    public <OBJECT> String setDebugProperty(Object key, ObjectToString<OBJECT> o2s, OBJECT val            ) {
+        return Configurable.setProperty(dbg, key, o2s, val     );
     }
     
-    public void loadDebugInfo(Path   path) {
-        Configuration.load(dbg, path);
+    public <OBJECT> String setDebugProperty(Object key, ObjectToString<OBJECT> o2s, OBJECT val, String alt) {
+        return Configurable.setProperty(dbg, key, o2s, val, alt);
     }
     
-    public void saveDebugInfo(String path) {
-        Configuration.save(dbg, path);
+    public String getDebugProperty(Object key            ) {
+        return Configurable.getProperty(dbg, key     );
     }
     
-    public void saveDebugInfo(Path   path) {
-        Configuration.save(dbg, path);
+    public String getDebugProperty(Object key, Object alt) {
+        return Configurable.getProperty(dbg, key, alt);
     }
     
-    public String setDebugInfo(Object key, Object val) {
-        return Configuration.setProperty(dbg, key, val);
+    public <OBJECT> OBJECT getDebugPropertyAs(Object key, StringToObject<OBJECT> s2o            ) {
+        return Configurable.getPropertyAs(dbg, key, s2o     );
     }
     
-    public <OBJECT> String setDebugInfo(Object key, ObjectToString<OBJECT> o2s, OBJECT val            ) {
-        return Configuration.setProperty(dbg, key, o2s, val     );
+    public <OBJECT> OBJECT getDebugPropertyAs(Object key, StringToObject<OBJECT> s2o, OBJECT alt) {
+        return Configurable.getPropertyAs(dbg, key, s2o, alt);
     }
     
-    public <OBJECT> String setDebugInfo(Object key, ObjectToString<OBJECT> o2s, OBJECT val, String alt) {
-        return Configuration.setProperty(dbg, key, o2s, val, alt);
-    }
     
-    public String getDebugInfo(Object key            ) {
-        return Configuration.getProperty(dbg, key     );
-    }
     
-    public String getDebugInfo(Object key, Object alt) {
-        return Configuration.getProperty(dbg, key, alt);
-    }
+    public void applyConfiguration() {
+        // read configuration
+        canvas_background = getPropertyAs(CANVAS_BACKGROUND, Vector4::fromString, canvas_background);
+        canvas_layout     = getPropertyAs(CANVAS_LAYOUT    , Layout::fromString , canvas_layout    );
     
-    public <OBJECT> OBJECT getDebugInfoAs(Object key, StringToObject<OBJECT> s2o            ) {
-        return Configuration.getPropertyAs(dbg, key, s2o     );
-    }
+        debug            = getPropertyAs(DEBUG           , BOOLEAN            , debug           );
+        debug_background = getPropertyAs(DEBUG_BACKGROUND, Vector4::fromString, debug_background);
+        debug_font_name  = getProperty  (DEBUG_FONT_NAME ,                      debug_font_name );
+        debug_font_size  = getPropertyAs(DEBUG_FONT_SIZE , INTEGER            , debug_font_size );
+        debug_foreground = getPropertyAs(DEBUG_FOREGROUND, Vector4::fromString, debug_foreground);
     
-    public <OBJECT> OBJECT getDebugInfoAs(Object key, StringToObject<OBJECT> s2o, OBJECT alt) {
-        return Configuration.getPropertyAs(dbg, key, s2o, alt);
+        render_hz     = getPropertyAs(RENDER_HZ, INTEGER, render_hz);
+        update_hz     = getPropertyAs(UPDATE_HZ, INTEGER, update_hz);
+    
+        window_background = getPropertyAs(WINDOW_BACKGROUND, Vector4::fromString, window_background);
+        window_border     = getPropertyAs(WINDOW_BORDER    , BOOLEAN            , window_border    );
+        window_device     = getPropertyAs(WINDOW_DEVICE    , INTEGER            , window_device    );
+        window_layout     = getPropertyAs(WINDOW_LAYOUT    , Layout::fromString , window_layout    );
+        window_string     = getProperty  (WINDOW_STRING    ,                      window_string    );
+    
+        canvas_background_color = color4i(canvas_background);
+        debug_background_color  = color4i(debug_background );
+        debug_foreground_color  = color4i(debug_foreground );
+        window_background_color = color4i(window_background);
+        debug_font = new java.awt.Font(debug_font_name, Font.PLAIN, debug_font_size);
+    
+        // release old resources
+        if(window != null)
+            window.dispose();
+        window = null;
+        canvas = null;
+        b      = null;
+    
+        // assign new resources
+        window = new java.awt.Frame() ;
+        canvas = new java.awt.Canvas();
+        window.add(canvas);
+    
+    
+        // compute the window bounds
+        Region2 window_region = Layout.regionOf(window_layout, getMaximumWindowRegion(window_device, !window_border));
+        window.setUndecorated(!window_border);
+        window.setBounds(
+            (int)window_region.x(), (int)window_region.y(),
+            (int)window_region.w(), (int)window_region.h()
+        );
+        window.setTitle(window_string);
+    
+        // compute the logical and virtual canvas size
+        Insets window_insets = window.getInsets();
+        Region2
+            logical_canvas_region = new Region2(
+            window_region.x() + window_insets.left,
+            window_region.y() + window_insets.top ,
+            window_region.w() - window_insets.left - window_insets.right ,
+            window_region.h() - window_insets.top  - window_insets.bottom
+        ),
+            virtual_canvas_region = Layout.regionOf(canvas_layout, logical_canvas_region);
+    
+        logical_canvas_w = (int)logical_canvas_region.w();
+        logical_canvas_h = (int)logical_canvas_region.h();
+        virtual_canvas_w = (int)virtual_canvas_region.w();
+        virtual_canvas_h = (int)virtual_canvas_region.h();
+        virtual_canvas_scale = Math.min(
+            (float) logical_canvas_w / virtual_canvas_w,
+            (float) logical_canvas_h / virtual_canvas_h
+        );
+    
+        // add listeners
+        window.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent we) {
+                queue(new WindowEvent(self, WindowEvent.ON_CLOSE));
+            }
+        });
+        window.addWindowFocusListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowGainedFocus(java.awt.event.WindowEvent we) {
+                queue(new WindowEvent(self, WindowEvent.ON_FOCUS));
+            }
+        
+            @Override
+            public void windowLostFocus(java.awt.event.WindowEvent we) {
+                queue(new WindowEvent(self, WindowEvent.ON_UNFOCUS));
+            }
+        });
+    
+        canvas.setFocusable(true);
+        canvas.setFocusTraversalKeysEnabled(false);
+    
+        canvas.addKeyListener        (input);
+        canvas.addMouseListener      (input);
+        canvas.addMouseWheelListener (input);
+        canvas.addMouseMotionListener(input);
+        canvas.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent ce) {
+                queue(new CanvasEvent(
+                    self,
+                    ce.getComponent().getWidth() ,
+                    ce.getComponent().getHeight()
+                ));
+            }
+        });
+    
+        // prepare to display
+        window.setIgnoreRepaint(true);
+        canvas.setIgnoreRepaint(true);
+        window.setVisible(true);
     }
     
     protected static final long
@@ -251,120 +351,14 @@ public class Stage extends Server {
         t2; // current nanos
     
     @Override
-    public void onInit() throws Exception {
+    public void onStart() throws Exception {
         long a = System.nanoTime();
-        // read configuration
-        canvas_background = getPropertyAs(CANVAS_BACKGROUND, Vector4::fromString, canvas_background);
-        canvas_layout     = getPropertyAs(CANVAS_LAYOUT    , Layout::fromString , canvas_layout    );
-        
-        debug            = getPropertyAs(DEBUG           , BOOLEAN            , debug           );
-        debug_background = getPropertyAs(DEBUG_BACKGROUND, Vector4::fromString, debug_background);
-        debug_font_name  = getProperty  (DEBUG_FONT_NAME ,                      debug_font_name );
-        debug_font_size  = getPropertyAs(DEBUG_FONT_SIZE , INTEGER            , debug_font_size );
-        debug_foreground = getPropertyAs(DEBUG_FOREGROUND, Vector4::fromString, debug_foreground);
-        
-        render_hz     = getPropertyAs(RENDER_HZ, INTEGER, render_hz);
-        update_hz     = getPropertyAs(UPDATE_HZ, INTEGER, update_hz);
-        
-        window_background = getPropertyAs(WINDOW_BACKGROUND, Vector4::fromString, window_background);
-        window_border     = getPropertyAs(WINDOW_BORDER    , BOOLEAN            , window_border    );
-        window_device     = getPropertyAs(WINDOW_DEVICE    , INTEGER            , window_device    );
-        window_layout     = getPropertyAs(WINDOW_LAYOUT    , Layout::fromString , window_layout    );
-        window_string     = getProperty  (WINDOW_STRING    ,                      window_string    );
-        
-        canvas_background_color = color4i(canvas_background);
-        debug_background_color  = color4i(debug_background );
-        debug_foreground_color  = color4i(debug_foreground );
-        window_background_color = color4i(window_background);
-        debug_font = new java.awt.Font(debug_font_name, Font.PLAIN, debug_font_size);
-        
-        // release old resources
-        if(window != null)
-            window.dispose();
-        
-        // assign new resources
-        window = new java.awt.Frame() ;
-        canvas = new java.awt.Canvas();
-        window.add(canvas);
-        
-        // compute the window bounds
-        Region2 window_region = Layout.region(window_layout, getMaximumWindowRegion(window_device, !window_border));
-        window.setUndecorated(!window_border);
-        window.setBounds(
-            (int)window_region.x(), (int)window_region.y(),
-            (int)window_region.w(), (int)window_region.h()
-        );
-        window.setTitle(window_string);
-        
-        // compute the logical and virtual canvas size
-        Insets window_insets = window.getInsets();
-        Region2
-            logical_canvas_region = new Region2(
-                window_region.x() + window_insets.left,
-                window_region.y() + window_insets.top ,
-                window_region.w() - window_insets.left - window_insets.right ,
-                window_region.h() - window_insets.top  - window_insets.bottom
-            ),
-            virtual_canvas_region = Layout.region(canvas_layout, logical_canvas_region);
-
-        logical_canvas_w = (int)logical_canvas_region.w();
-        logical_canvas_h = (int)logical_canvas_region.h();
-        virtual_canvas_w = (int)virtual_canvas_region.w();
-        virtual_canvas_h = (int)virtual_canvas_region.h();
-        virtual_canvas_scale = Math.min(
-            (float) logical_canvas_w / virtual_canvas_w,
-            (float) logical_canvas_h / virtual_canvas_h
-        );
-        
-        // add listeners
-        window.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent we) {
-                queue(new WindowEvent(self, WindowEvent.ON_CLOSE));
-            }
-        });
-        window.addWindowFocusListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowGainedFocus(java.awt.event.WindowEvent we) {
-                queue(new WindowEvent(self, WindowEvent.ON_FOCUS));
-            }
-    
-            @Override
-            public void windowLostFocus(java.awt.event.WindowEvent we) {
-                queue(new WindowEvent(self, WindowEvent.ON_UNFOCUS));
-            }
-        });
-        
-        canvas.setFocusable(true);
-        canvas.setFocusTraversalKeysEnabled(false);
-        
-        canvas.addKeyListener        (input);
-        canvas.addMouseListener      (input);
-        canvas.addMouseWheelListener (input);
-        canvas.addMouseMotionListener(input);
-        canvas.addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentResized(java.awt.event.ComponentEvent ce) {
-                queue(new CanvasEvent(
-                    self,
-                    ce.getComponent().getWidth() ,
-                    ce.getComponent().getHeight()
-                ));
-            }
-        });
-    
-        // prepare to display
-        window.setIgnoreRepaint(true);
-        canvas.setIgnoreRepaint(true);
-        window.setVisible(true);
-        canvas.requestFocus(  );
-        canvas.revalidate();
-        
+        applyConfiguration();
         long b = System.nanoTime();
         
         if(debug)
             Debug.info(new Object() { /* trace */}, String.format(
-                "INIT: %1$3.2f ms", (float)(b - a) / one_millis
+                "START: %1$3.2f ms", (float)(b - a) / one_millis
             ));
             
         // prepare timers
@@ -469,8 +463,8 @@ public class Stage extends Server {
                         min_render_ms,
                         max_render_ms
                     );
-                setDebugInfo(DEBUG_UPDATE_INFO, debug_update_info);
-                setDebugInfo(DEBUG_RENDER_INFO, debug_render_info);
+                setDebugProperty(DEBUG_PROPERTY_UPDATE, debug_update_info);
+                setDebugProperty(DEBUG_PROPERTY_RENDER, debug_render_info);
                 Debug.info(new Object() { }, debug_update_info);
                 Debug.info(new Object() { }, debug_render_info);
             }
@@ -664,7 +658,7 @@ public class Stage extends Server {
                 logical_canvas_w = event.canvas_w,
                 logical_canvas_h = event.canvas_h
             ),
-            virtual_canvas_region = Layout.region(canvas_layout, logical_canvas_region);
+            virtual_canvas_region = Layout.regionOf(canvas_layout, logical_canvas_region);
         
         virtual_canvas_w = (int)virtual_canvas_region.w();
         virtual_canvas_h = (int)virtual_canvas_region.h();
@@ -673,7 +667,7 @@ public class Stage extends Server {
             (float) logical_canvas_h / virtual_canvas_h
         );
         
-        setDebugInfo(DEBUG_CANVAS_INFO, String.format(
+        setDebugProperty(DEBUG_PROPERTY_CANVAS, String.format(
             "CANVAS: [%1$s, %2$s] (%3$s, %4$s) %5$3.2f%%",
             logical_canvas_w,
             logical_canvas_h,
@@ -810,7 +804,7 @@ public class Stage extends Server {
         WINDOW_STRING = "window-string";
     
     public static final String
-        DEBUG_UPDATE_INFO = "debug.update.info",
-        DEBUG_RENDER_INFO = "debug.render.info",
-        DEBUG_CANVAS_INFO = "debug.canvas.info";
+        DEBUG_PROPERTY_UPDATE = "debug.update",
+        DEBUG_PROPERTY_RENDER = "debug.render",
+        DEBUG_PROPERTY_CANVAS = "debug.canvas";
 }

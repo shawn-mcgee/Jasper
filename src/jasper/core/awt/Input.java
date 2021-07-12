@@ -1,8 +1,6 @@
-package jasper.core.stage;
+package jasper.core.awt;
 
 import jasper.math.Vector2;
-import jasper.util.event.Broker;
-import jasper.util.event.Handle;
 
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -34,10 +32,10 @@ public class Input implements KeyListener, MouseListener, MouseWheelListener, Mo
     protected float
         wheel = 0f;
     
-    protected final Broker
-        broker = new Broker();
-    protected final Handle
-        handle = new Handle();
+    protected final jasper.util.Event.Broker
+        broker = new jasper.util.Event.Broker();
+    protected final jasper.util.Event.Handle
+        handle = new jasper.util.Event.Handle();
     
     protected final Stage
         stage;
@@ -77,7 +75,7 @@ public class Input implements KeyListener, MouseListener, MouseWheelListener, Mo
     }
     
     public Vector2 getMouse() {
-        return mouse;
+        return new Vector2(mouse);
     }
     
     public float   getWheel() {

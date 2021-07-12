@@ -185,18 +185,18 @@ public class Region3 implements Box3, Region {
         }
         
         @Override
-        public float x(float x) { return this.x = x; }
+        public Region3.Mutable x(float x) { this.x = x; return this; }
         @Override
-        public float y(float y) { return this.y = y; }
+        public Region3.Mutable y(float y) { this.y = y; return this; }
         @Override
-        public float z(float z) { return this.z = z; }
+        public Region3.Mutable z(float z) { this.z = z; return this; }
         
         @Override
-        public float w(float w) { return this.w = w; }
+        public Region3.Mutable w(float w) { this.w = w; return this; }
         @Override
-        public float h(float h) { return this.h = h; }
+        public Region3.Mutable h(float h) { this.h = h; return this; }
         @Override
-        public float d(float d) { return this.d = d; }
+        public Region3.Mutable d(float d) { this.d = d; return this; }
         
         public Region3.Mutable set(
             Box b

@@ -104,7 +104,7 @@ public class Vector3 implements Vector {
                     s = s.substring(++ i   );
             }
             
-            String[] t = parse(s, "x", "y", "z");
+            String[] t = parse(s, "x|r", "y|g", "z|b");
             v.z = stringToFloat(t[Z]);
             v.y = stringToFloat(t[Y]);
             v.x = stringToFloat(t[X]);
@@ -137,18 +137,21 @@ public class Vector3 implements Vector {
         }
         
         @Override
-        public float x(float x) {
-            return this.x = x;
+        public Vector3.Mutable x(float x) {
+            this.x = x;
+            return this;
         }
         
         @Override
-        public float y(float y) {
-            return this.y = y;
+        public Vector3.Mutable y(float y) {
+            this.y = y;
+            return this;
         }
         
         @Override
-        public float z(float z) {
-            return this.z = z;
+        public Vector3.Mutable z(float z) {
+            this.z = z;
+            return this;
         }
         
         public Vector3.Mutable set(Vector xyz) {
