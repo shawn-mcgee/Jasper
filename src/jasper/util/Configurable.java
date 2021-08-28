@@ -7,62 +7,62 @@ import static jasper.util.StringToObject.stringToObject;
 
 public interface Configurable {
     
-    public Map<String, String> getConfiguration();
+    public Map<String, String> getProperties();
     
     public default void configure(Object... args) {
-        Configurable.configure(getConfiguration(), args);
+        Configurable.configure(getProperties(), args);
     }
     
     public default void loadConfiguration(Resource resource) {
-        Configurable.loadConfiguration(getConfiguration(), resource);
+        Configurable.loadConfiguration(getProperties(), resource);
     }
     
     public default void loadConfiguration(String   resource) {
-        Configurable.loadConfiguration(getConfiguration(), resource);
+        Configurable.loadConfiguration(getProperties(), resource);
     }
     
     public default void loadConfiguration(Class<?> from, String path) {
-        Configurable.loadConfiguration(getConfiguration(), from, path);
+        Configurable.loadConfiguration(getProperties(), from, path);
     }
     
     public default void loadConfiguration(String   from, String path) {
-        Configurable.loadConfiguration(getConfiguration(), from, path);
+        Configurable.loadConfiguration(getProperties(), from, path);
     }
     
     public default void saveConfiguration(Resource resource) {
-        Configurable.saveConfiguration(getConfiguration(), resource);
+        Configurable.saveConfiguration(getProperties(), resource);
     }
     
     public default void saveConfiguration(String   resource) {
-        Configurable.saveConfiguration(getConfiguration(), resource);
+        Configurable.saveConfiguration(getProperties(), resource);
     }
     
     public default String setProperty(Object key, Object val) {
-        return Configurable.setProperty(getConfiguration(), key, val);
+        return Configurable.setProperty(getProperties(), key, val);
     }
     
     public default <OBJECT> String setProperty(Object key, ObjectToString<OBJECT> o2s, OBJECT val            ) {
-        return Configurable.setProperty(getConfiguration(), key, o2s, val     );
+        return Configurable.setProperty(getProperties(), key, o2s, val     );
     }
     
     public default <OBJECT> String setProperty(Object key, ObjectToString<OBJECT> o2s, OBJECT val, String alt) {
-        return Configurable.setProperty(getConfiguration(), key, o2s, val, alt);
+        return Configurable.setProperty(getProperties(), key, o2s, val, alt);
     }
     
     public default String getProperty(Object key            ) {
-        return Configurable.getProperty(getConfiguration(), key     );
+        return Configurable.getProperty(getProperties(), key     );
     }
     
     public default String getProperty(Object key, Object alt) {
-        return Configurable.getProperty(getConfiguration(), key, alt);
+        return Configurable.getProperty(getProperties(), key, alt);
     }
     
     public default <OBJECT> OBJECT getPropertyAs(Object key, StringToObject<OBJECT> s2o            ) {
-        return Configurable.getPropertyAs(getConfiguration(), key, s2o     );
+        return Configurable.getPropertyAs(getProperties(), key, s2o     );
     }
     
     public default <OBJECT> OBJECT getPropertyAs(Object key, StringToObject<OBJECT> s2o, OBJECT alt) {
-        return Configurable.getPropertyAs(getConfiguration(), key, s2o, alt);
+        return Configurable.getPropertyAs(getProperties(), key, s2o, alt);
     }
     
     public static <T extends Map<String, String>> T configure(T map, Object... args) {

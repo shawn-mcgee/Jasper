@@ -1,11 +1,9 @@
 package jasper.core.awt;
 
 import jasper.Jasper;
+import jasper.core.Layout;
 import jasper.core.Module;
-import jasper.math.Bounds2;
-import jasper.math.Region2;
-import jasper.math.Vector2;
-import jasper.math.Vector4;
+import jasper.math.*;
 import jasper.util.*;
 
 import java.awt.*;
@@ -119,14 +117,14 @@ public class Stage extends Module.Server implements Configurable {
         input = new Input(this);
         
         Configurable.configure(dbg,
-            DEBUG_PROPERTY_UPDATE, null,
-            DEBUG_PROPERTY_RENDER, null,
-            DEBUG_PROPERTY_CANVAS, null
+            _DEBUG_UPDATE, null,
+            _DEBUG_RENDER, null,
+            _DEBUG_CANVAS, null
         );
     }
     
     @Override
-    public Map<String, String> getConfiguration() {
+    public Map<String, String> getProperties() {
         return cfg;
     }
     
@@ -463,8 +461,8 @@ public class Stage extends Module.Server implements Configurable {
                         min_render_ms,
                         max_render_ms
                     );
-                setDebugProperty(DEBUG_PROPERTY_UPDATE, debug_update_info);
-                setDebugProperty(DEBUG_PROPERTY_RENDER, debug_render_info);
+                setDebugProperty(_DEBUG_UPDATE, debug_update_info);
+                setDebugProperty(_DEBUG_RENDER, debug_render_info);
                 Debug.info(new Object() { }, debug_update_info);
                 Debug.info(new Object() { }, debug_render_info);
             }
@@ -667,7 +665,7 @@ public class Stage extends Module.Server implements Configurable {
             (float) logical_canvas_h / virtual_canvas_h
         );
         
-        setDebugProperty(DEBUG_PROPERTY_CANVAS, String.format(
+        setDebugProperty(_DEBUG_CANVAS, String.format(
             "CANVAS: [%1$s, %2$s] (%3$s, %4$s) %5$3.2f%%",
             logical_canvas_w,
             logical_canvas_h,
@@ -804,7 +802,7 @@ public class Stage extends Module.Server implements Configurable {
         WINDOW_STRING = "window-string";
     
     public static final String
-        DEBUG_PROPERTY_UPDATE = "debug.update",
-        DEBUG_PROPERTY_RENDER = "debug.render",
-        DEBUG_PROPERTY_CANVAS = "debug.canvas";
+        _DEBUG_UPDATE = ".debug-update",
+        _DEBUG_RENDER = ".debug-render",
+        _DEBUG_CANVAS = ".debug_canvas";
 }

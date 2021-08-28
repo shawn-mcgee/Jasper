@@ -58,11 +58,6 @@ public abstract class Module {
             broker = new Event.Broker();
             handle = new Event.Handle();
             broker.onAttach(handle);
-    
-            handle.onAttach(
-                Callback.class,
-                this::resolve
-            );
         }
     
         public <T> void attach(Class<T> type, Event.Listener<T> listener) {
@@ -124,14 +119,28 @@ public abstract class Module {
         protected void poll() {
             broker.poll();
         }
-        
+
+        public int pending() {
+            return broker.pending();
+        }
+    }
+
+    public static abstract class Resolver extends Server {
+
+        public Resolver() {
+            handle.onAttach(
+                Callback.class,
+                this::onResolve
+            );
+        }
+
         public void async(Callback event) {
             queue(event);
         }
-        
+
         public void await(Callback event) {
             if(thread == Thread.currentThread())
-                resolve(event);
+                onResolve(event);
             else try {
                 synchronized (event) {
                     queue(event);
@@ -142,12 +151,12 @@ public abstract class Module {
                 na.printStackTrace();
             }
         }
-        
-        public void resolve(Callback event) {
+
+        protected void onResolve(Callback event) {
             try {
                 event.onResolve();
             } catch(Exception na) {
-                Debug.warn(new Object() { }, "Failed to resolve callback '" + event + "'");
+                Debug.warn(new Object() { }, "Failed to resolve callback'" + event + "'");
                 na.printStackTrace();
             } finally {
                 synchronized (event) {
@@ -155,13 +164,9 @@ public abstract class Module {
                 }
             }
         }
-        
-        public boolean isPending() {
-            return broker.isPending();
-        }
     }
     
-    public static class Worker extends Server {
+    public static class Worker extends Resolver {
         
         @Override
         public <T> void queue(T event) {
@@ -173,7 +178,7 @@ public abstract class Module {
         
         @Override
         public void onStep() throws Exception {
-            if(broker.isPending())
+            if(broker.pending() > 0)
                 poll();
             else if(running)
                 synchronized (this) {

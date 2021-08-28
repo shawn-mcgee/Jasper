@@ -1,5 +1,7 @@
 package jasper.math;
 
+import jasper.util.Resource;
+
 import static jasper.util.StringToObject.stringToFloat;
 import static jasper.util.Utility.parse;
 

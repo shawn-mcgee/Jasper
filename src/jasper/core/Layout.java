@@ -1,4 +1,4 @@
-package jasper.core.awt;
+package jasper.core;
 
 import jasper.math.Bounds2;
 import jasper.math.Box;
@@ -635,8 +635,8 @@ public class Layout implements Copyable<Layout>, Serializable {
     }
     
     protected static float clamp(float x, float a, float b) {
-        if(x < a) return a;
-        if(x > b) return b;
+        if(x <= a) return a;
+        if(x >= b) return b;
         return x;
     }
 }

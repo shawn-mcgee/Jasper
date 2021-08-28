@@ -280,9 +280,9 @@ public interface Event {
             flush();
         }
         
-        public boolean isPending() {
+        public int pending() {
             synchronized (lock) {
-                return events0.size() > 0;
+                return events0.size();
             }
         }
         

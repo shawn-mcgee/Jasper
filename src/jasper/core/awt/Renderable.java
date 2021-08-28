@@ -222,15 +222,15 @@ public interface Renderable {
             g.setFont(font); return this;
         }
         
-        public RenderContext text(String s) {
-            return text(s, 0f, 0f);
+        public RenderContext string(String s) {
+            return string(s, 0f, 0f);
         }
         
-        public RenderContext text(Vector xy, String s) {
-            return text(s, xy.x(), xy.y());
+        public RenderContext string(Vector xy, String s) {
+            return string(s, xy.x(), xy.y());
         }
         
-        public RenderContext text(String s, float x, float y) {
+        public RenderContext string(String s, float x, float y) {
             g.drawString(s, x, y); return this;
         }
         

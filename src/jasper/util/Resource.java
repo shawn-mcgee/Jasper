@@ -65,29 +65,49 @@ public class Resource implements Copyable<Resource>, Serializable {
     public String   path() {
         return path;
     }
-    
+
+    public boolean exists() {
+        return Resource.exists(this);
+    }
+
+    public void create() {
+        Resource.create(this);
+    }
+
+    public void delete() {
+        Resource.delete(this);
+    }
+
+    public InputStream newInputStream() {
+        return Resource.newInputStream(this);
+    }
+
     public byte[] readBytes() {
-        return readBytes(this);
+        return Resource.readBytes(this);
     }
-    
-    public <T> T  readObject() {
-        return readObject(this);
+
+    public <T> T readObject() {
+        return Resource.readObject(this);
     }
-    
+
     public String readString() {
-        return readString(this);
+        return Resource.readString(this);
     }
-    
+
+    public OutputStream newOutputStream() {
+        return Resource.newOutputStream(this);
+    }
+
     public void writeBytes(byte[] b) {
-        writeBytes(this, b);
+        Resource.writeBytes(this, b);
     }
-    
+
     public <T> void writeObject(T t) {
-        writeObject(this, t);
+        Resource.writeObject(this, t);
     }
-    
-    public     void writeString(Object o) {
-        writeString(this, o);
+
+    public void writeString(Object o) {
+        Resource.writeString(this, o);
     }
     
     @Override
@@ -125,36 +145,54 @@ public class Resource implements Copyable<Resource>, Serializable {
         return new Resource(s);
     }
     
-    public static <T> T load(Importer<T> importer, Resource resource) {
-        return importer.load(resource);
+    public static boolean exists(Resource resource) {
+        if(resource.from != null)
+            return resource.from.getResource(resource.path) != null;
+        else
+            return new File(resource.path).exists();
     }
     
-    public static <T> T load(Importer<T> importer, String   resource) {
-        return importer.load(new Resource(resource));
+    public static boolean exists(String   resource) {
+        return exists(new Resource(resource));
     }
     
-    public static <T> T load(Importer<T> importer, Class<?> from, String path) {
-        return importer.load(new Resource(from, path));
+    public static boolean exists(Class<?> from, String path) {
+        return exists(new Resource(from, path));
     }
     
-    public static <T> T load(Importer<T> importer, String   from, String path) {
-        return importer.load(new Resource(from, path));
+    public static boolean exists(String   from, String path) {
+        return exists(new Resource(from, path));
     }
     
-    public static <T> void save(Exporter<T> exporter, Resource resource, T t) {
-        exporter.save(resource, t);
+    public static void create(Resource resource) {
+        if(resource.from != null)
+            Debug.warn(new Object() { }, "Unable to create resource '" + resource + "'");
+        else
+            try {
+                File file = new File(resource.path);
+                if(!file.exists()) {
+                    if (file.getParentFile() != null)
+                        file.getParentFile().mkdirs();
+                    file.createNewFile();
+                }
+            } catch (Exception na) {
+                Debug.warn(new Object() {}, "Unable to create resource '" + resource + "'");
+            }
     }
     
-    public static <T> void save(Exporter<T> exporter, String   resource, T t) {
-        exporter.save(new Resource(resource), t);
+    public static void create(String   resource) {
+        create(new Resource(resource));
     }
     
-    public static interface Importer<T> {
-        public T    load(Resource u     );
+    public static void delete(Resource resource) {
+        if(resource.from != null)
+            Debug.warn(new Object() { }, "Unable to delete resource '" + resource + "'");
+        else
+            new File(resource.path).delete();
     }
     
-    public static interface Exporter<T> {
-        public void save(Resource u, T t);
+    public static void delete(String   resource) {
+        delete(new Resource(resource));
     }
     
     public static InputStream newInputStream(Resource resource) {
@@ -200,7 +238,13 @@ public class Resource implements Copyable<Resource>, Serializable {
         if(resource.from != null)
             Debug.warn(new Object() { }, "Unable to open resource '" + resource + "'");
         else try {
-            return new FileOutputStream(resource.path, append);
+            File file = new File(resource.path);
+            if(!file.exists()) {
+                if( file.getParentFile() != null)
+                    file.getParentFile().mkdirs();
+                file.createNewFile();
+            }
+            return new FileOutputStream(file, append);
         } catch(Exception na) {
             Debug.warn(new Object() { }, "Unable to open resource '" + resource + "'");
         }
@@ -292,60 +336,98 @@ public class Resource implements Copyable<Resource>, Serializable {
     }
     
     public static byte[] readBytes(InputStream from, String resource) {
-        try(BufferedInputStream in = new BufferedInputStream(from)) {
-            return in.readAllBytes();
-        } catch (Exception na) {
-            Debug.warn(new Object() { }, "Unable to read bytes from resource '" + resource + "'");
-        }
+        if(from != null)
+            try(BufferedInputStream in = new BufferedInputStream(from)) {
+                return in.readAllBytes();
+            } catch (Exception na) {
+                Debug.warn(new Object() { }, "Unable to read bytes from resource '" + resource + "'");
+            }
         return null;
     }
     
     public static void writeBytes(OutputStream to, byte[] b, String resource) {
-        try(BufferedOutputStream out = new BufferedOutputStream(to)) {
-            out.write(b);
-            out.flush( );
-        } catch (Exception na) {
-            Debug.warn(new Object() { }, "Unable to write bytes to resource '" + resource + "'");
-        }
+        if(to != null)
+            try(BufferedOutputStream out = new BufferedOutputStream(to)) {
+                out.write(b);
+                out.flush( );
+            } catch (Exception na) {
+                Debug.warn(new Object() { }, "Unable to write bytes to resource '" + resource + "'");
+            }
     }
     
     public static <T> T readObject(InputStream from, String resource) {
-        try(ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(from))) {
-            return Unsafe.cast(in.readObject());
-        } catch (Exception na) {
-            Debug.warn(new Object() { }, "Unable to read from resource '" + resource + "'");
-        }
+        if(from != null)
+            try(ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(from))) {
+                return Unsafe.cast(in.readObject());
+            } catch (Exception na) {
+                Debug.warn(new Object() { }, "Unable to read from resource '" + resource + "'");
+            }
         return null;
     }
     
     public static <T> void writeObject(OutputStream to, T t, String resource) {
-        try(ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(to))) {
-            out.writeObject(t);
-            out.flush      ( );
-        } catch (Exception na) {
-            Debug.warn(new Object() { }, "Unable to write to resource '" + resource + "'");
-        }
+        if(to != null)
+            try(ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(to))) {
+                out.writeObject(t);
+                out.flush      ( );
+            } catch (Exception na) {
+                Debug.warn(new Object() { }, "Unable to write to resource '" + resource + "'");
+            }
     }
     
     public static String readString(InputStream from, String resource) {
-        try(BufferedReader in = new BufferedReader(new InputStreamReader(from))) {
-            StringBuilder sb = new StringBuilder();
-            int c;
-            while((c = in.read()) != -1)
-                sb.append((char)c);
-            return sb.toString();
-        } catch(Exception na) {
-            Debug.warn(new Object() { }, "Unable to read string from resource '" + resource + "'");
-        }
+        if(from != null)
+            try(BufferedReader in = new BufferedReader(new InputStreamReader(from))) {
+                StringBuilder sb = new StringBuilder();
+                int c;
+                while((c = in.read()) != -1)
+                    sb.append((char)c);
+                return sb.toString();
+            } catch(Exception na) {
+                Debug.warn(new Object() { }, "Unable to read string from resource '" + resource + "'");
+            }
         return null;
     }
     
     public static void writeString(OutputStream to, Object o, String resource) {
-        try(BufferedWriter out = new BufferedWriter(new OutputStreamWriter(to))) {
-            out.write(Objects.toString(o));
-            out.flush(                   );
-        } catch(Exception na) {
-            Debug.warn(new Object() { }, "Unable to write string to resource '" + resource + "'");
-        }
+        if(to != null)
+            try(BufferedWriter out = new BufferedWriter(new OutputStreamWriter(to))) {
+                out.write(Objects.toString(o));
+                out.flush(                   );
+            } catch(Exception na) {
+                Debug.warn(new Object() { }, "Unable to write string to resource '" + resource + "'");
+            }
+    }
+    
+    public static <T> T onImport(Importer<T> importer, Resource resource) {
+        return importer.onImport(resource);
+    }
+    
+    public static <T> T onImport(Importer<T> importer, String   resource) {
+        return onImport(importer, new Resource(resource));
+    }
+    
+    public static <T> T onImport(Importer<T> importer, Class<?> from, String path) {
+        return onImport(importer, new Resource(from, path));
+    }
+    
+    public static <T> T onImport(Importer<T> importer, String   from, String path) {
+        return onImport(importer, new Resource(from, path));
+    }
+    
+    public static <T> void onExport(Exporter<T> exporter, Resource resource, T t) {
+        exporter.onExport(resource, t);
+    }
+    
+    public static <T> void onExport(Exporter<T> exporter, String   resource, T t) {
+        onExport(exporter, new Resource(resource), t);
+    }
+    
+    public static interface Importer<T> {
+        public T    onImport(Resource resource);
+    }
+    
+    public static interface Exporter<T> {
+        public void onExport(Resource resource, T t);
     }
 }
