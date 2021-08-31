@@ -1,7 +1,6 @@
 package jasper.core.awt;
 
 import jasper.Jasper;
-import jasper.core.Layout;
 import jasper.core.Module;
 import jasper.math.*;
 import jasper.util.*;
@@ -485,7 +484,7 @@ public class Stage extends Module.Server implements Configurable {
             nanos_per_render - render_timer
         ) / one_millis;
         if(sync > 1)
-            Thread.sleep(1);
+            java.lang.Thread.sleep(1);
     }
     
     @Override

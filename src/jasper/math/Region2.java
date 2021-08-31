@@ -96,6 +96,24 @@ public class Region2 implements Box2, Region {
     public String toString() {
         return Region2.toString(this);
     }
+
+    @Override
+    public int hashCode() {
+        return Region.hashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Box2 && Region.equals(this, (Box2) o, EPSILON);
+    }
+
+    public boolean equals(Box2 b) {
+        return Region.equals(this, b, EPSILON);
+    }
+
+    public boolean equals(Box3 b) {
+        return Region.equals(this, b, EPSILON);
+    }
     
     public static String toString(Box b) {
         return "[" +

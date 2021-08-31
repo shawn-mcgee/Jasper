@@ -83,4 +83,44 @@ public interface Region extends Box {
             return this;
         }
     }
+
+    public static boolean equals(Region2 a, Box2 b, float e) {
+        return Box.equals(
+            a.x(), a.y(), a.w(), a.h(),
+            b.x(), b.y(), b.w(), b.h(),
+            e
+        );
+    }
+
+    public static boolean equals(Region2 a, Box3 b, float e) {
+        return Box.equals(
+            a.x(), a.y(), 0f   , a.w(), a.h(), 0f   ,
+            b.x(), b.y(), b.z(), b.w(), b.h(), b.d(),
+            e
+        );
+    }
+
+    public static boolean equals(Region3 a, Box2 b, float e) {
+        return Box.equals(
+            a.x(), a.y(), a.z(), a.w(), a.h(), a.d(),
+            b.x(), b.y(), 0f   , b.w(), b.h(), 0f   ,
+            e
+        );
+    }
+
+    public static boolean equals(Region3 a, Box3 b, float e) {
+        return Box.equals(
+            a.x(), a.y(), a.z(), a.w(), a.h(), a.d(),
+            b.x(), b.y(), b.z(), b.w(), b.h(), b.d(),
+            e
+        );
+    }
+
+    public static int hashCode(Region2 a) {
+        return Box.hashCode(a.x(), a.y(), a.w(), a.h());
+    }
+
+    public static int hashCode(Region3 a) {
+        return Box.hashCode(a.x(), a.y(), a.z(), a.w(), a.h(), a.d());
+    }
 }

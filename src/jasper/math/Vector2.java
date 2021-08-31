@@ -1,7 +1,5 @@
 package jasper.math;
 
-import jasper.util.Resource;
-
 import static jasper.util.StringToObject.stringToFloat;
 import static jasper.util.Utility.parse;
 
@@ -48,6 +46,11 @@ public class Vector2 implements Vector {
     @Override
     public String toString() {
         return Vector2.toString(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return Vector.hashCode(this);
     }
     
     @Override

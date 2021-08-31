@@ -6,6 +6,8 @@ import jasper.util.Debug;
 import java.io.Serializable;
 
 public interface Matrix<ROW extends Vector, COL extends Vector> extends Copyable<Matrix<ROW, COL>>, Serializable {
+    public static final float
+        EPSILON = .001f;
     public static final int
         ROW_MAJOR = 0,
         COL_MAJOR = 1;
@@ -59,6 +61,300 @@ public interface Matrix<ROW extends Vector, COL extends Vector> extends Copyable
         
         public ROW row(int i, Vector r0);
         public COL col(int j, Vector c0);
+    }
+
+    public static boolean equals(Matrix2 a, Matrix2 b, float e) {
+        return equals(
+            a.xx(), a.xy(),
+            a.yx(), a.yy(),
+
+            b.xx(), b.xy(),
+            b.yx(), b.yy(),
+
+            e
+        );
+    }
+
+    public static boolean equals(Matrix2 a, Matrix3 b, float e) {
+        return equals(
+            a.xx(), a.xy(), 0f,
+            a.yx(), a.yy(), 0f,
+            0f    , 0f    , 0f,
+
+            b.xx(), b.xy(), b.xz(),
+            b.yx(), b.yy(), b.yz(),
+            b.zx(), b.zy(), b.zz(),
+
+            e
+        );
+    }
+
+    public static boolean equals(Matrix3 a, Matrix2 b, float e) {
+        return equals(
+            a.xx(), a.xy(), a.xz(),
+            a.yx(), a.yy(), a.yz(),
+            a.zx(), a.zy(), a.zz(),
+
+            b.xx(), b.xy(), 0f,
+            b.yx(), b.yy(), 0f,
+            0f    , 0f    , 0f,
+
+            e
+        );
+    }
+
+    public static boolean equals(Matrix3 a, Matrix3 b, float e) {
+        return equals(
+            a.xx(), a.xy(), a.xz(),
+            a.yx(), a.yy(), a.yz(),
+            a.zx(), a.zy(), a.zz(),
+
+            b.xx(), b.xy(), b.xz(),
+            b.yx(), b.yy(), b.yz(),
+            b.zx(), b.zy(), b.zz(),
+
+            e
+        );
+    }
+
+    public static boolean equals(Matrix2 a, Matrix4 b, float e) {
+        return equals(
+            a.xx(), a.xy(), 0f, 0f,
+            a.yx(), a.yy(), 0f, 0f,
+            0f    , 0f    , 0f, 0f,
+            0f    , 0f    , 0f, 0f,
+
+            b.xx(), b.xy(), b.xz(), b.xw(),
+            b.yx(), b.yy(), b.yz(), b.yw(),
+            b.zx(), b.zy(), b.zz(), b.zw(),
+            b.wx(), b.wy(), b.wz(), b.ww(),
+
+            e
+        );
+    }
+
+    public static boolean equals(Matrix3 a, Matrix4 b, float e) {
+        return equals(
+            a.xx(), a.xy(), a.xz(), 0f,
+            a.yx(), a.yy(), a.yz(), 0f,
+            a.zx(), a.zy(), a.zz(), 0f,
+            0f    , 0f    , 0f    , 0f,
+
+            b.xx(), b.xy(), b.xz(), b.xw(),
+            b.yx(), b.yy(), b.yz(), b.yw(),
+            b.zx(), b.zy(), b.zz(), b.zw(),
+            b.wx(), b.wy(), b.wz(), b.ww(),
+
+            e
+        );
+    }
+
+    public static boolean equals(Matrix4 a, Matrix2 b, float e) {
+        return equals(
+            a.xx(), a.xy(), a.xz(), a.xw(),
+            a.yx(), a.yy(), a.yz(), a.yw(),
+            a.zx(), a.zy(), a.zz(), a.zw(),
+            a.wx(), a.wy(), a.wz(), a.ww(),
+
+            b.xx(), b.xy(), 0f, 0f,
+            b.yx(), b.yy(), 0f, 0f,
+            0f    , 0f    , 0f, 0f,
+            0f    , 0f    , 0f, 0f,
+
+            e
+        );
+    }
+
+    public static boolean equals(Matrix4 a, Matrix3 b, float e) {
+        return equals(
+            a.xx(), a.xy(), a.xz(), a.xw(),
+            a.yx(), a.yy(), a.yz(), a.yw(),
+            a.zx(), a.zy(), a.zz(), a.zw(),
+            a.wx(), a.wy(), a.wz(), a.ww(),
+
+            b.xx(), b.xy(), b.xz(), 0f,
+            b.yx(), b.yy(), b.yz(), 0f,
+            b.zx(), b.zy(), b.zz(), 0f,
+            0f    , 0f    , 0f    , 0f,
+
+            e
+        );
+    }
+
+    public static boolean equals(Matrix4 a, Matrix4 b, float e) {
+        return equals(
+            a.xx(), a.xy(), a.xz(), a.xw(),
+            a.yx(), a.yy(), a.yz(), a.yw(),
+            a.zx(), a.zy(), a.zz(), a.zw(),
+            a.wx(), a.wy(), a.wz(), a.ww(),
+
+            b.xx(), b.xy(), b.xz(), b.xw(),
+            b.yx(), b.yy(), b.yz(), b.yw(),
+            b.zx(), b.zy(), b.zz(), b.zw(),
+            b.wx(), b.wy(), b.wz(), b.ww(),
+
+            e
+        );
+    }
+
+    public static boolean equals(
+        float xx0, float xy0,
+        float yx0, float yy0,
+
+        float xx1, float xy1,
+        float yx1, float yy1,
+
+        float e
+    ) {
+        return
+            (xx0 >= xx1 ? xx0 - xx1 : xx1 - xx0) < e &&
+            (xy0 >= xy1 ? xy0 - xy1 : xy1 - xy0) < e &&
+            (yx0 >= yx1 ? yx0 - yx1 : yx1 - yx0) < e &&
+            (yy0 >= yy1 ? yy0 - yy1 : yy1 - yy0) < e;
+    }
+
+    public static boolean equals(
+        float xx0, float xy0, float xz0,
+        float yx0, float yy0, float yz0,
+        float zx0, float zy0, float zz0,
+
+        float xx1, float xy1, float xz1,
+        float yx1, float yy1, float yz1,
+        float zx1, float zy1, float zz1,
+
+        float e
+    ) {
+        return
+            (xx0 >= xx1 ? xx0 - xx1 : xx1 - xx0) < e &&
+            (xy0 >= xy1 ? xy0 - xy1 : xy1 - xy0) < e &&
+            (xz0 >= xz1 ? xz0 - xz1 : xz1 - xz0) < e &&
+
+            (yx0 >= yx1 ? yx0 - yx1 : yx1 - yx0) < e &&
+            (yy0 >= yy1 ? yy0 - yy1 : yy1 - yy0) < e &&
+            (yz0 >= yz1 ? yz0 - yz1 : yz1 - yz0) < e &&
+
+            (zx0 >= zx1 ? zx0 - zx1 : zx1 - zx0) < e &&
+            (zy0 >= zy1 ? zy0 - zy1 : zy1 - zy0) < e &&
+            (zz0 >= zz1 ? zz0 - zz1 : zz1 - zz0) < e;
+    }
+
+    public static boolean equals(
+        float xx0, float xy0, float xz0, float xw0,
+        float yx0, float yy0, float yz0, float yw0,
+        float zx0, float zy0, float zz0, float zw0,
+        float wx0, float wy0, float wz0, float ww0,
+
+        float xx1, float xy1, float xz1, float xw1,
+        float yx1, float yy1, float yz1, float yw1,
+        float zx1, float zy1, float zz1, float zw1,
+        float wx1, float wy1, float wz1, float ww1,
+
+        float e
+    ) {
+        return
+            (xx0 >= xx1 ? xx0 - xx1 : xx1 - xx0) < e &&
+            (xy0 >= xy1 ? xy0 - xy1 : xy1 - xy0) < e &&
+            (xz0 >= xz1 ? xz0 - xz1 : xz1 - xz0) < e &&
+            (xw0 >= xw1 ? xw0 - xw1 : xw1 - xw0) < e &&
+
+            (yx0 >= yx1 ? yx0 - yx1 : yx1 - yx0) < e &&
+            (yy0 >= yy1 ? yy0 - yy1 : yy1 - yy0) < e &&
+            (yz0 >= yz1 ? yz0 - yz1 : yz1 - yz0) < e &&
+            (yw0 >= yw1 ? yw0 - yw1 : yw1 - yw0) < e &&
+
+            (zx0 >= zx1 ? zx0 - zx1 : zx1 - zx0) < e &&
+            (zy0 >= zy1 ? zy0 - zy1 : zy1 - zy0) < e &&
+            (zz0 >= zz1 ? zz0 - zz1 : zz1 - zz0) < e &&
+            (zw0 >= zw1 ? zw0 - zw1 : zw1 - zw0) < e &&
+
+            (wx0 >= wx1 ? wx0 - wx1 : wx1 - wx0) < e &&
+            (wy0 >= wy1 ? wy0 - wy1 : wy1 - wy0) < e &&
+            (wz0 >= wz1 ? wz0 - wz1 : wz1 - wz0) < e &&
+            (ww0 >= ww1 ? ww0 - ww1 : ww1 - ww0) < e;
+    }
+
+    public static int hashCode(Matrix2 a) {
+        return hashCode(
+            a.xx(), a.xy(),
+            a.yx(), a.yy()
+        );
+    }
+
+    public static int hashCode(Matrix3 a) {
+        return hashCode(
+            a.xx(), a.xy(), a.xz(),
+            a.yx(), a.yy(), a.yz(),
+            a.zx(), a.zy(), a.zz()
+        );
+    }
+
+    public static int hashCode(Matrix4 a) {
+        return hashCode(
+            a.xx(), a.xy(), a.xz(), a.xw(),
+            a.yx(), a.yy(), a.yz(), a.yw(),
+            a.zx(), a.zy(), a.zz(), a.zw(),
+            a.wx(), a.wy(), a.wz(), a.ww()
+        );
+    }
+
+    public static int hashCode(
+        float xx, float xy,
+        float yx, float yy
+    ) {
+        return 7 +
+            31 * Float.hashCode(xx) +
+            31 * Float.hashCode(xy) +
+
+            31 * Float.hashCode(yx) +
+            31 * Float.hashCode(yy);
+    }
+
+    public static int hashCode(
+        float xx, float xy, float xz,
+        float yx, float yy, float yz,
+        float zx, float zy, float zz
+    ) {
+        return 7 +
+            31 * Float.hashCode(xx) +
+            31 * Float.hashCode(xy) +
+            31 * Float.hashCode(xz) +
+
+            31 * Float.hashCode(yx) +
+            31 * Float.hashCode(yy) +
+            31 * Float.hashCode(yz) +
+
+            31 * Float.hashCode(zx) +
+            31 * Float.hashCode(zy) +
+            31 * Float.hashCode(zz);
+    }
+    
+    public static int hashCode(
+        float xx, float xy, float xz, float xw,
+        float yx, float yy, float yz, float yw,
+        float zx, float zy, float zz, float zw,
+        float wx, float wy, float wz, float ww
+        
+    ) {
+        return 7 +
+            31 * Float.hashCode(xx) +
+            31 * Float.hashCode(xy) +
+            31 * Float.hashCode(xz) +
+            31 * Float.hashCode(xw) +
+
+            31 * Float.hashCode(yx) +
+            31 * Float.hashCode(yy) +
+            31 * Float.hashCode(yz) +
+            31 * Float.hashCode(yw) +
+
+            31 * Float.hashCode(zx) +
+            31 * Float.hashCode(zy) +
+            31 * Float.hashCode(zz) +
+            31 * Float.hashCode(zw) +
+
+            31 * Float.hashCode(wx) +
+            31 * Float.hashCode(wy) +
+            31 * Float.hashCode(wz) +
+            31 * Float.hashCode(ww);
     }
     
     public static Matrix2 add(Matrix2 a, Matrix2 b) {

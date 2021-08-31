@@ -193,6 +193,28 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
     public String toString() {
         return Matrix3.toRowMajorString(this);
     }
+
+    @Override
+    public int hashCode() {
+        return Matrix.hashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Matrix3 && Matrix.equals(this, (Matrix3) o, EPSILON);
+    }
+
+    public boolean equals(Matrix2 b) {
+        return Matrix.equals(this, b, EPSILON);
+    }
+
+    public boolean equals(Matrix3 b) {
+        return Matrix.equals(this, b, EPSILON);
+    }
+
+    public boolean equals(Matrix4 b) {
+        return Matrix.equals(this, b, EPSILON);
+    }
     
     public static String toString(Matrix<?, ?> m, int mode) {
         switch(mode) {

@@ -3,6 +3,7 @@ package jasper.math;
 import jasper.util.Copyable;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public interface Vector extends Copyable<Vector>, Serializable {
     public static final float
@@ -81,6 +82,39 @@ public interface Vector extends Copyable<Vector>, Serializable {
             (y0 >= y1 ? y0 - y1 : y1 - y0) < e &&
             (z0 >= z1 ? z0 - z1 : z1 - z0) < e &&
             (w0 >= w1 ? w0 - w1 : w1 - w0) < e;
+    }
+
+    public static int hashCode(Vector2 a) {
+        return hashCode(a.x(), a.y());
+    }
+
+    public static int hashCode(Vector3 a) {
+        return hashCode(a.x(), a.y(), a.z());
+    }
+
+    public static int hashCode(Vector4 a) {
+        return hashCode(a.x(), a.y(), a.z(), a.w());
+    }
+
+    public static int hashCode(float x, float y) {
+        return 7 +
+            31 * Float.hashCode(x) +
+            31 * Float.hashCode(y);
+    }
+
+    public static int hashCode(float x, float y, float z) {
+        return 7 +
+            31 * Float.hashCode(x) +
+            31 * Float.hashCode(y) +
+            31 * Float.hashCode(z);
+    }
+
+    public static int hashCode(float x, float y, float z, float w) {
+        return 7 +
+            31 * Float.hashCode(x) +
+            31 * Float.hashCode(y) +
+            31 * Float.hashCode(z) +
+            31 * Float.hashCode(w);
     }
     
     public static Vector2 add(Vector2 a, Vector2 b) {

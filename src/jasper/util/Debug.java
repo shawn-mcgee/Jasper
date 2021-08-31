@@ -13,39 +13,39 @@ public class Debug {
     private Debug() {
         // do nothing
     }
-    
+
     public static String info(Object event) {
         if(info != null)
             return info.log("Info", event);
         else
             return null;
     }
-    
+
     public static String info(Object trace, Object event) {
         if(info != null)
             return info.log(trace, event);
         else
             return null;
     }
-    
+
     public static String warn(Object event) {
         if(warn != null)
             return warn.log("Warn", event);
         else
             return null;
     }
-    
+
     public static String warn(Object trace, Object event) {
         if(warn != null)
             return warn.log(trace, event);
         else
             return null;
     }
-    
+
     public static String trace(Object trace) {
         return trace(trace, "");
     }
-    
+
     public static String trace(Object trace, Object event, Object... args) {
         String format;
         if (trace instanceof String) {
@@ -73,7 +73,7 @@ public class Debug {
         return sb.toString();
     }
     
-    public interface Logger {
+    public static interface Logger {
         public String log(Object trace, Object event, Object... args);
         
         public static String log(PrintStream out, Object trace, Object event, Object... args) {
@@ -87,11 +87,11 @@ public class Debug {
             out.print(string);
             return string;
         }
-        
+
         public static Logger create(PrintStream out) {
             return (trace, event, args) -> log(out, trace, event, args);
         }
-        
+
         public static Logger create(PrintWriter out) {
             return (trace, event, args) -> log(out, trace, event, args);
         }

@@ -104,6 +104,24 @@ public class Bounds3 implements Box2, Bounds {
     public String toString() {
         return Bounds3.toString(this);
     }
+
+    @Override
+    public int hashCode() {
+        return Bounds.hashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Box3 && Bounds.equals(this, (Box3) o, EPSILON);
+    }
+
+    public boolean equals(Box2 b) {
+        return Bounds.equals(this, b, EPSILON);
+    }
+
+    public boolean equals(Box3 b) {
+        return Bounds.equals(this, b, EPSILON);
+    }
     
     public static String toString(Box b) {
         return "[" +

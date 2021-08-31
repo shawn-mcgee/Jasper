@@ -103,6 +103,11 @@ public class Vector4 implements Vector {
     public String toString() {
         return Vector4.toString(this);
     }
+
+    @Override
+    public int hashCode() {
+        return Vector.hashCode(this);
+    }
     
     @Override
     public boolean equals(Object o) {

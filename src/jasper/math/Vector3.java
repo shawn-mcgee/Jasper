@@ -66,6 +66,11 @@ public class Vector3 implements Vector {
     public String toString() {
         return Vector3.toString(this);
     }
+
+    @Override
+    public int hashCode() {
+        return Vector.hashCode(this);
+    }
     
     @Override
     public boolean equals(Object o) {

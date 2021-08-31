@@ -139,7 +139,7 @@ public abstract class Module {
         }
 
         public void await(Callback event) {
-            if(thread == Thread.currentThread())
+            if(thread == java.lang.Thread.currentThread())
                 onResolve(event);
             else try {
                 synchronized (event) {
@@ -148,7 +148,6 @@ public abstract class Module {
                 }
             } catch(Exception na) {
                 Debug.warn(new Object() { }, "Failed to resolve callback '" + event + "'");
-                na.printStackTrace();
             }
         }
 
@@ -157,40 +156,10 @@ public abstract class Module {
                 event.onResolve();
             } catch(Exception na) {
                 Debug.warn(new Object() { }, "Failed to resolve callback'" + event + "'");
-                na.printStackTrace();
             } finally {
                 synchronized (event) {
                     event.notifyAll();
                 }
-            }
-        }
-    }
-    
-    public static class Worker extends Resolver {
-        
-        @Override
-        public <T> void queue(T event) {
-            super.queue(event);
-            synchronized (this) {
-                notifyAll();
-            }
-        }
-        
-        @Override
-        public void onStep() throws Exception {
-            if(broker.pending() > 0)
-                poll();
-            else if(running)
-                synchronized (this) {
-                    wait();
-                }
-        }
-        
-        @Override
-        public void onDetach() {
-            super.onDetach();
-            synchronized (this) {
-                notifyAll();
             }
         }
     }

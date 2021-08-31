@@ -152,6 +152,28 @@ public class Matrix2 implements Matrix<Vector2, Vector2> {
     public String toString() {
         return Matrix2.toRowMajorString(this);
     }
+
+    @Override
+    public int hashCode() {
+        return Matrix.hashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Matrix2 && Matrix.equals(this, (Matrix2) o, EPSILON);
+    }
+
+    public boolean equals(Matrix2 b) {
+        return Matrix.equals(this, b, EPSILON);
+    }
+
+    public boolean equals(Matrix3 b) {
+        return Matrix.equals(this, b, EPSILON);
+    }
+
+    public boolean equals(Matrix4 b) {
+        return Matrix.equals(this, b, EPSILON);
+    }
     
     public static String toString(Matrix<?, ?> m, int mode) {
         switch(mode) {

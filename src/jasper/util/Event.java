@@ -260,7 +260,7 @@ public interface Event {
             brokers.flush(event);
         }
         
-        public void flush() {
+        public synchronized void flush() {
             synchronized (lock) {
                 List<Object> events2 = events0;
                 events0 = events1;

@@ -248,6 +248,28 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
     public String toString() {
         return Matrix4.toRowMajorString(this);
     }
+
+    @Override
+    public int hashCode() {
+        return Matrix.hashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Matrix4 && Matrix.equals(this, (Matrix4) o, EPSILON);
+    }
+
+    public boolean equals(Matrix2 b) {
+        return Matrix.equals(this, b, EPSILON);
+    }
+
+    public boolean equals(Matrix3 b) {
+        return Matrix.equals(this, b, EPSILON);
+    }
+
+    public boolean equals(Matrix4 b) {
+        return Matrix.equals(this, b, EPSILON);
+    }
     
     public static String toString(Matrix<?, ?> m, int mode) {
         switch(mode) {

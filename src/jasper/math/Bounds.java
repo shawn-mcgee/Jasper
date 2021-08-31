@@ -92,4 +92,44 @@ public interface Bounds extends Box {
             return this;
         }
     }
+
+    public static boolean equals(Bounds2 a, Box2 b, float e) {
+        return Box.equals(
+            a.x0(), a.y0(), a.z0(), a.x1(), a.y1(), a.z1(),
+            b.x0(), b.y0(), b.z0(), b.x1(), b.y1(), b.z1(),
+            e
+        );
+    }
+
+    public static boolean equals(Bounds2 a, Box3 b, float e) {
+        return Box.equals(
+            a.x0(), a.y0(), 0f    , a.x1(), a.y1(), 0f    ,
+            b.x0(), b.y0(), b.z0(), b.x1(), b.y1(), b.z1(),
+            e
+        );
+    }
+
+    public static boolean equals(Bounds3 a, Box2 b, float e) {
+        return Box.equals(
+            a.x0(), a.y0(), a.z0(), a.x1(), a.y1(), a.z1(),
+            b.x0(), b.y0(), 0f    , b.x1(), b.y1(), 0f    ,
+            e
+        );
+    }
+
+    public static boolean equals(Bounds3 a, Box3 b, float e) {
+        return Box.equals(
+            a.x0(), a.y0(), a.z0(), a.x1(), a.y1(), a.z1(),
+            b.x0(), b.y0(), b.z0(), b.x1(), b.y1(), b.z1(),
+            e
+        );
+    }
+
+    public static int hashCode(Bounds2 a) {
+        return Box.hashCode(a.x0(), a.y0(), a.x1(), a.y1());
+    }
+
+    public static int hashCode(Bounds3 a) {
+        return Box.hashCode(a.x0(), a.y0(), a.z0(), a.x1(), a.y1(), a.z1());
+    }
 }
