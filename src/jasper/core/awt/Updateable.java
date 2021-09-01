@@ -3,7 +3,7 @@ package jasper.core.awt;
 public interface Updateable {
     public void onUpdate(UpdateContext context);
     
-    class UpdateContext {
+    public static class UpdateContext {
         protected UpdateContext
             parent;
         

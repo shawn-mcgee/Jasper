@@ -150,7 +150,7 @@ public class Region3 implements Box3, Region {
         return b;
     }
     
-    public static class Mutable extends Region3 implements Region.Mutable {
+    public static class Mutable extends Region3 implements Box3.Mutable, Region.Mutable {
         private static final long
             serialVersionUID = 1L;
         

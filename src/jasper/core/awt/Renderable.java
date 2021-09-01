@@ -8,7 +8,7 @@ import java.awt.*;
 public interface Renderable {
     public void onRender(RenderContext context);
     
-    class RenderContext {
+    public static class RenderContext {
         private static final float
             PI = (float)Math.PI;
         public static final float
@@ -52,6 +52,11 @@ public interface Renderable {
                    parent = null;
                }
            return this;
+        }
+
+        public RenderContext draw(Renderable t) {
+            t.onRender(this);
+            return this;
         }
         
         public RenderContext color(Color color) {

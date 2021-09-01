@@ -142,7 +142,7 @@ public class Bounds2 implements Box2, Bounds {
         return b;
     }
     
-    public static class Mutable extends Bounds2 implements Bounds.Mutable {
+    public static class Mutable extends Bounds2 implements Box2.Mutable, Bounds.Mutable {
         private static final long
             serialVersionUID = 1L;
         

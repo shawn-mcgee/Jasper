@@ -3,7 +3,7 @@ package jasper.math;
 import static jasper.util.StringToObject.stringToFloat;
 import static jasper.util.Utility.parse;
 
-public class Bounds3 implements Box2, Bounds {
+public class Bounds3 implements Box3, Bounds {
     private static final long
         serialVersionUID = 1L;
     protected float
@@ -156,7 +156,7 @@ public class Bounds3 implements Box2, Bounds {
         return b;
     }
     
-    public static class Mutable extends Bounds3 implements Bounds.Mutable {
+    public static class Mutable extends Bounds3 implements Box3.Mutable, Bounds.Mutable {
         private static final long
             serialVersionUID = 1L;
         
