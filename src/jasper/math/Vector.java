@@ -3,79 +3,75 @@ package jasper.math;
 import jasper.util.Copyable;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public interface Vector extends Copyable<Vector>, Serializable {
-    public static final float
-        EPSILON = .001f;
     public static final int
         X = 0,
         Y = 1,
         Z = 2,
         W = 3;
-    
+
     public default float x() { return 0f; }
     public default float y() { return 0f; }
     public default float z() { return 0f; }
     public default float w() { return 0f; }
-    public default int n() { return 0; }
-    
+
     public static interface Mutable extends Vector {
         public default Vector.Mutable x(float x) { return this; }
         public default Vector.Mutable y(float y) { return this; }
         public default Vector.Mutable z(float z) { return this; }
         public default Vector.Mutable w(float w) { return this; }
     }
-    
+
     public static boolean equals(Vector2 a, Vector2 b, float e) {
         return equals(a.x(), a.y(), b.x(), b.y(), e);
     }
-    
+
     public static boolean equals(Vector2 a, Vector3 b, float e) {
         return equals(a.x(), a.y(), 0f, b.x(), b.y(), b.z(), e);
     }
-    
+
     public static boolean equals(Vector3 a, Vector2 b, float e) {
         return equals(a.x(), a.y(), a.z(), b.x(), b.y(), 0f, e);
     }
-    
+
     public static boolean equals(Vector3 a, Vector3 b, float e) {
         return equals(a.x(), a.y(), a.z(), b.x(), b.y(), b.z(), e);
     }
-    
+
     public static boolean equals(Vector2 a, Vector4 b, float e) {
         return equals(a.x(), a.y(), 0f, 0f, b.x(), b.y(), b.z(), b.w(), e);
     }
-    
+
     public static boolean equals(Vector4 a, Vector2 b, float e) {
         return equals(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), 0f, 0f, e);
     }
-    
+
     public static boolean equals(Vector3 a, Vector4 b, float e) {
         return equals(a.x(), a.y(), a.z(), 0f, b.x(), b.y(), b.z(), b.w(), e);
     }
-    
+
     public static boolean equals(Vector4 a, Vector3 b, float e) {
         return equals(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), 0f, e);
     }
-    
+
     public static boolean equals(Vector4 a, Vector4 b, float e) {
         return equals(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w(), e);
     }
-    
+
     public static boolean equals(float x0, float y0, float x1, float y1, float e) {
         return
             (x0 >= x1 ? x0 - x1 : x1 - x0) < e &&
             (y0 >= y1 ? y0 - y1 : y1 - y0) < e;
     }
-    
+
     public static boolean equals(float x0, float y0, float z0, float x1, float y1, float z1, float e) {
         return
             (x0 >= x1 ? x0 - x1 : x1 - x0) < e &&
             (y0 >= y1 ? y0 - y1 : y1 - y0) < e &&
             (z0 >= z1 ? z0 - z1 : z1 - z0) < e;
     }
-    
+
     public static boolean equals(float x0, float y0, float z0, float w0, float x1, float y1, float z1, float w1, float e) {
         return
             (x0 >= x1 ? x0 - x1 : x1 - x0) < e &&
@@ -116,196 +112,196 @@ public interface Vector extends Copyable<Vector>, Serializable {
             31 * Float.hashCode(z) +
             31 * Float.hashCode(w);
     }
-    
+
     public static Vector2 add(Vector2 a, Vector2 b) {
         return Vector.add(a.x(), a.y(), b.x(), b.y());
     }
-    
+
     public static Vector3 add(Vector2 a, Vector3 b) {
         return Vector.add(a.x(), a.y(), 0f, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector3 add(Vector3 a, Vector2 b) {
         return Vector.add(a.x(), a.y(), a.z(), b.x(), b.y(), 0f);
     }
-    
+
     public static Vector3 add(Vector3 a, Vector3 b) {
         return Vector.add(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
     }
-    
+
     public static Vector4 add(Vector2 a, Vector4 b) {
         return Vector.add(a.x(), a.y(), 0f, 0f, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector4 add(Vector4 a, Vector2 b) {
         return Vector.add(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), 0f, 0f);
     }
-    
+
     public static Vector4 add(Vector3 a, Vector4 b) {
         return Vector.add(a.x(), a.y(), a.z(), 0f, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector4 add(Vector4 a, Vector3 b) {
         return Vector.add(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), 0f);
     }
-    
+
     public static Vector4 add(Vector4 a, Vector4 b) {
         return Vector.add(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector2 add(Vector2 a, float b) {
         return Vector.add(a.x(), a.y(), b, b);
     }
-    
+
     public static Vector2 add(float a, Vector2 b) {
         return Vector.add(a, a, b.x(), b.y());
     }
-    
+
     public static Vector2 add(Vector2 a, float x1, float y1) {
         return Vector.add(a.x(), a.y(), x1, y1);
     }
-    
+
     public static Vector2 add(float x0, float y0, Vector2 b) {
         return Vector.add(x0, y0, b.x(), b.y());
     }
-    
+
     public static Vector3 add(Vector3 a, float b) {
         return Vector.add(a.x(), a.y(), a.z(), b, b, b);
     }
-    
+
     public static Vector3 add(float a, Vector3 b) {
         return Vector.add(a, a, a, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector3 add(Vector3 a, float x1, float y1, float z1) {
         return Vector.add(a.x(), a.y(), a.z(), x1, y1, z1);
     }
-    
+
     public static Vector3 add(float x0, float y0, float z0, Vector3 b) {
         return Vector.add(x0, y0, z0, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector4 add(Vector4 a, float b) {
         return Vector.add(a.x(), a.y(), a.z(), a.w(), b, b, b, b);
     }
-    
+
     public static Vector4 add(float a, Vector4 b) {
         return Vector.add(a, a, a, a, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector4 add(Vector4 a, float x1, float y1, float z1, float w1) {
         return Vector.add(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1);
     }
-    
+
     public static Vector4 add(float x0, float y0, float z0, float w0, Vector4 b) {
         return Vector.add(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector2.Mutable add(Vector2 a, Vector2 b, Vector2.Mutable m) {
         return Vector.add(a.x(), a.y(), b.x(), b.y(), m);
     }
-    
+
     public static Vector3.Mutable add(Vector2 a, Vector3 b, Vector3.Mutable m) {
         return Vector.add(a.x(), a.y(), 0f, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector3.Mutable add(Vector3 a, Vector2 b, Vector3.Mutable m) {
         return Vector.add(a.x(), a.y(), a.z(), b.x(), b.y(), 0f, m);
     }
-    
+
     public static Vector3.Mutable add(Vector3 a, Vector3 b, Vector3.Mutable m) {
         return Vector.add(a.x(), a.y(), a.z(), b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector4.Mutable add(Vector2 a, Vector4 b, Vector4.Mutable m) {
         return Vector.add(a.x(), a.y(), 0f, 0f, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector4.Mutable add(Vector4 a, Vector2 b, Vector4.Mutable m) {
         return Vector.add(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), 0f, 0f, m);
     }
-    
+
     public static Vector4.Mutable add(Vector3 a, Vector4 b, Vector4.Mutable m) {
         return Vector.add(a.x(), a.y(), a.z(), 0f, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector4.Mutable add(Vector4 a, Vector3 b, Vector4.Mutable m) {
         return Vector.add(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), 0f, m);
     }
-    
+
     public static Vector4.Mutable add(Vector4 a, Vector4 b, Vector4.Mutable m) {
         return Vector.add(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector2.Mutable add(Vector2 a, float b, Vector2.Mutable m) {
         return Vector.add(a.x(), a.y(), b, b, m);
     }
-    
+
     public static Vector2.Mutable add(float a, Vector2 b, Vector2.Mutable m) {
         return Vector.add(a, a, b.x(), b.y(), m);
     }
-    
+
     public static Vector2.Mutable add(Vector2 a, float x1, float y1, Vector2.Mutable m) {
         return Vector.add(a.x(), a.y(), x1, y1, m);
     }
-    
+
     public static Vector2.Mutable add(float x0, float y0, Vector2 b, Vector2.Mutable m) {
         return Vector.add(x0, y0, b.x(), b.y(), m);
     }
-    
+
     public static Vector3.Mutable add(Vector3 a, float b, Vector3.Mutable m) {
         return Vector.add(a.x(), a.y(), a.z(), b, b, b, m);
     }
-    
+
     public static Vector3.Mutable add(float a, Vector3 b, Vector3.Mutable m) {
         return Vector.add(a, a, a, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector3.Mutable add(Vector3 a, float x1, float y1, float z1, Vector3.Mutable m) {
         return Vector.add(a.x(), a.y(), a.z(), x1, y1, z1, m);
     }
-    
+
     public static Vector3.Mutable add(float x0, float y0, float z0, Vector3 b, Vector3.Mutable m) {
         return Vector.add(x0, y0, z0, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector4.Mutable add(Vector4 a, float b, Vector4.Mutable m) {
         return Vector.add(a.x(), a.y(), a.z(), a.w(), b, b, b, b, m);
     }
-    
+
     public static Vector4.Mutable add(float a, Vector4 b, Vector4.Mutable m) {
         return Vector.add(a, a, a, a, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector4.Mutable add(Vector4 a, float x1, float y1, float z1, float w1, Vector4.Mutable m) {
         return Vector.add(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1, m);
     }
-    
+
     public static Vector4.Mutable add(float x0, float y0, float z0, float w0, Vector4 b, Vector4.Mutable m) {
         return Vector.add(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector2 add(
         float x0, float y0,
         float x1, float y1
     ) {
         return new Vector2(x0 + x1, y0 + y1);
     }
-    
+
     public static Vector3 add(
         float x0, float y0, float z0,
         float x1, float y1, float z1
     ) {
         return new Vector3(x0 + x1, y0 + y1, z0 + z1);
     }
-    
+
     public static Vector4 add(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1
     ) {
         return new Vector4(x0 + x1, y0 + y1, z0 + z1, w0 + w1);
     }
-    
+
     public static Vector2.Mutable add(
         float x0, float y0,
         float x1, float y1,
@@ -315,7 +311,7 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.y(y0 + y1);
         return m;
     }
-    
+
     public static Vector3.Mutable add(
         float x0, float y0, float z0,
         float x1, float y1, float z1,
@@ -326,7 +322,7 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.z(z0 + z1);
         return m;
     }
-    
+
     public static Vector4.Mutable add(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1,
@@ -338,196 +334,196 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.w(w0 + w1);
         return m;
     }
-    
+
     public static Vector2 sub(Vector2 a, Vector2 b) {
         return Vector.sub(a.x(), a.y(), b.x(), b.y());
     }
-    
+
     public static Vector3 sub(Vector2 a, Vector3 b) {
         return Vector.sub(a.x(), a.y(), 0f, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector3 sub(Vector3 a, Vector2 b) {
         return Vector.sub(a.x(), a.y(), a.z(), b.x(), b.y(), 0f);
     }
-    
+
     public static Vector3 sub(Vector3 a, Vector3 b) {
         return Vector.sub(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
     }
-    
+
     public static Vector4 sub(Vector2 a, Vector4 b) {
         return Vector.sub(a.x(), a.y(), 0f, 0f, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector4 sub(Vector4 a, Vector2 b) {
         return Vector.sub(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), 0f, 0f);
     }
-    
+
     public static Vector4 sub(Vector3 a, Vector4 b) {
         return Vector.sub(a.x(), a.y(), a.z(), 0f, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector4 sub(Vector4 a, Vector3 b) {
         return Vector.sub(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), 0f);
     }
-    
+
     public static Vector4 sub(Vector4 a, Vector4 b) {
         return Vector.sub(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector2 sub(Vector2 a, float b) {
         return Vector.sub(a.x(), a.y(), b, b);
     }
-    
+
     public static Vector2 sub(float a, Vector2 b) {
         return Vector.sub(a, a, b.x(), b.y());
     }
-    
+
     public static Vector2 sub(Vector2 a, float x1, float y1) {
         return Vector.sub(a.x(), a.y(), x1, y1);
     }
-    
+
     public static Vector2 sub(float x0, float y0, Vector2 b) {
         return Vector.sub(x0, y0, b.x(), b.y());
     }
-    
+
     public static Vector3 sub(Vector3 a, float b) {
         return Vector.sub(a.x(), a.y(), a.z(), b, b, b);
     }
-    
+
     public static Vector3 sub(float a, Vector3 b) {
         return Vector.sub(a, a, a, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector3 sub(Vector3 a, float x1, float y1, float z1) {
         return Vector.sub(a.x(), a.y(), a.z(), x1, y1, z1);
     }
-    
+
     public static Vector3 sub(float x0, float y0, float z0, Vector3 b) {
         return Vector.sub(x0, y0, z0, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector4 sub(Vector4 a, float b) {
         return Vector.sub(a.x(), a.y(), a.z(), a.w(), b, b, b, b);
     }
-    
+
     public static Vector4 sub(float a, Vector4 b) {
         return Vector.sub(a, a, a, a, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector4 sub(Vector4 a, float x1, float y1, float z1, float w1) {
         return Vector.sub(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1);
     }
-    
+
     public static Vector4 sub(float x0, float y0, float z0, float w0, Vector4 b) {
         return Vector.sub(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector2.Mutable sub(Vector2 a, Vector2 b, Vector2.Mutable m) {
         return Vector.sub(a.x(), a.y(), b.x(), b.y(), m);
     }
-    
+
     public static Vector3.Mutable sub(Vector2 a, Vector3 b, Vector3.Mutable m) {
         return Vector.sub(a.x(), a.y(), 0f, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector3.Mutable sub(Vector3 a, Vector2 b, Vector3.Mutable m) {
         return Vector.sub(a.x(), a.y(), a.z(), b.x(), b.y(), 0f, m);
     }
-    
+
     public static Vector3.Mutable sub(Vector3 a, Vector3 b, Vector3.Mutable m) {
         return Vector.sub(a.x(), a.y(), a.z(), b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector4.Mutable sub(Vector2 a, Vector4 b, Vector4.Mutable m) {
         return Vector.sub(a.x(), a.y(), 0f, 0f, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector4.Mutable sub(Vector4 a, Vector2 b, Vector4.Mutable m) {
         return Vector.sub(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), 0f, 0f, m);
     }
-    
+
     public static Vector4.Mutable sub(Vector3 a, Vector4 b, Vector4.Mutable m) {
         return Vector.sub(a.x(), a.y(), a.z(), 0f, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector4.Mutable sub(Vector4 a, Vector3 b, Vector4.Mutable m) {
         return Vector.sub(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), 0f, m);
     }
-    
+
     public static Vector4.Mutable sub(Vector4 a, Vector4 b, Vector4.Mutable m) {
         return Vector.sub(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector2.Mutable sub(Vector2 a, float b, Vector2.Mutable m) {
         return Vector.sub(a.x(), a.y(), b, b, m);
     }
-    
+
     public static Vector2.Mutable sub(float a, Vector2 b, Vector2.Mutable m) {
         return Vector.sub(a, a, b.x(), b.y(), m);
     }
-    
+
     public static Vector2.Mutable sub(Vector2 a, float x1, float y1, Vector2.Mutable m) {
         return Vector.sub(a.x(), a.y(), x1, y1, m);
     }
-    
+
     public static Vector2.Mutable sub(float x0, float y0, Vector2 b, Vector2.Mutable m) {
         return Vector.sub(x0, y0, b.x(), b.y(), m);
     }
-    
+
     public static Vector3.Mutable sub(Vector3 a, float b, Vector3.Mutable m) {
         return Vector.sub(a.x(), a.y(), a.z(), b, b, b, m);
     }
-    
+
     public static Vector3.Mutable sub(float a, Vector3 b, Vector3.Mutable m) {
         return Vector.sub(a, a, a, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector3.Mutable sub(Vector3 a, float x1, float y1, float z1, Vector3.Mutable m) {
         return Vector.sub(a.x(), a.y(), a.z(), x1, y1, z1, m);
     }
-    
+
     public static Vector3.Mutable sub(float x0, float y0, float z0, Vector3 b, Vector3.Mutable m) {
         return Vector.sub(x0, y0, z0, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector4.Mutable sub(Vector4 a, float b, Vector4.Mutable m) {
         return Vector.sub(a.x(), a.y(), a.z(), a.w(), b, b, b, b, m);
     }
-    
+
     public static Vector4.Mutable sub(float a, Vector4 b, Vector4.Mutable m) {
         return Vector.sub(a, a, a, a, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector4.Mutable sub(Vector4 a, float x1, float y1, float z1, float w1, Vector4.Mutable m) {
         return Vector.sub(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1, m);
     }
-    
+
     public static Vector4.Mutable sub(float x0, float y0, float z0, float w0, Vector4 b, Vector4.Mutable m) {
         return Vector.sub(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector2 sub(
         float x0, float y0,
         float x1, float y1
     ) {
         return new Vector2(x0 - x1, y0 - y1);
     }
-    
+
     public static Vector3 sub(
         float x0, float y0, float z0,
         float x1, float y1, float z1
     ) {
         return new Vector3(x0 - x1, y0 - y1, z0 - z1);
     }
-    
+
     public static Vector4 sub(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1
     ) {
         return new Vector4(x0 - x1, y0 - y1, z0 - z1, w0 - w1);
     }
-    
+
     public static Vector2.Mutable sub(
         float x0, float y0,
         float x1, float y1,
@@ -537,7 +533,7 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.y(y0 - y1);
         return m;
     }
-    
+
     public static Vector3.Mutable sub(
         float x0, float y0, float z0,
         float x1, float y1, float z1,
@@ -548,7 +544,7 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.z(z0 - z1);
         return m;
     }
-    
+
     public static Vector4.Mutable sub(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1,
@@ -560,148 +556,148 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.w(w0 - w1);
         return m;
     }
-    
+
     public static Vector2 mul(Vector2 a, Vector2 b) {
         return Vector.mul(a.x(), a.y(), b.x(), b.y());
     }
-    
+
     public static Vector3 mul(Vector3 a, Vector3 b) {
         return Vector.mul(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
     }
-    
+
     public static Vector4 mul(Vector4 a, Vector4 b) {
         return Vector.mul(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector2 mul(Vector2 a, float b) {
         return Vector.mul(a.x(), a.y(), b, b);
     }
-    
+
     public static Vector2 mul(float a, Vector2 b) {
         return Vector.mul(a, a, b.x(), b.y());
     }
-    
+
     public static Vector2 mul(Vector2 a, float x1, float y1) {
         return Vector.mul(a.x(), a.y(), x1, y1);
     }
-    
+
     public static Vector2 mul(float x0, float y0, Vector2 b) {
         return Vector.mul(x0, y0, b.x(), b.y());
     }
-    
+
     public static Vector3 mul(Vector3 a, float b) {
         return Vector.mul(a.x(), a.y(), a.z(), b, b, b);
     }
-    
+
     public static Vector3 mul(float a, Vector3 b) {
         return Vector.mul(a, a, a, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector3 mul(Vector3 a, float x1, float y1, float z1) {
         return Vector.mul(a.x(), a.y(), a.z(), x1, y1, z1);
     }
-    
+
     public static Vector3 mul(float x0, float y0, float z0, Vector3 b) {
         return Vector.mul(x0, y0, z0, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector4 mul(Vector4 a, float b) {
         return Vector.mul(a.x(), a.y(), a.z(), a.w(), b, b, b, b);
     }
-    
+
     public static Vector4 mul(float a, Vector4 b) {
         return Vector.mul(a, a, a, a, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector4 mul(Vector4 a, float x1, float y1, float z1, float w1) {
         return Vector.mul(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1);
     }
-    
+
     public static Vector4 mul(float x0, float y0, float z0, float w0, Vector4 b) {
         return Vector.mul(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector2.Mutable mul(Vector2 a, Vector2 b, Vector2.Mutable m) {
         return Vector.mul(a.x(), a.y(), b.x(), b.y(), m);
     }
-    
+
     public static Vector3.Mutable mul(Vector3 a, Vector3 b, Vector3.Mutable m) {
         return Vector.mul(a.x(), a.y(), a.z(), b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector4.Mutable mul(Vector4 a, Vector4 b, Vector4.Mutable m) {
         return Vector.mul(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector2.Mutable mul(Vector2 a, float b, Vector2.Mutable m) {
         return Vector.mul(a.x(), a.y(), b, b, m);
     }
-    
+
     public static Vector2.Mutable mul(float a, Vector2 b, Vector2.Mutable m) {
         return Vector.mul(a, a, b.x(), b.y(), m);
     }
-    
+
     public static Vector2.Mutable mul(Vector2 a, float x1, float y1, Vector2.Mutable m) {
         return Vector.mul(a.x(), a.y(), x1, y1, m);
     }
-    
+
     public static Vector2.Mutable mul(float x0, float y0, Vector2 b, Vector2.Mutable m) {
         return Vector.mul(x0, y0, b.x(), b.y(), m);
     }
-    
+
     public static Vector3.Mutable mul(Vector3 a, float b, Vector3.Mutable m) {
         return Vector.mul(a.x(), a.y(), a.z(), b, b, b, m);
     }
-    
+
     public static Vector3.Mutable mul(float a, Vector3 b, Vector3.Mutable m) {
         return Vector.mul(a, a, a, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector3.Mutable mul(Vector3 a, float x1, float y1, float z1, Vector3.Mutable m) {
         return Vector.mul(a.x(), a.y(), a.z(), x1, y1, z1, m);
     }
-    
+
     public static Vector3.Mutable mul(float x0, float y0, float z0, Vector3 b, Vector3.Mutable m) {
         return Vector.mul(x0, y0, z0, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector4.Mutable mul(Vector4 a, float b, Vector4.Mutable m) {
         return Vector.mul(a.x(), a.y(), a.z(), a.w(), b, b, b, b, m);
     }
-    
+
     public static Vector4.Mutable mul(float a, Vector4 b, Vector4.Mutable m) {
         return Vector.mul(a, a, a, a, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector4.Mutable mul(Vector4 a, float x1, float y1, float z1, float w1, Vector4.Mutable m) {
         return Vector.mul(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1, m);
     }
-    
+
     public static Vector4.Mutable mul(float x0, float y0, float z0, float w0, Vector4 b, Vector4.Mutable m) {
         return Vector.mul(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector2 mul(
         float x0, float y0,
         float x1, float y1
     ) {
         return new Vector2(x0 * x1, y0 * y1);
     }
-    
+
     public static Vector3 mul(
         float x0, float y0, float z0,
         float x1, float y1, float z1
     ) {
         return new Vector3(x0 * x1, y0 * y1, z0 * z1);
     }
-    
+
     public static Vector4 mul(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1
     ) {
         return new Vector4(x0 * x1, y0 * y1, z0 * z1, w0 * w1);
     }
-    
+
     public static Vector2.Mutable mul(
         float x0, float y0,
         float x1, float y1,
@@ -711,7 +707,7 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.y(y0 * y1);
         return m;
     }
-    
+
     public static Vector3.Mutable mul(
         float x0, float y0, float z0,
         float x1, float y1, float z1,
@@ -722,7 +718,7 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.z(z0 * z1);
         return m;
     }
-    
+
     public static Vector4.Mutable mul(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1,
@@ -734,148 +730,148 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.w(w0 * w1);
         return m;
     }
-    
+
     public static Vector2 div(Vector2 a, Vector2 b) {
         return Vector.div(a.x(), a.y(), b.x(), b.y());
     }
-    
+
     public static Vector3 div(Vector3 a, Vector3 b) {
         return Vector.div(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
     }
-    
+
     public static Vector4 div(Vector4 a, Vector4 b) {
         return Vector.div(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector2 div(Vector2 a, float b) {
         return Vector.div(a.x(), a.y(), b, b);
     }
-    
+
     public static Vector2 div(float a, Vector2 b) {
         return Vector.div(a, a, b.x(), b.y());
     }
-    
+
     public static Vector2 div(Vector2 a, float x1, float y1) {
         return Vector.div(a.x(), a.y(), x1, y1);
     }
-    
+
     public static Vector2 div(float x0, float y0, Vector2 b) {
         return Vector.div(x0, y0, b.x(), b.y());
     }
-    
+
     public static Vector3 div(Vector3 a, float b) {
         return Vector.div(a.x(), a.y(), a.z(), b, b, b);
     }
-    
+
     public static Vector3 div(float a, Vector3 b) {
         return Vector.div(a, a, a, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector3 div(Vector3 a, float x1, float y1, float z1) {
         return Vector.div(a.x(), a.y(), a.z(), x1, y1, z1);
     }
-    
+
     public static Vector3 div(float x0, float y0, float z0, Vector3 b) {
         return Vector.div(x0, y0, z0, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector4 div(Vector4 a, float b) {
         return Vector.div(a.x(), a.y(), a.z(), a.w(), b, b, b, b);
     }
-    
+
     public static Vector4 div(float a, Vector4 b) {
         return Vector.div(a, a, a, a, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector4 div(Vector4 a, float x1, float y1, float z1, float w1) {
         return Vector.div(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1);
     }
-    
+
     public static Vector4 div(float x0, float y0, float z0, float w0, Vector4 b) {
         return Vector.div(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector2.Mutable div(Vector2 a, Vector2 b, Vector2.Mutable m) {
         return Vector.div(a.x(), a.y(), b.x(), b.y(), m);
     }
-    
+
     public static Vector3.Mutable div(Vector3 a, Vector3 b, Vector3.Mutable m) {
         return Vector.div(a.x(), a.y(), a.z(), b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector4.Mutable div(Vector4 a, Vector4 b, Vector4.Mutable m) {
         return Vector.div(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector2.Mutable div(Vector2 a, float b, Vector2.Mutable m) {
         return Vector.div(a.x(), a.y(), b, b, m);
     }
-    
+
     public static Vector2.Mutable div(float a, Vector2 b, Vector2.Mutable m) {
         return Vector.div(a, a, b.x(), b.y(), m);
     }
-    
+
     public static Vector2.Mutable div(Vector2 a, float x1, float y1, Vector2.Mutable m) {
         return Vector.div(a.x(), a.y(), x1, y1, m);
     }
-    
+
     public static Vector2.Mutable div(float x0, float y0, Vector2 b, Vector2.Mutable m) {
         return Vector.div(x0, y0, b.x(), b.y(), m);
     }
-    
+
     public static Vector3.Mutable div(Vector3 a, float b, Vector3.Mutable m) {
         return Vector.div(a.x(), a.y(), a.z(), b, b, b, m);
     }
-    
+
     public static Vector3.Mutable div(float a, Vector3 b, Vector3.Mutable m) {
         return Vector.div(a, a, a, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector3.Mutable div(Vector3 a, float x1, float y1, float z1, Vector3.Mutable m) {
         return Vector.div(a.x(), a.y(), a.z(), x1, y1, z1, m);
     }
-    
+
     public static Vector3.Mutable div(float x0, float y0, float z0, Vector3 b, Vector3.Mutable m) {
         return Vector.div(x0, y0, z0, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector4.Mutable div(Vector4 a, float b, Vector4.Mutable m) {
         return Vector.div(a.x(), a.y(), a.z(), a.w(), b, b, b, b, m);
     }
-    
+
     public static Vector4.Mutable div(float a, Vector4 b, Vector4.Mutable m) {
         return Vector.div(a, a, a, a, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector4.Mutable div(Vector4 a, float x1, float y1, float z1, float w1, Vector4.Mutable m) {
         return Vector.div(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1, m);
     }
-    
+
     public static Vector4.Mutable div(float x0, float y0, float z0, float w0, Vector4 b, Vector4.Mutable m) {
         return Vector.div(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector2 div(
         float x0, float y0,
         float x1, float y1
     ) {
         return new Vector2(x0 / x1, y0 / y1);
     }
-    
+
     public static Vector3 div(
         float x0, float y0, float z0,
         float x1, float y1, float z1
     ) {
         return new Vector3(x0 / x1, y0 / y1, z0 / z1);
     }
-    
+
     public static Vector4 div(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1
     ) {
         return new Vector4(x0 / x1, y0 / y1, z0 / z1, w0 / w1);
     }
-    
+
     public static Vector2.Mutable div(
         float x0, float y0,
         float x1, float y1,
@@ -885,7 +881,7 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.y(y0 / y1);
         return m;
     }
-    
+
     public static Vector3.Mutable div(
         float x0, float y0, float z0,
         float x1, float y1, float z1,
@@ -896,7 +892,7 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.z(z0 / z1);
         return m;
     }
-    
+
     public static Vector4.Mutable div(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1,
@@ -908,148 +904,148 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.w(w0 / w1);
         return m;
     }
-    
+
     public static Vector2 mod(Vector2 a, Vector2 b) {
         return Vector.mod(a.x(), a.y(), b.x(), b.y());
     }
-    
+
     public static Vector3 mod(Vector3 a, Vector3 b) {
         return Vector.mod(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
     }
-    
+
     public static Vector4 mod(Vector4 a, Vector4 b) {
         return Vector.mod(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector2 mod(Vector2 a, float b) {
         return Vector.mod(a.x(), a.y(), b, b);
     }
-    
+
     public static Vector2 mod(float a, Vector2 b) {
         return Vector.mod(a, a, b.x(), b.y());
     }
-    
+
     public static Vector2 mod(Vector2 a, float x1, float y1) {
         return Vector.mod(a.x(), a.y(), x1, y1);
     }
-    
+
     public static Vector2 mod(float x0, float y0, Vector2 b) {
         return Vector.mod(x0, y0, b.x(), b.y());
     }
-    
+
     public static Vector3 mod(Vector3 a, float b) {
         return Vector.mod(a.x(), a.y(), a.z(), b, b, b);
     }
-    
+
     public static Vector3 mod(float a, Vector3 b) {
         return Vector.mod(a, a, a, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector3 mod(Vector3 a, float x1, float y1, float z1) {
         return Vector.mod(a.x(), a.y(), a.z(), x1, y1, z1);
     }
-    
+
     public static Vector3 mod(float x0, float y0, float z0, Vector3 b) {
         return Vector.mod(x0, y0, z0, b.x(), b.y(), b.z());
     }
-    
+
     public static Vector4 mod(Vector4 a, float b) {
         return Vector.mod(a.x(), a.y(), a.z(), a.w(), b, b, b, b);
     }
-    
+
     public static Vector4 mod(float a, Vector4 b) {
         return Vector.mod(a, a, a, a, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector4 mod(Vector4 a, float x1, float y1, float z1, float w1) {
         return Vector.mod(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1);
     }
-    
+
     public static Vector4 mod(float x0, float y0, float z0, float w0, Vector4 b) {
         return Vector.mod(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector2.Mutable mod(Vector2 a, Vector2 b, Vector2.Mutable m) {
         return Vector.mod(a.x(), a.y(), b.x(), b.y(), m);
     }
-    
+
     public static Vector3.Mutable mod(Vector3 a, Vector3 b, Vector3.Mutable m) {
         return Vector.mod(a.x(), a.y(), a.z(), b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector4.Mutable mod(Vector4 a, Vector4 b, Vector4.Mutable m) {
         return Vector.mod(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector2.Mutable mod(Vector2 a, float b, Vector2.Mutable m) {
         return Vector.mod(a.x(), a.y(), b, b, m);
     }
-    
+
     public static Vector2.Mutable mod(float a, Vector2 b, Vector2.Mutable m) {
         return Vector.mod(a, a, b.x(), b.y(), m);
     }
-    
+
     public static Vector2.Mutable mod(Vector2 a, float x1, float y1, Vector2.Mutable m) {
         return Vector.mod(a.x(), a.y(), x1, y1, m);
     }
-    
+
     public static Vector2.Mutable mod(float x0, float y0, Vector2 b, Vector2.Mutable m) {
         return Vector.mod(x0, y0, b.x(), b.y(), m);
     }
-    
+
     public static Vector3.Mutable mod(Vector3 a, float b, Vector3.Mutable m) {
         return Vector.mod(a.x(), a.y(), a.z(), b, b, b, m);
     }
-    
+
     public static Vector3.Mutable mod(float a, Vector3 b, Vector3.Mutable m) {
         return Vector.mod(a, a, a, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector3.Mutable mod(Vector3 a, float x1, float y1, float z1, Vector3.Mutable m) {
         return Vector.mod(a.x(), a.y(), a.z(), x1, y1, z1, m);
     }
-    
+
     public static Vector3.Mutable mod(float x0, float y0, float z0, Vector3 b, Vector3.Mutable m) {
         return Vector.mod(x0, y0, z0, b.x(), b.y(), b.z(), m);
     }
-    
+
     public static Vector4.Mutable mod(Vector4 a, float b, Vector4.Mutable m) {
         return Vector.mod(a.x(), a.y(), a.z(), a.w(), b, b, b, b, m);
     }
-    
+
     public static Vector4.Mutable mod(float a, Vector4 b, Vector4.Mutable m) {
         return Vector.mod(a, a, a, a, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector4.Mutable mod(Vector4 a, float x1, float y1, float z1, float w1, Vector4.Mutable m) {
         return Vector.mod(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1, m);
     }
-    
+
     public static Vector4.Mutable mod(float x0, float y0, float z0, float w0, Vector4 b, Vector4.Mutable m) {
         return Vector.mod(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w(), m);
     }
-    
+
     public static Vector2 mod(
         float x0, float y0,
         float x1, float y1
     ) {
         return new Vector2(x0 % x1, y0 % y1);
     }
-    
+
     public static Vector3 mod(
         float x0, float y0, float z0,
         float x1, float y1, float z1
     ) {
         return new Vector3(x0 % x1, y0 % y1, z0 % z1);
     }
-    
+
     public static Vector4 mod(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1
     ) {
         return new Vector4(x0 % x1, y0 % y1, z0 % z1, w0 % w1);
     }
-    
+
     public static Vector2.Mutable mod(
         float x0, float y0,
         float x1, float y1,
@@ -1059,7 +1055,7 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.y(y0 % y1);
         return m;
     }
-    
+
     public static Vector3.Mutable mod(
         float x0, float y0, float z0,
         float x1, float y1, float z1,
@@ -1070,7 +1066,7 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.z(z0 % z1);
         return m;
     }
-    
+
     public static Vector4.Mutable mod(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1,
@@ -1082,200 +1078,200 @@ public interface Vector extends Copyable<Vector>, Serializable {
         m.w(w0 % w1);
         return m;
     }
-    
+
     public static float dot(Vector2 a) {
         return a.x() * a.x() + a.y() * a.y();
     }
-    
+
     public static float dot(Vector3 a) {
         return a.x() * a.x() + a.y() * a.y() + a.z() * a.z();
     }
-    
+
     public static float dot(Vector4 a) {
         return a.x() * a.x() + a.y() * a.y() + a.z() * a.z() + a.w() * a.w();
     }
-    
+
     public static float dot(Vector2 a, Vector2 b) {
         return a.x() * b.x() + a.y() * b.y();
     }
-    
+
     public static float dot(Vector3 a, Vector3 b) {
         return a.x() * b.x() + a.y() * b.y() + a.z() * b.z();
     }
-    
+
     public static float dot(Vector4 a, Vector4 b) {
         return a.x() * b.x() + a.y() * b.y() + a.z() * b.z() + a.w() * b.w();
     }
-    
+
     public static float dot(float x, float y) {
         return x * x + y * y;
     }
-    
+
     public static float dot(float x, float y, float z) {
         return x * x + y * y + z * z;
     }
-    
+
     public static float dot(float x, float y, float z, float w) {
         return x * x + y * y + z * z + w * w;
     }
-    
+
     public static Vector3 hom(Vector2 a) {
         return new Vector3(a, 1f);
     }
-    
+
     public static Vector4 hom(Vector3 a) {
         return new Vector4(a, 1f);
     }
-    
+
     public static float mag(Vector2 a) {
         return (float) java.lang.Math.sqrt(dot(a));
     }
-    
+
     public static float mag(Vector3 a) {
         return (float) java.lang.Math.sqrt(dot(a));
     }
-    
+
     public static float mag(Vector4 a) {
         return (float) java.lang.Math.sqrt(dot(a));
     }
-    
+
     public static float mag(float x, float y) {
         return (float) java.lang.Math.sqrt(dot(x, y));
     }
-    
+
     public static float mag(float x, float y, float z) {
         return (float) java.lang.Math.sqrt(dot(x, y, z));
     }
-    
+
     public static float mag(float x, float y, float z, float w) {
         return (float) java.lang.Math.sqrt(dot(x, y, z, w));
     }
-    
-    public static float dst(Vector2 a, Vector2 b) {
-        return Vector.dst(a.x(), a.y(), b.x(), b.y());
+
+    public static float dis(Vector2 a, Vector2 b) {
+        return Vector.dis(a.x(), a.y(), b.x(), b.y());
     }
-    
-    public static float dst(Vector2 a, Vector3 b) {
-        return Vector.dst(a.x(), a.y(), 0f, b.x(), b.y(), b.z());
+
+    public static float dis(Vector2 a, Vector3 b) {
+        return Vector.dis(a.x(), a.y(), 0f, b.x(), b.y(), b.z());
     }
-    
-    public static float dst(Vector3 a, Vector2 b) {
-        return Vector.dst(a.x(), a.y(), a.z(), b.x(), b.y(), 0f);
+
+    public static float dis(Vector3 a, Vector2 b) {
+        return Vector.dis(a.x(), a.y(), a.z(), b.x(), b.y(), 0f);
     }
-    
-    public static float dst(Vector3 a, Vector3 b) {
-        return Vector.dst(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
+
+    public static float dis(Vector3 a, Vector3 b) {
+        return Vector.dis(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
     }
-    
-    public static float dst(Vector2 a, Vector4 b) {
-        return Vector.dst(a.x(), a.y(), 0f, 0f, b.x(), b.y(), b.z(), b.w());
+
+    public static float dis(Vector2 a, Vector4 b) {
+        return Vector.dis(a.x(), a.y(), 0f, 0f, b.x(), b.y(), b.z(), b.w());
     }
-    
-    public static float dst(Vector4 a, Vector2 b) {
-        return Vector.dst(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), 0f, 0f);
+
+    public static float dis(Vector4 a, Vector2 b) {
+        return Vector.dis(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), 0f, 0f);
     }
-    
-    public static float dst(Vector3 a, Vector4 b) {
-        return Vector.dst(a.x(), a.y(), a.z(), 0f, b.x(), b.y(), b.z(), b.w());
+
+    public static float dis(Vector3 a, Vector4 b) {
+        return Vector.dis(a.x(), a.y(), a.z(), 0f, b.x(), b.y(), b.z(), b.w());
     }
-    
-    public static float dst(Vector4 a, Vector3 b) {
-        return Vector.dst(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), 0f);
+
+    public static float dis(Vector4 a, Vector3 b) {
+        return Vector.dis(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), 0f);
     }
-    
-    public static float dst(Vector4 a, Vector4 b) {
-        return Vector.dst(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w());
+
+    public static float dis(Vector4 a, Vector4 b) {
+        return Vector.dis(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w());
     }
-    
-    public static float dst(Vector2 a, float b) {
-        return Vector.dst(a.x(), a.y(), b, b);
+
+    public static float dis(Vector2 a, float b) {
+        return Vector.dis(a.x(), a.y(), b, b);
     }
-    
-    public static float dst(float a, Vector2 b) {
-        return Vector.dst(a, a, b.x(), b.y());
+
+    public static float dis(float a, Vector2 b) {
+        return Vector.dis(a, a, b.x(), b.y());
     }
-    
-    public static float dst(Vector2 a, float x1, float y1) {
-        return Vector.dst(a.x(), a.y(), x1, y1);
+
+    public static float dis(Vector2 a, float x1, float y1) {
+        return Vector.dis(a.x(), a.y(), x1, y1);
     }
-    
-    public static float dst(float x0, float y0, Vector2 b) {
-        return Vector.dst(x0, y0, b.x(), b.y());
+
+    public static float dis(float x0, float y0, Vector2 b) {
+        return Vector.dis(x0, y0, b.x(), b.y());
     }
-    
-    public static float dst(Vector3 a, float b) {
-        return Vector.dst(a.x(), a.y(), a.z(), b, b, b);
+
+    public static float dis(Vector3 a, float b) {
+        return Vector.dis(a.x(), a.y(), a.z(), b, b, b);
     }
-    
-    public static float dst(float a, Vector3 b) {
-        return Vector.dst(a, a, a, b.x(), b.y(), b.z());
+
+    public static float dis(float a, Vector3 b) {
+        return Vector.dis(a, a, a, b.x(), b.y(), b.z());
     }
-    
-    public static float dst(Vector3 a, float x1, float y1, float z1) {
-        return Vector.dst(a.x(), a.y(), a.z(), x1, y1, z1);
+
+    public static float dis(Vector3 a, float x1, float y1, float z1) {
+        return Vector.dis(a.x(), a.y(), a.z(), x1, y1, z1);
     }
-    
-    public static float dst(float x0, float y0, float z0, Vector3 b) {
-        return Vector.dst(x0, y0, z0, b.x(), b.y(), b.z());
+
+    public static float dis(float x0, float y0, float z0, Vector3 b) {
+        return Vector.dis(x0, y0, z0, b.x(), b.y(), b.z());
     }
-    
-    public static float dst(Vector4 a, float b) {
-        return Vector.dst(a.x(), a.y(), a.z(), a.w(), b, b, b, b);
+
+    public static float dis(Vector4 a, float b) {
+        return Vector.dis(a.x(), a.y(), a.z(), a.w(), b, b, b, b);
     }
-    
-    public static float dst(float a, Vector4 b) {
-        return Vector.dst(a, a, a, a, b.x(), b.y(), b.z(), b.w());
+
+    public static float dis(float a, Vector4 b) {
+        return Vector.dis(a, a, a, a, b.x(), b.y(), b.z(), b.w());
     }
-    
-    public static float dst(Vector4 a, float x1, float y1, float z1, float w1) {
-        return Vector.dst(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1);
+
+    public static float dis(Vector4 a, float x1, float y1, float z1, float w1) {
+        return Vector.dis(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1);
     }
-    
-    public static float dst(float x0, float y0, float z0, float w0, Vector4 b) {
-        return Vector.dst(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w());
+
+    public static float dis(float x0, float y0, float z0, float w0, Vector4 b) {
+        return Vector.dis(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w());
     }
-    
-    public static float dst(
+
+    public static float dis(
         float x0, float y0,
         float x1, float y1
     ) {
         return mag(x0 - x1, y0 - y1);
     }
-    
-    public static float dst(
+
+    public static float dis(
         float x0, float y0, float z0,
         float x1, float y1, float z1
     ) {
         return mag(x0 - x1, y0 - y1, z0 - z1);
     }
-    
-    public static float dst(
+
+    public static float dis(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1
     ) {
         return mag(x0 - x1, y0 - y1, z0 - z1, w0 - w1);
     }
-    
+
     public static Vector2 normalize(Vector2 a) {
         return div(a, mag(a));
     }
-    
+
     public static Vector3 normalize(Vector3 a) {
         return div(a, mag(a));
     }
-    
+
     public static Vector4 normalize(Vector4 a) {
         return div(a, mag(a));
     }
-    
+
     public static Vector2.Mutable normalize(Vector2 a, Vector2.Mutable m) {
         return div(a, mag(a), m);
     }
-    
+
     public static Vector3.Mutable normalize(Vector3 a, Vector3.Mutable m) {
         return div(a, mag(a), m);
     }
-    
+
     public static Vector4.Mutable normalize(Vector4 a, Vector4.Mutable m) {
         return div(a, mag(a), m);
     }
@@ -1283,19 +1279,19 @@ public interface Vector extends Copyable<Vector>, Serializable {
     // i (y0 * x1 + x0 * y1 + z0 * w1 - w0 * z1) +
     // j (x0 * z1 - y0 * w1 + z0 * x1 + w0 * y1) +
     // k (x0 * w1 + y0 * z1 - z0 * y1 + w0 * x1)
-    
+
     public static Vector4 qmul(Vector4 a, Vector4 b) {
         return qmul(a.x(), a.y(), a.z(), a.w(), b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector4 qmul(Vector4 a, float x1, float y1, float z1, float w1) {
         return qmul(a.x(), a.y(), a.z(), a.w(), x1, y1, z1, w1);
     }
-    
+
     public static Vector4 qmul(float x0, float y0, float z0, float w0, Vector4 b) {
         return qmul(x0, y0, z0, w0, b.x(), b.y(), b.z(), b.w());
     }
-    
+
     public static Vector4 qmul(
         float x0, float y0, float z0, float w0,
         float x1, float y1, float z1, float w1

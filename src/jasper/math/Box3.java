@@ -39,17 +39,17 @@ public interface Box3 extends Box {
     }
     
     public static interface Mutable extends Box3, Box.Mutable {
-        public default Box3.Mutable  xyz(float  x, float  y, float  z) { x(x).y(y).z(z); return this; }
-        public default Box3.Mutable  whd(float  w, float  h, float  d) { w(w).h(h).d(d); return this; }
-        public default Box3.Mutable xyz0(float x0, float y0, float z0) { x0(x0).y0(y0).z0(z0); return this; }
-        public default Box3.Mutable xyz1(float x1, float y1, float z1) { x1(x1).y1(y1).z1(z1); return this; }
-        public default Box3.Mutable xyz2(float x2, float y2, float z2) { x2(x2).y2(y2).z2(z2); return this; }
+        public default Box3.Mutable  xyz(float  x, float  y, float  z) { x(x); y(y); z(z); return this; }
+        public default Box3.Mutable  whd(float  w, float  h, float  d) { w(w); h(h); d(d); return this; }
+        public default Box3.Mutable xyz0(float x0, float y0, float z0) { x0(x0); y0(y0); z0(z0); return this; }
+        public default Box3.Mutable xyz1(float x1, float y1, float z1) { x1(x1); y1(y1); z1(z1); return this; }
+        public default Box3.Mutable xyz2(float x2, float y2, float z2) { x2(x2); y2(y2); z2(z2); return this; }
 
-        public default Box3.Mutable  xyz(Vector xyz) { x(xyz.x()).y(xyz.y()).z(xyz.z()); return this; }
-        public default Box3.Mutable  whd(Vector whd) { w(whd.x()).h(whd.y()).d(whd.z()); return this; }
-        public default Box3.Mutable xyz0(Vector xyz0) { x0(xyz0.x()).y0(xyz0.y()).z0(xyz0.z()); return this; }
-        public default Box3.Mutable xyz1(Vector xyz1) { x1(xyz1.x()).y1(xyz1.y()).z1(xyz1.z()); return this; }
-        public default Box3.Mutable xyz2(Vector xyz2) { x2(xyz2.x()).y2(xyz2.y()).z2(xyz2.z()); return this; }
+        public default Box3.Mutable  xyz(Vector xyz) { x(xyz.x()); y(xyz.y()); z(xyz.z()); return this; }
+        public default Box3.Mutable  whd(Vector whd) { w(whd.x()); h(whd.y()); d(whd.z()); return this; }
+        public default Box3.Mutable xyz0(Vector xyz0) { x0(xyz0.x()); y0(xyz0.y()); z0(xyz0.z()); return this; }
+        public default Box3.Mutable xyz1(Vector xyz1) { x1(xyz1.x()); y1(xyz1.y()); z1(xyz1.z()); return this; }
+        public default Box3.Mutable xyz2(Vector xyz2) { x2(xyz2.x()); y2(xyz2.y()); z2(xyz2.z()); return this; }
     
         @Override
         public abstract Box3.Mutable copy();

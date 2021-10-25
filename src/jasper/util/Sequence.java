@@ -170,7 +170,7 @@ public interface Sequence<T> extends Copyable<Sequence<T>>, Iterable<T>, Seriali
         public static <T> Stack<T> from(Deque<T> deque) {
             return new Stack<>() {
                 private static final long
-                    SequenceVersionUID = 1L;
+                    serialVersionUID = 1L;
 
                 @Override
                 public T push(T t) {
@@ -238,7 +238,7 @@ public interface Sequence<T> extends Copyable<Sequence<T>>, Iterable<T>, Seriali
         public static <T> Queue<T> from(Deque<T> deque) {
             return new Queue<>() {
                 private static final long
-                    SequenceVersionUID = 1L;
+                    serialVersionUID = 1L;
 
                 @Override
                 public T push(T t) {

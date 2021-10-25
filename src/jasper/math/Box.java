@@ -5,9 +5,6 @@ import jasper.util.Copyable;
 import java.io.Serializable;
 
 public interface Box extends Copyable<Box>, Serializable {
-    public static final float
-        EPSILON = .001f;
-    
     public default float x() { return 0f; }
     public default float y() { return 0f; }
     public default float z() { return 0f; }
@@ -29,7 +26,6 @@ public interface Box extends Copyable<Box>, Serializable {
     public default float z2() { return 0f; }
     
     public static interface Mutable extends Box {
-        
         public default Box.Mutable x(float x) { return this; }
         public default Box.Mutable y(float y) { return this; }
         public default Box.Mutable z(float z) { return this; }

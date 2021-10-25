@@ -1,7 +1,6 @@
 package jasper.math;
 
-import jasper.util.Utility;
-
+import static jasper.math.Math.EPSILON;
 import static jasper.util.StringToObject.stringToFloat;
 import static jasper.util.Utility.parse;
 

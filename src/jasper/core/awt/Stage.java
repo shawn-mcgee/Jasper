@@ -11,9 +11,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static jasper.core.awt.AWT.getMaximumWindowRegion;
 import static jasper.core.awt.Colors.color4i;
 import static jasper.util.StringToObject.BOOLEAN;
 import static jasper.util.StringToObject.INTEGER;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 public class Stage extends Module.Server implements Configurable {
     public static final Class<WindowEvent>
@@ -268,7 +271,7 @@ public class Stage extends Module.Server implements Configurable {
         logical_canvas_h = (int)logical_canvas_region.h();
         virtual_canvas_w = (int)virtual_canvas_region.w();
         virtual_canvas_h = (int)virtual_canvas_region.h();
-        virtual_canvas_scale = Math.min(
+        virtual_canvas_scale = min(
             (float) logical_canvas_w / virtual_canvas_w,
             (float) logical_canvas_h / virtual_canvas_h
         );
@@ -479,7 +482,7 @@ public class Stage extends Module.Server implements Configurable {
             one_second_timer = 0;
         }
         
-        long sync = Math.min(
+        long sync = min(
             nanos_per_update - update_timer,
             nanos_per_render - render_timer
         ) / one_millis;
@@ -510,7 +513,9 @@ public class Stage extends Module.Server implements Configurable {
     protected void update(float t, float dt, float fixed_dt) {
         input.poll();
               poll();
-              
+
+        update_context.stage = self ;
+        update_context.input = input;
         update_context.t  = t ;
         update_context.dt = dt;
         update_context.fixed_dt = fixed_dt;
@@ -551,7 +556,9 @@ public class Stage extends Module.Server implements Configurable {
     
         h.setColor(canvas_background_color);
         h.fillRect(0, 0, virtual_canvas_w, virtual_canvas_h);
-    
+
+        render_context.stage = self ;
+        render_context.input = input;
         render_context.t  = t ;
         render_context.dt = dt;
         render_context.fixed_dt = fixed_dt;
@@ -572,7 +579,7 @@ public class Stage extends Module.Server implements Configurable {
                 print_h = 0;
             for(String property : dbg.values())
                 if(property != null) {
-                    print_w  = Math.max(print_w, fm.stringWidth(property));
+                    print_w  = max(print_w, fm.stringWidth(property));
                     print_h += fm.getHeight();
                 }
             
@@ -659,7 +666,7 @@ public class Stage extends Module.Server implements Configurable {
         
         virtual_canvas_w = (int)virtual_canvas_region.w();
         virtual_canvas_h = (int)virtual_canvas_region.h();
-        virtual_canvas_scale = Math.min(
+        virtual_canvas_scale = min(
             (float) logical_canvas_w / virtual_canvas_w,
             (float) logical_canvas_h / virtual_canvas_h
         );
@@ -678,52 +685,6 @@ public class Stage extends Module.Server implements Configurable {
                 virtual_canvas_w,
                 virtual_canvas_h
             ));
-    }
-    
-    public static Region2 getMaximumWindowRegion(int i, boolean borderless) {
-        GraphicsDevice        gd = Utility.getGraphicsDevice(i);
-        GraphicsConfiguration gc = gd.getDefaultConfiguration();
-        Rectangle bounds = gc.getBounds();
-        
-        if(borderless)
-            return new Region2(
-                bounds.x,
-                bounds.y,
-                bounds.width,
-                bounds.height
-            );
-        else {
-            Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
-            return new Region2(
-                bounds.x + insets.left,
-                bounds.y + insets.top,
-                bounds.width  - insets.left - insets.right,
-                bounds.height - insets.top  - insets.bottom
-            );
-        }
-    }
-    
-    public static Bounds2 getMaximumWindowBounds(int i, boolean borderless) {
-        GraphicsDevice        gd = Utility.getGraphicsDevice(i);
-        GraphicsConfiguration gc = gd.getDefaultConfiguration();
-        Rectangle bounds = gc.getBounds();
-        
-        if(borderless)
-            return new Bounds2(
-                bounds.x,
-                bounds.y,
-                bounds.x + bounds.width,
-                bounds.y + bounds.height
-            );
-        else {
-            Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
-            return new Bounds2(
-                bounds.x + insets.left,
-                bounds.y + insets.top,
-                bounds.x + bounds.width  - insets.left - insets.right,
-                bounds.y + bounds.height - insets.top  - insets.bottom
-            );
-        }
     }
     
     public static class SceneEvent {

@@ -39,17 +39,17 @@ public interface Box2 extends Box {
     }
     
     public static interface Mutable extends Box2, Box.Mutable {
-        public default Box2.Mutable  xy(float  x, float  y) { x(x).y(y); return this; }
-        public default Box2.Mutable  wh(float  w, float  h) { w(w).h(h); return this; }
-        public default Box2.Mutable xy0(float x0, float y0) { x0(x0).y0(y0); return this; }
-        public default Box2.Mutable xy1(float x1, float y1) { x1(x1).y1(y1); return this; }
-        public default Box2.Mutable xy2(float x2, float y2) { x2(x2).y2(y2); return this; }
+        public default Box2.Mutable  xy(float  x, float  y) { x(x); y(y); return this; }
+        public default Box2.Mutable  wh(float  w, float  h) { w(w); h(h); return this; }
+        public default Box2.Mutable xy0(float x0, float y0) { x0(x0); y0(y0); return this; }
+        public default Box2.Mutable xy1(float x1, float y1) { x1(x1); y1(y1); return this; }
+        public default Box2.Mutable xy2(float x2, float y2) { x2(x2); y2(y2); return this; }
 
-        public default Box2.Mutable  xy(Vector  xy) { x(xy.x()).y(xy.y()); return this; }
-        public default Box2.Mutable  wh(Vector  wh) { w(wh.x()).h(wh.y()); return this; }
-        public default Box2.Mutable xy0(Vector xy0) { x0(xy0.x()).y0(xy0.y()); return this; }
-        public default Box2.Mutable xy1(Vector xy1) { x1(xy1.x()).y1(xy1.y()); return this; }
-        public default Box2.Mutable xy2(Vector xy2) { x2(xy2.x()).y2(xy2.y()); return this; }
+        public default Box2.Mutable  xy(Vector  xy) { x(xy.x()); y(xy.y()); return this; }
+        public default Box2.Mutable  wh(Vector  wh) { w(wh.x()); h(wh.y()); return this; }
+        public default Box2.Mutable xy0(Vector xy0) { x0(xy0.x()); y0(xy0.y()); return this; }
+        public default Box2.Mutable xy1(Vector xy1) { x1(xy1.x()); y1(xy1.y()); return this; }
+        public default Box2.Mutable xy2(Vector xy2) { x2(xy2.x()); y2(xy2.y()); return this; }
         
         @Override
         public abstract Box2.Mutable copy();

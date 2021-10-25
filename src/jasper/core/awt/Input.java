@@ -122,7 +122,7 @@ public class Input implements KeyListener, MouseListener, MouseWheelListener, Mo
     }
     
     public void onMouseMovedEvent(MouseMovedEvent event) {
-        mouse.set(event.value);
+        mouse.xy(event.value);
         stage.onMouseMoved(event.value);
         stage.flush(event);
     }

@@ -1,123 +1,13 @@
 package jasper.util;
 
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.VolatileImage;
-
 public final class Utility {
     
     private Utility() {
         // do nothing
     }
-
-    public static byte min(byte... x) {
-        byte m = x[0];
-        for(byte i = 1; i < x.length; i ++)
-            if(x[i] < m)
-                m = x[i];
-        return m;
-    }
-
-    public static int min(int... x) {
-        int m = x[0];
-        for(int i = 1; i < x.length; i ++)
-            if(x[i] < m)
-                m = x[i];
-        return m;
-    }
-
-    public static long min(long... x) {
-        long m = x[0];
-        for(int i = 1; i < x.length; i ++)
-            if(x[i] < m)
-                m = x[i];
-        return m;
-    }
-
-    public static float min(float... x) {
-        float m = x[0];
-        for(int i = 1; i < x.length; i ++)
-            if(x[i] < m)
-                m = x[i];
-        return m;
-    }
-
-    public static byte max(byte... x) {
-        byte m = x[0];
-        for(byte i = 1; i < x.length; i ++)
-            if(x[i] > m)
-                m = x[i];
-        return m;
-    }
-
-    public static int max(int... x) {
-        int m = x[0];
-        for(int i = 1; i < x.length; i ++)
-            if(x[i] > m)
-                m = x[i];
-        return m;
-    }
-
-    public static long max(long... x) {
-        long m = x[0];
-        for(int i = 1; i < x.length; i ++)
-            if(x[i] > m)
-                m = x[i];
-        return m;
-    }
-
-    public static float max(float... x) {
-        float m = x[0];
-        for(int i = 1; i < x.length; i ++)
-            if(x[i] > m)
-                m = x[i];
-        return m;
-    }
     
     public static <T> Class<T> typeOf(T t) {
         return Unsafe.cast(t.getClass());
-    }
-    
-    public static <T> T copyOf(T t) {
-        if (t instanceof Copyable) {
-            Copyable<?> u = Unsafe.cast(t       );
-            return          Unsafe.cast(u.copy());
-        } else if (t != null)
-            Debug.warn(new Object() { }, typeOf(t) + " is not of type jasper.util.Copyable");
-        return t;
-    }
-    
-    public static GraphicsDevice getGraphicsDevice(int i) {
-        GraphicsDevice[] gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-        if(i >= 0 && i < gd.length)
-            return gd[i];
-        else if (gd.length > 0)
-            return gd[0];
-        else
-            return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-    }
-    
-    public static BufferedImage createBufferedImage(int i, int w, int h) {
-        return Utility.createBufferedImage(i, w, h, Transparency.BITMASK);
-    }
-    
-    public static VolatileImage createVolatileImage(int i, int w, int h) {
-        return Utility.createVolatileImage(i, w, h, Transparency.BITMASK);
-    }
-    
-    public static BufferedImage createBufferedImage(int i, int w, int h, int t) {
-        GraphicsDevice        gd = Utility.getGraphicsDevice(i);
-        GraphicsConfiguration gc = gd.getDefaultConfiguration();
-        
-        return gc.createCompatibleImage(w, h, t);
-    }
-    
-    public static VolatileImage createVolatileImage(int i, int w, int h, int t) {
-        GraphicsDevice        gd = Utility.getGraphicsDevice(i);
-        GraphicsConfiguration gc = gd.getDefaultConfiguration();
-        
-        return gc.createCompatibleVolatileImage(w, h, t);
     }
     
     public static String[] parse(String s, String... tags) {

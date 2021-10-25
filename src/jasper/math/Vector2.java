@@ -1,7 +1,9 @@
 package jasper.math;
 
+import static jasper.math.Math.EPSILON;
 import static jasper.util.StringToObject.stringToFloat;
 import static jasper.util.Utility.parse;
+import static java.lang.Math.min;
 
 public class Vector2 implements Vector {
     private static final long
@@ -12,12 +14,17 @@ public class Vector2 implements Vector {
     public Vector2() {
         // do nothing
     }
+
+    public Vector2(float a) {
+        x = a;
+        y = a;
+    }
     
     public Vector2(Vector xy) {
         x = xy.x();
         y = xy.y();
     }
-    
+
     public Vector2(float x, float y) {
         this.x = x;
         this.y = y;
@@ -31,11 +38,6 @@ public class Vector2 implements Vector {
     @Override
     public float y() {
         return y;
-    }
-    
-    @Override
-    public final int n() {
-        return 2;
     }
     
     @Override
@@ -104,36 +106,46 @@ public class Vector2 implements Vector {
         public Mutable() {
             super();
         }
-        
+
+        public Mutable(float a) {
+            super(a);
+        }
+
         public Mutable(Vector xy) {
             super(xy);
         }
-        
+
         public Mutable(float x, float y) {
             super(x, y);
         }
-        
+
         @Override
         public Vector2.Mutable x(float x) {
             this.x = x;
             return this;
         }
-        
+
         @Override
         public Vector2.Mutable y(float y) {
             this.y = y;
             return this;
         }
-        
-        public Vector2.Mutable set(Vector xy) {
-            x = xy.x();
-            y = xy.y();
+
+        public Vector2.Mutable xy(float a) {
+            x(a);
+            y(a);
             return this;
         }
-        
-        public Vector2.Mutable set(float x, float y) {
-            this.x = x;
-            this.y = y;
+
+        public Vector2.Mutable xy(float x, float y) {
+            x(x);
+            y(y);
+            return this;
+        }
+
+        public Vector2.Mutable xy(Vector xy) {
+            x(xy.x());
+            y(xy.y());
             return this;
         }
         

@@ -20,6 +20,10 @@ public interface Renderable {
         
         public Graphics2D
             g;
+        public Stage
+            stage;
+        public Input
+            input;
         public float
             t,
             dt,
@@ -32,6 +36,8 @@ public interface Renderable {
             RenderContext context = new RenderContext();
         
             context.parent = this;
+            context.stage = stage;
+            context.input = input;
             context.t  = t ;
             context.dt = dt;
             context.fixed_dt = fixed_dt;

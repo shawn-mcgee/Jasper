@@ -1,6 +1,9 @@
 package jasper.core.awt;
 
-import jasper.math.*;
+import jasper.math.Box;
+import jasper.math.Region2;
+import jasper.math.Vector;
+import jasper.math.Vector2;
 import jasper.util.Debug;
 import jasper.util.Resource;
 
@@ -8,13 +11,15 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
+import static jasper.core.awt.AWT.copyImage;
+
 public class Sprite implements Renderable {
     public static final int
         STOP = 0,
         PLAY = 1,
         LOOP = 2;
 
-    protected Sprite.Atlas
+    protected Atlas
         atlas;
 
     protected int
@@ -30,14 +35,10 @@ public class Sprite implements Renderable {
 
     public Sprite(Sprite.Atlas atlas) {
         this.atlas = atlas;
-        xywh.wh(
-            this.atlas.frame_w,
-            this.atlas.frame_h
+        this.xywh.set(
+            atlas.frame_w,
+            atlas.frame_h
         );
-    }
-
-    public Sprite.Atlas atlas() {
-        return atlas;
     }
 
     public Sprite stop() {
@@ -77,6 +78,10 @@ public class Sprite implements Renderable {
 
     public boolean isLooping() {
         return mode == LOOP;
+    }
+
+    public int mode() {
+        return mode;
     }
 
     public Sprite frame(float frame) {
@@ -137,13 +142,23 @@ public class Sprite implements Renderable {
     public Sprite wh(Vector wh) { xywh.wh(wh); return this; }
 
     public Sprite xywh(float x, float y, float w, float h) {
-        xywh.set(x, y, w, h);
-        return this;
+        xywh.set(x, y, w, h); return this;
+    }
+
+    public Sprite xywh(float x, float y, Vector wh) {
+        xywh.set(x, y, wh); return this;
+    }
+
+    public Sprite xywh(Vector xy, float w, float h) {
+        xywh.set(xy, w, h); return this;
+    }
+
+    public Sprite xywh(Vector xy, Vector wh) {
+        xywh.set(xy, wh); return this;
     }
 
     public Sprite xywh(Box b) {
-        xywh.set(b);
-        return this;
+        xywh.set(b); return this;
     }
 
     public float x() { return xywh.x(); }
@@ -152,7 +167,7 @@ public class Sprite implements Renderable {
     public float h() { return xywh.h(); }
     public Vector2 xy() { return xywh.xy(); }
     public Vector2 wh() { return xywh.wh(); }
-    public Box2.Mutable xywh() { return xywh; }
+    public Region2.Mutable xywh() { return xywh; }
 
     @Override
     public void onRender(RenderContext context) {
@@ -200,33 +215,37 @@ public class Sprite implements Renderable {
         );
     }
 
-    public static Sprite load(Resource resource, int w, int h) {
+    public Sprite apply(Effect... effects) {
+        return new Sprite(atlas.apply(effects));
+    }
+
+    public static Sprite load(Resource resource, int w, int h, Sprite.Effect... effects) {
         return new Sprite(Sprite.Atlas.load(resource, w, h));
     }
 
-    public static Sprite load(String   resource, int w, int h) {
+    public static Sprite load(String   resource, int w, int h, Sprite.Effect... effects) {
         return Sprite.load(new Resource(resource), w, h);
     }
     
-    public static Sprite load(Class<?> from, String path, int w, int h) {
+    public static Sprite load(Class<?> from, String path, int w, int h, Sprite.Effect... effects) {
         return Sprite.load(new Resource(from, path), w, h);
     }
     
-    public static Sprite load(String   from, String path, int w, int h) {
+    public static Sprite load(String   from, String path, int w, int h, Sprite.Effect... effects) {
         return Sprite.load(new Resource(from, path), w, h);
     }
-    
+
     public static class Atlas {
         protected final Resource
             resource;
 
-        protected BufferedImage
+        protected final BufferedImage
             image;
         protected final int
             image_w,
             image_h;
 
-        protected BufferedImage[]
+        protected final BufferedImage[]
             frames;
         protected final int
             frame_w,
@@ -250,14 +269,14 @@ public class Sprite implements Renderable {
             this.frame_h = frame_h;
         }
 
-        public static Sprite.Atlas load(Resource resource, int w, int h) {
+        public static Sprite.Atlas load(Resource resource, int w, int h, Sprite.Effect... effects) {
             try(InputStream input = resource.newInputStream()) {
                 if(input == null)
                     Debug.warn(new Object() { }, "Unable to load Sprite.Atlas '" + resource + "'");
                 else {
                     BufferedImage image = ImageIO.read(input);
                     int
-                        image_w = image.getWidth() ,
+                        image_w = image.getWidth (),
                         image_h = image.getHeight(),
                         frame_w = w,
                         frame_h = h;
@@ -271,6 +290,14 @@ public class Sprite implements Renderable {
                                 j * frame_h,
                                 frame_w, frame_h
                             );
+                    frames = Sprite.Effect.apply(frames, frame_w, frame_h, effects);
+                    if(frames != null && frames.length > 0) {
+                        frame_w = frames[0].getWidth ();
+                        frame_h = frames[0].getHeight();
+                    } else {
+                        frame_w = 0;
+                        frame_h = 0;
+                    }
                     return new Sprite.Atlas(
                         resource,
                         image , image_w, image_h,
@@ -283,16 +310,68 @@ public class Sprite implements Renderable {
             return null;
         }
 
-        public static Sprite.Atlas load(String   resource, int w, int h) {
+        public static Sprite.Atlas load(String   resource, int w, int h, Sprite.Effect... effects) {
             return load(new Resource(resource), w, h);
         }
 
-        public static Sprite.Atlas load(Class<?> from, String path, int w, int h) {
+        public static Sprite.Atlas load(Class<?> from, String path, int w, int h, Sprite.Effect... effects) {
             return load(new Resource(from, path), w, h);
         }
 
-        public static Sprite.Atlas load(String   from, String path, int w, int h) {
+        public static Sprite.Atlas load(String   from, String path, int w, int h, Sprite.Effect... effects) {
             return load(new Resource(from, path), w, h);
+        }
+
+        public Sprite.Atlas apply(Sprite.Effect... effects) {
+            BufferedImage[] _frames = Sprite.Effect.apply(
+                copyImage(frames),
+                frame_w,
+                frame_h,
+                effects
+            );
+
+            int
+                _frame_w,
+                _frame_h;
+            if(_frames != null && _frames.length > 0) {
+                _frame_w = _frames[0].getWidth ();
+                _frame_h = _frames[0].getHeight();
+            } else {
+                _frame_w = 0;
+                _frame_h = 0;
+            }
+
+            return new Sprite.Atlas(
+                null,
+                null,
+                0, 0,
+                _frames,
+                _frame_w,
+                _frame_h
+            );
+        }
+    }
+
+    public static interface Effect {
+        public BufferedImage[] apply(BufferedImage[] frames, int frame_w, int frame_h);
+
+        public static BufferedImage[] apply(
+            BufferedImage[] frames,
+            int frame_w,
+            int frame_h,
+            Sprite.Effect... effects
+        ) {
+            for(Sprite.Effect effect : effects) {
+                frames = effect.apply(frames, frame_w, frame_h);
+                if(frames != null && frames.length > 0) {
+                    frame_w = frames[0].getWidth ();
+                    frame_h = frames[0].getHeight();
+                } else {
+                    frame_w = 0;
+                    frame_h = 0;
+                }
+            }
+            return frames;
         }
     }
 }

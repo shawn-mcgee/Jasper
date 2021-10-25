@@ -1,10 +1,11 @@
 package jasper.util;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
-import static jasper.util.Utility.copyOf;
+import static jasper.util.Copyable.copyOf;
 
 public interface Array<T> extends Sequence<T> {
     
@@ -66,12 +67,12 @@ public interface Array<T> extends Sequence<T> {
         }
         
         @Override
-        public Forward<T> forward() {
+        public Iterable<T> forward() {
             return forward;
         }
         
         @Override
-        public Reverse<T> reverse() {
+        public Iterable<T> reverse() {
             return reverse;
         }
         
@@ -390,7 +391,7 @@ public interface Array<T> extends Sequence<T> {
         }
         
         @Override
-        public Forward<T> forward() {
+        public Iterable<T> forward() {
             return forward;
         }
         

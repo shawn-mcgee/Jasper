@@ -1,13 +1,10 @@
 package jasper.math;
 
 import jasper.util.Copyable;
-import jasper.util.Debug;
 
 import java.io.Serializable;
 
 public interface Matrix<ROW extends Vector, COL extends Vector> extends Copyable<Matrix<ROW, COL>>, Serializable {
-    public static final float
-        EPSILON = .001f;
     public static final int
         ROW_MAJOR = 0,
         COL_MAJOR = 1;
@@ -39,28 +36,28 @@ public interface Matrix<ROW extends Vector, COL extends Vector> extends Copyable
     public COL col(int j);
     
     public static interface Mutable<ROW extends Vector, COL extends Vector> extends Matrix<ROW, COL> {
-        public default float xx(float xx) { return xx(); }
-        public default float xy(float xy) { return xy(); }
-        public default float xz(float xz) { return xz(); }
-        public default float xw(float xw) { return xw(); }
+        public default Matrix.Mutable<ROW, COL> xx(float xx) { return this; }
+        public default Matrix.Mutable<ROW, COL> xy(float xy) { return this; }
+        public default Matrix.Mutable<ROW, COL> xz(float xz) { return this; }
+        public default Matrix.Mutable<ROW, COL> xw(float xw) { return this; }
         
-        public default float yx(float yx) { return yx(); }
-        public default float yy(float yy) { return yy(); }
-        public default float yz(float yz) { return yz(); }
-        public default float yw(float yw) { return yw(); }
+        public default Matrix.Mutable<ROW, COL> yx(float yx) { return this; }
+        public default Matrix.Mutable<ROW, COL> yy(float yy) { return this; }
+        public default Matrix.Mutable<ROW, COL> yz(float yz) { return this; }
+        public default Matrix.Mutable<ROW, COL> yw(float yw) { return this; }
         
-        public default float zx(float zx) { return zx(); }
-        public default float zy(float zy) { return zy(); }
-        public default float zz(float zz) { return zz(); }
-        public default float zw(float zw) { return zw(); }
+        public default Matrix.Mutable<ROW, COL> zx(float zx) { return this; }
+        public default Matrix.Mutable<ROW, COL> zy(float zy) { return this; }
+        public default Matrix.Mutable<ROW, COL> zz(float zz) { return this; }
+        public default Matrix.Mutable<ROW, COL> zw(float zw) { return this; }
         
-        public default float wx(float wx) { return wx(); }
-        public default float wy(float wy) { return wy(); }
-        public default float wz(float wz) { return wz(); }
-        public default float ww(float ww) { return ww(); }
+        public default Matrix.Mutable<ROW, COL> wx(float wx) { return this; }
+        public default Matrix.Mutable<ROW, COL> wy(float wy) { return this; }
+        public default Matrix.Mutable<ROW, COL> wz(float wz) { return this; }
+        public default Matrix.Mutable<ROW, COL> ww(float ww) { return this; }
         
-        public ROW row(int i, Vector r0);
-        public COL col(int j, Vector c0);
+        public Matrix.Mutable<ROW, COL> row(int i, Vector r0);
+        public Matrix.Mutable<ROW, COL> col(int j, Vector c0);
     }
 
     public static boolean equals(Matrix2 a, Matrix2 b, float e) {
@@ -618,35 +615,35 @@ public interface Matrix<ROW extends Vector, COL extends Vector> extends Copyable
     }
     
     public static Vector2.Mutable mul(Matrix2 a, float x, float y, Vector2.Mutable m) {
-        return m.set(
+        return m.xy(
             a.xx() * x + a.xy() * y,
             a.yx() * x + a.yy() * y
         );
     }
     
     public static Vector2.Mutable mul(float x, float y, Matrix2 b, Vector2.Mutable m) {
-        return m.set(
+        return m.xy(
             x * b.xx() + y * b.yx(),
             x * b.xy() + y * b.yy()
         );
     }
     
     public static Vector2.Mutable mul(Matrix3 a, float x, float y, Vector2.Mutable m) {
-        return m.set(
+        return m.xy(
             a.xx() * x + a.xy() * y + a.xz(),
             a.yx() * x + a.yy() * y + a.yz()
         );
     }
     
     public static Vector2.Mutable mul(float x, float y, Matrix3 b, Vector2.Mutable m) {
-        return m.set(
+        return m.xy(
             x * b.xx() + y * b.yx() + b.zx(),
             x * b.xy() + y * b.yy() + b.zy()
         );
     }
     
     public static Vector3.Mutable mul(Matrix3 a, float x, float y, float z, Vector3.Mutable m) {
-        return m.set(
+        return m.xyz(
             a.xx() * x + a.xy() * y + a.xz() * z,
             a.yx() * x + a.yy() * y + a.yz() * z,
             a.zx() * x + a.zy() * y + a.zz() * z
@@ -654,7 +651,7 @@ public interface Matrix<ROW extends Vector, COL extends Vector> extends Copyable
     }
     
     public static Vector3.Mutable mul(float x, float y, float z, Matrix3 b, Vector3.Mutable m) {
-        return m.set(
+        return m.xyz(
             x * b.xx() + y * b.yx() + z * b.zx(),
             x * b.xy() + y * b.yy() + z * b.zy(),
             x * b.xz() + y * b.yz() + z * b.zz()
@@ -662,7 +659,7 @@ public interface Matrix<ROW extends Vector, COL extends Vector> extends Copyable
     }
     
     public static Vector3.Mutable mul(Matrix4 a, float x, float y, float z, Vector3.Mutable m) {
-        return m.set(
+        return m.xyz(
             a.xx() * x + a.xy() * y + a.xz() * z + a.xw(),
             a.yx() * x + a.yy() * y + a.yz() * z + a.yw(),
             a.zx() * x + a.zy() * y + a.zz() * z + a.zw()
@@ -670,7 +667,7 @@ public interface Matrix<ROW extends Vector, COL extends Vector> extends Copyable
     }
     
     public static Vector3.Mutable mul(float x, float y, float z, Matrix4 b, Vector3.Mutable m) {
-        return m.set(
+        return m.xyz(
             x * b.xx() + y * b.yx() + z * b.zx() + b.wx(),
             x * b.xy() + y * b.yy() + z * b.zy() + b.wy(),
             x * b.xz() + y * b.yz() + z * b.zz() + b.wz()
@@ -678,7 +675,7 @@ public interface Matrix<ROW extends Vector, COL extends Vector> extends Copyable
     }
     
     public static Vector4.Mutable mul(Matrix4 a, float x, float y, float z, float w, Vector4.Mutable m) {
-        return m.set(
+        return m.xyzw(
             a.xx() * x + a.xy() * y + a.xz() * z + a.xw() * w,
             a.yx() * x + a.yy() * y + a.yz() * z + a.yw() * w,
             a.zx() * x + a.zy() * y + a.zz() * z + a.zw() * w,
@@ -687,7 +684,7 @@ public interface Matrix<ROW extends Vector, COL extends Vector> extends Copyable
     }
     
     public static Vector4.Mutable mul(float x, float y, float z, float w, Matrix4 b, Vector4.Mutable m) {
-        return m.set(
+        return m.xyzw(
             x * b.xx() + y * b.yx() + z * b.zx() + w * b.wx(),
             x * b.xy() + y * b.yy() + z * b.zy() + w * b.wy(),
             x * b.xz() + y * b.yz() + z * b.zz() + w * b.wz(),

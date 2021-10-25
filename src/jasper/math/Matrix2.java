@@ -1,5 +1,6 @@
 package jasper.math;
 
+import static jasper.math.Math.EPSILON;
 import static jasper.util.StringToObject.stringToFloat;
 import static jasper.util.Utility.parse;
 
@@ -288,53 +289,49 @@ public class Matrix2 implements Matrix<Vector2, Vector2> {
         }
         
         @Override
-        public float xx(float xx) {
-            return m[Matrix2.xx] = xx;
+        public Matrix2.Mutable xx(float xx) {
+            m[Matrix2.xx] = xx; return this;
         }
         
         @Override
-        public float xy(float xy) {
-            return m[Matrix2.xy] = xy;
+        public Matrix2.Mutable xy(float xy) {
+            m[Matrix2.xy] = xy; return this;
         }
         
         @Override
-        public float yx(float yx) {
-            return m[Matrix2.yx] = yx;
+        public Matrix2.Mutable yx(float yx) {
+            m[Matrix2.yx] = yx; return this;
         }
         
         @Override
-        public float yy(float yy) {
-            return m[Matrix2.yy] = yy;
+        public Matrix2.Mutable yy(float yy) {
+            m[Matrix2.yy] = yy; return this;
         }
         
         @Override
-        public Vector2 row(int i, Vector r0) {
+        public Matrix2.Mutable row(int i, Vector r0) {
             return row(i, r0.x(), r0.y());
         }
         
         @Override
-        public Vector2 col(int j, Vector c0) {
+        public Matrix2.Mutable col(int j, Vector c0) {
             return col(j, c0.x(), c0.y());
         }
         
-        public Vector2 row(int i, float x, float y) {
+        public Matrix2.Mutable row(int i, float x, float y) {
             switch (i) {
-                case 0:
-                    return new Vector2(m[xx] = x, m[xy] = y);
-                case 1:
-                    return new Vector2(m[yx] = x, m[yy] = y);
+                case 0: m[xx] = x; m[xy] = y; break;
+                case 1: m[yx] = x; m[yy] = y; break;
             }
-            return null;
+            return this;
         }
         
-        public Vector2 col(int j, float x, float y) {
+        public Matrix2.Mutable col(int j, float x, float y) {
             switch (j) {
-                case 0:
-                    return new Vector2(m[xx] = x, m[yx] = y);
-                case 1:
-                    return new Vector2(m[xy] = x, m[yy] = y);
+                case 0: m[xx] = x; m[yx] = y; break;
+                case 1: m[xy] = x; m[yy] = y; break;
             }
-            return null;
+            return this;
         }
         
         public Matrix2.Mutable set(

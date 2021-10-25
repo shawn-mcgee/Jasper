@@ -6,7 +6,11 @@ public interface Updateable {
     public static class UpdateContext {
         protected UpdateContext
             parent;
-        
+
+        public Stage
+            stage;
+        public Input
+            input;
         public float
             t,
             dt,
@@ -19,6 +23,8 @@ public interface Updateable {
             UpdateContext context = new UpdateContext();
         
             context.parent = this;
+            context.stage = stage;
+            context.input = input;
             context.t  = t ;
             context.dt = dt;
             context.fixed_dt = fixed_dt;

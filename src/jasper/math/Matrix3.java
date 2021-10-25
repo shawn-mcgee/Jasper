@@ -1,5 +1,6 @@
 package jasper.math;
 
+import static jasper.math.Math.EPSILON;
 import static jasper.util.StringToObject.stringToFloat;
 import static jasper.util.Utility.parse;
 
@@ -336,82 +337,76 @@ public class Matrix3 implements Matrix<Vector3, Vector3> {
         }
         
         @Override
-        public float xx(float xx) {
-            return m[Matrix3.xx] = xx;
+        public Matrix3.Mutable xx(float xx) {
+            m[Matrix3.xx] = xx; return this;
         }
         
         @Override
-        public float xy(float xy) {
-            return m[Matrix3.xy] = xy;
+        public Matrix3.Mutable xy(float xy) {
+            m[Matrix3.xy] = xy; return this;
         }
         
         @Override
-        public float xz(float xz) {
-            return m[Matrix3.xz] = xz;
+        public Matrix3.Mutable xz(float xz) {
+            m[Matrix3.xz] = xz; return this;
         }
         
         @Override
-        public float yx(float yx) {
-            return m[Matrix3.yx] = yx;
+        public Matrix3.Mutable yx(float yx) {
+            m[Matrix3.yx] = yx; return this;
         }
         
         @Override
-        public float yy(float yy) {
-            return m[Matrix3.yy] = yy;
+        public Matrix3.Mutable yy(float yy) {
+            m[Matrix3.yy] = yy; return this;
         }
         
         @Override
-        public float yz(float yz) {
-            return m[Matrix3.yz] = yz;
+        public Matrix3.Mutable yz(float yz) {
+            m[Matrix3.yz] = yz; return this;
         }
         
         @Override
-        public float zx(float zx) {
-            return m[Matrix3.zx] = zx;
+        public Matrix3.Mutable zx(float zx) {
+            m[Matrix3.zx] = zx; return this;
         }
         
         @Override
-        public float zy(float zy) {
-            return m[Matrix3.zy] = zy;
+        public Matrix3.Mutable zy(float zy) {
+            m[Matrix3.zy] = zy; return this;
         }
         
         @Override
-        public float zz(float zz) {
-            return m[Matrix3.zz] = zz;
+        public Matrix3.Mutable zz(float zz) {
+            m[Matrix3.zz] = zz; return this;
         }
         
         @Override
-        public Vector3 row(int i, Vector r0) {
+        public Matrix3.Mutable row(int i, Vector r0) {
             return row(i, r0.x(), r0.y(), r0.z());
         }
         
         @Override
-        public Vector3 col(int j, Vector c0) {
+        public Matrix3.Mutable col(int j, Vector c0) {
             return col(j, c0.x(), c0.y(), c0.z());
         }
         
-        public Vector3 row(int i, float x, float y, float z) {
+        public Matrix3.Mutable row(int i, float x, float y, float z) {
             switch (i) {
-                case 0:
-                    return new Vector3(m[xx] = x, m[xy] = y, m[xz] = z);
-                case 1:
-                    return new Vector3(m[yx] = x, m[yy] = y, m[yz] = z);
-                case 2:
-                    return new Vector3(m[zx] = x, m[zy] = y, m[zz] = z);
+                case 0: m[xx] = x; m[xy] = y; m[xz] = z; break;
+                case 1: m[yx] = x; m[yy] = y; m[yz] = z; break;
+                case 2: m[zx] = x; m[zy] = y; m[zz] = z; break;
             }
-            return null;
+            return this;
         }
         
-        public Vector3 col(int j, float x, float y, float z) {
+        public Matrix3.Mutable col(int j, float x, float y, float z) {
             switch (j) {
-                case 0:
-                    return new Vector3(m[xx] = x, m[yx] = y, m[zx] = z);
-                case 1:
-                    return new Vector3(m[xy] = x, m[yy] = y, m[zy] = z);
-                case 2:
-                    return new Vector3(m[xz] = x, m[yz] = y, m[zz] = z);
+                case 0: m[xx] = x; m[yx] = y; m[zx] = z; break;
+                case 1: m[xy] = x; m[yy] = y; m[zy] = z; break;
+                case 2: m[xz] = x; m[yz] = y; m[zz] = z; break;
             }
-            return null;
+            return this;
         }
         
         public Matrix3.Mutable set(

@@ -4,6 +4,7 @@ import jasper.util.Debug;
 
 import java.util.Arrays;
 
+import static jasper.math.Math.EPSILON;
 import static jasper.util.StringToObject.stringToFloat;
 import static jasper.util.Utility.parse;
 
@@ -398,121 +399,113 @@ public class Matrix4 implements Matrix<Vector4, Vector4> {
         }
         
         @Override
-        public float xx(float xx) {
-            return m[Matrix4.xx] = xx;
+        public Matrix4.Mutable xx(float xx) {
+            m[Matrix4.xx] = xx; return this;
         }
         
         @Override
-        public float xy(float xy) {
-            return m[Matrix4.xy] = xy;
+        public Matrix4.Mutable xy(float xy) {
+            m[Matrix4.xy] = xy; return this;
         }
         
         @Override
-        public float xz(float xz) {
-            return m[Matrix4.xz] = xz;
+        public Matrix4.Mutable xz(float xz) {
+            m[Matrix4.xz] = xz; return this;
         }
         
         @Override
-        public float xw(float xw) {
-            return m[Matrix4.xw] = xw;
+        public Matrix4.Mutable xw(float xw) {
+            m[Matrix4.xw] = xw; return this;
         }
         
         @Override
-        public float yx(float yx) {
-            return m[Matrix4.yx] = yx;
+        public Matrix4.Mutable yx(float yx) {
+            m[Matrix4.yx] = yx; return this;
         }
         
         @Override
-        public float yy(float yy) {
-            return m[Matrix4.yy] = yy;
+        public Matrix4.Mutable yy(float yy) {
+            m[Matrix4.yy] = yy; return this;
         }
         
         @Override
-        public float yz(float yz) {
-            return m[Matrix4.yz] = yz;
+        public Matrix4.Mutable yz(float yz) {
+            m[Matrix4.yz] = yz; return this;
         }
         
         @Override
-        public float yw(float yw) {
-            return m[Matrix4.yw] = yw;
+        public Matrix4.Mutable yw(float yw) {
+            m[Matrix4.yw] = yw; return this;
         }
         
         @Override
-        public float zx(float zx) {
-            return m[Matrix4.zx] = zx;
+        public Matrix4.Mutable zx(float zx) {
+            m[Matrix4.zx] = zx; return this;
         }
         
         @Override
-        public float zy(float zy) {
-            return m[Matrix4.zy] = zy;
+        public Matrix4.Mutable zy(float zy) {
+            m[Matrix4.zy] = zy; return this;
         }
         
         @Override
-        public float zz(float zz) {
-            return m[Matrix4.zz] = zz;
+        public Matrix4.Mutable zz(float zz) {
+            m[Matrix4.zz] = zz; return this;
         }
         
         @Override
-        public float zw(float zw) {
-            return m[Matrix4.zw] = zw;
+        public Matrix4.Mutable zw(float zw) {
+            m[Matrix4.zw] = zw; return this;
         }
         
         @Override
-        public float wx(float wx) {
-            return m[Matrix4.wx] = wx;
+        public Matrix4.Mutable wx(float wx) {
+            m[Matrix4.wx] = wx; return this;
         }
         
         @Override
-        public float wy(float wy) {
-            return m[Matrix4.wy] = wy;
+        public Matrix4.Mutable wy(float wy) {
+            m[Matrix4.wy] = wy; return this;
         }
         
         @Override
-        public float wz(float wz) {
-            return m[Matrix4.wz] = wz;
+        public Matrix4.Mutable wz(float wz) {
+            m[Matrix4.wz] = wz; return this;
         }
         
         @Override
-        public float ww(float ww) {
-            return m[Matrix4.ww] = ww;
+        public Matrix4.Mutable ww(float ww) {
+            m[Matrix4.ww] = ww; return this;
         }
         
         @Override
-        public Vector4 row(int i, Vector r0) {
-            return null;
+        public Matrix4.Mutable row(int i, Vector r0) {
+            return row(i, r0.x(), r0.y(), r0.z(), r0.w());
         }
         
         @Override
-        public Vector4 col(int j, Vector c0) {
-            return null;
+        public Matrix4.Mutable col(int j, Vector c0) {
+            return col(j, c0.x(), c0.y(), c0.z(), c0.w());
         }
         
-        public Vector4 row(int i, float x, float y, float z, float w) {
+        public Matrix4.Mutable row(int i, float x, float y, float z, float w) {
             switch (i) {
-                case 0:
-                    return new Vector4(m[xx] = x, m[xy] = y, m[xz] = z, m[xw] = w);
-                case 1:
-                    return new Vector4(m[yx] = x, m[yy] = y, m[yz] = z, m[yw] = w);
-                case 2:
-                    return new Vector4(m[zx] = x, m[zy] = y, m[zz] = z, m[zw] = w);
-                case 3:
-                    return new Vector4(m[wx] = x, m[wy] = y, m[wz] = z, m[ww] = w);
+                case 0: m[xx] = x; m[xy] = y; m[xz] = z; m[xw] = w; break;
+                case 1: m[yx] = x; m[yy] = y; m[yz] = z; m[yw] = w; break;
+                case 2: m[zx] = x; m[zy] = y; m[zz] = z; m[zw] = w; break;
+                case 3: m[wx] = x; m[wy] = y; m[wz] = z; m[ww] = w; break;
             }
-            return null;
+            return this;
         }
         
-        public Vector4 col(int j, float x, float y, float z, float w) {
+        public Matrix4.Mutable col(int j, float x, float y, float z, float w) {
             switch (j) {
-                case 0:
-                    return new Vector4(m[xx] = x, m[yx] = y, m[zx] = z, m[wx] = w);
-                case 1:
-                    return new Vector4(m[xy] = x, m[yy] = y, m[zy] = z, m[wy] = w);
-                case 2:
-                    return new Vector4(m[xz] = x, m[yz] = y, m[zz] = z, m[wz] = w);
-                case 3:
-                    return new Vector4(m[xw] = x, m[yw] = y, m[zw] = z, m[ww] = w);
+                case 0: m[xx] = x; m[yx] = y; m[zx] = z; m[wx] = w; break;
+                case 1: m[xy] = x; m[yy] = y; m[zy] = z; m[wy] = w; break;
+                case 2: m[xz] = x; m[yz] = y; m[zz] = z; m[wz] = w; break;
+                case 3: m[xw] = x; m[yw] = y; m[zw] = z; m[ww] = w; break;
             }
-            return null;
+            return this;
         }
         
         public Matrix4.Mutable set(
