@@ -353,6 +353,30 @@ public interface Matrix<ROW extends Vector, COL extends Vector> extends Copyable
             31 * Float.hashCode(wz) +
             31 * Float.hashCode(ww);
     }
+
+    public static Matrix2 m2() {
+        return new Matrix2();
+    }
+
+    public static Matrix2 m2(
+        Matrix<?, ?> m
+    ) {
+        return new Matrix2(m);
+    }
+
+    public static Matrix2 m2(
+        Vector v0,
+        Vector v1
+    ) {
+        return new Matrix2(ROW_MAJOR, v0, v1);
+    }
+
+    public static Matrix2 m2(
+        float a, float b,
+        float c, float d
+    ) {
+        return new Matrix2(ROW_MAJOR, a, b, c, d);
+    }
     
     public static Matrix2 add(Matrix2 a, Matrix2 b) {
         return new Matrix2(

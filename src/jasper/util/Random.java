@@ -1,6 +1,6 @@
 package jasper.util;
 
-public class Random {
+public final class Random {
     private Random() {
         // do nothing
     }
@@ -64,7 +64,7 @@ public class Random {
 
         public LFSR08(byte mode, byte mask) {
             if (mode == 0)
-                throw new IllegalArgumentException("LFSR Zero State");
+                throw new IllegalArgumentException("LFSR cannot be set to zero");
             this.mode = mode;
             this.mask = mask;
         }
@@ -112,7 +112,7 @@ public class Random {
         
         public LFSR16(short mode, short mask) {
             if (mode == 0)
-                throw new IllegalArgumentException("LFSR Zero State");
+                throw new IllegalArgumentException("LFSR cannot be set to zero");
             this.mode = mode;
             this.mask = mask;
         }
@@ -160,7 +160,7 @@ public class Random {
         
         public LFSR32(int mode, int mask) {
             if (mode == 0)
-                throw new IllegalArgumentException("LFSR Zero State");
+                throw new IllegalArgumentException("LFSR cannot be set to zero");
             this.mode = mode;
             this.mask = mask;
         }
@@ -208,7 +208,7 @@ public class Random {
         
         public LFSR64(long mode, long mask) {
             if (mode == 0)
-                throw new IllegalArgumentException("LFSR Zero State");
+                throw new IllegalArgumentException("LFSR cannot be set to zero");
             this.mode = mode;
             this.mask = mask;
         }

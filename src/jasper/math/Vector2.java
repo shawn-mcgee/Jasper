@@ -3,7 +3,6 @@ package jasper.math;
 import static jasper.math.Math.EPSILON;
 import static jasper.util.StringToObject.stringToFloat;
 import static jasper.util.Utility.parse;
-import static java.lang.Math.min;
 
 public class Vector2 implements Vector {
     private static final long
@@ -117,6 +116,14 @@ public class Vector2 implements Vector {
 
         public Mutable(float x, float y) {
             super(x, y);
+        }
+
+        public void set(Vector xy) {
+            xy( xy );
+        }
+
+        public void set(float x, float y) {
+            xy(x, y);
         }
 
         @Override

@@ -63,7 +63,7 @@ public class AWT {
         }
     }
 
-    public static BufferedImage copyImageTo(BufferedImage a, BufferedImage b) {
+    public static BufferedImage copyImage(BufferedImage a, BufferedImage b) {
         Graphics2D g = b.createGraphics();
         g.drawImage(
             a,
@@ -80,14 +80,14 @@ public class AWT {
     }
 
     public static BufferedImage   copyImage(BufferedImage   a) {
-        return copyImageTo(a, new BufferedImage(
+        return copyImage(a, new BufferedImage(
             a.getWidth (),
             a.getHeight(),
             a.getType()
         ));
     }
 
-    public static BufferedImage[] copyImage(BufferedImage[] a) {
+    public static BufferedImage[] copyImages(BufferedImage[] a) {
         BufferedImage[] b = new BufferedImage[a.length];
         for(int i = 0; i < a.length; i ++)
             b[i] = copyImage(a[i]);

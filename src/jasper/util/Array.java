@@ -1,6 +1,5 @@
 package jasper.util;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;

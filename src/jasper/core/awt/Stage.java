@@ -19,12 +19,15 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class Stage extends Module.Server implements Configurable {
+    public static final Class<StageEvent>
+        STAGE_EVENT = StageEvent.class;
+    public static final Class<SceneEvent>
+        SCENE_EVENT = SceneEvent.class;
     public static final Class<WindowEvent>
         WINDOW_EVENT = WindowEvent.class;
     public static final Class<CanvasEvent>
         CANVAS_EVENT = CanvasEvent.class;
-    public static final Class<SceneEvent>
-        SCENE_EVENT = SceneEvent.class;
+
     // configuration variables
     protected final TreeMap<String, String>
         cfg  =  new TreeMap<String, String>();
@@ -110,10 +113,11 @@ public class Stage extends Module.Server implements Configurable {
             WINDOW_DEVICE, window_device,
             WINDOW_LAYOUT, window_layout
         );
-        
-        handle.attach(SceneEvent.class, this::onSceneEvent);
-        handle.attach(WindowEvent.class, this::onWindowEvent);
-        handle.attach(CanvasEvent.class, this::onCanvasEvent);
+
+        handle.attach(STAGE_EVENT , this::onStageEvent);
+        handle.attach(SCENE_EVENT , this::onSceneEvent);
+        handle.attach(WINDOW_EVENT, this::onWindowEvent);
+        handle.attach(CANVAS_EVENT, this::onCanvasEvent);
         handle.attach();
         
         input = new Input(this);
@@ -170,12 +174,34 @@ public class Stage extends Module.Server implements Configurable {
         );
     }
     
-    public Vector2 logicalToVirtual(Vector2 v) {
-        return logicalToVirtual(v.x(), v.y());
+    public Vector2 logicalToVirtual(Vector logical) {
+        return logicalToVirtual(logical.x(), logical.y());
     }
     
-    public Vector2 virtualToLogical(Vector2 v) {
-        return virtualToLogical(v.x(), v.y());
+    public Vector2 virtualToLogical(Vector virtual) {
+        return virtualToLogical(virtual.x(), virtual.y());
+    }
+
+    public Vector2.Mutable logicalToVirtual(float x, float y, Vector2.Mutable virtual) {
+        return virtual.xy(
+            (x - logical_canvas_w / 2f) / virtual_canvas_scale + virtual_canvas_w / 2f,
+            (y - logical_canvas_h / 2f) / virtual_canvas_scale + virtual_canvas_h / 2f
+        );
+    }
+
+    public Vector2.Mutable virtualToLogical(float x, float y, Vector2.Mutable logical) {
+        return logical.xy(
+            (x - virtual_canvas_w / 2f) * virtual_canvas_scale + logical_canvas_w / 2f,
+            (y - virtual_canvas_h / 2f) * virtual_canvas_scale + logical_canvas_h / 2f
+        );
+    }
+
+    public Vector2.Mutable logicalToVirtual(Vector logical, Vector2.Mutable virtual) {
+        return logicalToVirtual(logical.x(), logical.y(), virtual);
+    }
+
+    public Vector2.Mutable virtualToLogical(Vector virtual, Vector2.Mutable logical) {
+        return virtualToLogical(virtual.x(), virtual.y(), logical);
     }
     
     public String setDebugProperty(Object key, Object val) {
@@ -205,120 +231,7 @@ public class Stage extends Module.Server implements Configurable {
     public <OBJECT> OBJECT getDebugPropertyAs(Object key, StringToObject<OBJECT> s2o, OBJECT alt) {
         return Configurable.getPropertyAs(dbg, key, s2o, alt);
     }
-    
-    
-    
-    public void applyConfiguration() {
-        // read configuration
-        canvas_background = getPropertyAs(CANVAS_BACKGROUND, Vector4::fromString, canvas_background);
-        canvas_layout     = getPropertyAs(CANVAS_LAYOUT    , Layout::fromString , canvas_layout    );
-    
-        debug            = getPropertyAs(DEBUG           , BOOLEAN            , debug           );
-        debug_background = getPropertyAs(DEBUG_BACKGROUND, Vector4::fromString, debug_background);
-        debug_font_name  = getProperty  (DEBUG_FONT_NAME ,                      debug_font_name );
-        debug_font_size  = getPropertyAs(DEBUG_FONT_SIZE , INTEGER            , debug_font_size );
-        debug_foreground = getPropertyAs(DEBUG_FOREGROUND, Vector4::fromString, debug_foreground);
-    
-        render_hz     = getPropertyAs(RENDER_HZ, INTEGER, render_hz);
-        update_hz     = getPropertyAs(UPDATE_HZ, INTEGER, update_hz);
-    
-        window_background = getPropertyAs(WINDOW_BACKGROUND, Vector4::fromString, window_background);
-        window_border     = getPropertyAs(WINDOW_BORDER    , BOOLEAN            , window_border    );
-        window_device     = getPropertyAs(WINDOW_DEVICE    , INTEGER            , window_device    );
-        window_layout     = getPropertyAs(WINDOW_LAYOUT    , Layout::fromString , window_layout    );
-        window_string     = getProperty  (WINDOW_STRING    ,                      window_string    );
-    
-        canvas_background_color = color4i(canvas_background);
-        debug_background_color  = color4i(debug_background );
-        debug_foreground_color  = color4i(debug_foreground );
-        window_background_color = color4i(window_background);
-        debug_font = new java.awt.Font(debug_font_name, Font.PLAIN, debug_font_size);
-    
-        // release old resources
-        if(window != null)
-            window.dispose();
-        window = null;
-        canvas = null;
-        b      = null;
-    
-        // assign new resources
-        window = new java.awt.Frame() ;
-        canvas = new java.awt.Canvas();
-        window.add(canvas);
-    
-    
-        // compute the window bounds
-        Region2 window_region = Layout.regionOf(window_layout, getMaximumWindowRegion(window_device, !window_border));
-        window.setUndecorated(!window_border);
-        window.setBounds(
-            (int)window_region.x(), (int)window_region.y(),
-            (int)window_region.w(), (int)window_region.h()
-        );
-        window.setTitle(window_string);
-    
-        // compute the logical and virtual canvas size
-        Insets window_insets = window.getInsets();
-        Region2
-            logical_canvas_region = new Region2(
-            window_region.x() + window_insets.left,
-            window_region.y() + window_insets.top ,
-            window_region.w() - window_insets.left - window_insets.right ,
-            window_region.h() - window_insets.top  - window_insets.bottom
-        ),
-            virtual_canvas_region = Layout.regionOf(canvas_layout, logical_canvas_region);
-    
-        logical_canvas_w = (int)logical_canvas_region.w();
-        logical_canvas_h = (int)logical_canvas_region.h();
-        virtual_canvas_w = (int)virtual_canvas_region.w();
-        virtual_canvas_h = (int)virtual_canvas_region.h();
-        virtual_canvas_scale = min(
-            (float) logical_canvas_w / virtual_canvas_w,
-            (float) logical_canvas_h / virtual_canvas_h
-        );
-    
-        // add listeners
-        window.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent we) {
-                queue(new WindowEvent(self, WindowEvent.ON_CLOSE));
-            }
-        });
-        window.addWindowFocusListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowGainedFocus(java.awt.event.WindowEvent we) {
-                queue(new WindowEvent(self, WindowEvent.ON_FOCUS));
-            }
-        
-            @Override
-            public void windowLostFocus(java.awt.event.WindowEvent we) {
-                queue(new WindowEvent(self, WindowEvent.ON_UNFOCUS));
-            }
-        });
-    
-        canvas.setFocusable(true);
-        canvas.setFocusTraversalKeysEnabled(false);
-    
-        canvas.addKeyListener        (input);
-        canvas.addMouseListener      (input);
-        canvas.addMouseWheelListener (input);
-        canvas.addMouseMotionListener(input);
-        canvas.addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentResized(java.awt.event.ComponentEvent ce) {
-                queue(new CanvasEvent(
-                    self,
-                    ce.getComponent().getWidth() ,
-                    ce.getComponent().getHeight()
-                ));
-            }
-        });
-    
-        // prepare to display
-        window.setIgnoreRepaint(true);
-        canvas.setIgnoreRepaint(true);
-        window.setVisible(true);
-    }
-    
+
     protected static final long
         one_second = 1000000000,
         one_millis =    1000000;
@@ -353,14 +266,120 @@ public class Stage extends Module.Server implements Configurable {
     @Override
     public void onStart() throws Exception {
         long a = System.nanoTime();
-        applyConfiguration();
+        onConfigure();
         long b = System.nanoTime();
         
         if(debug)
             Debug.info(new Object() { /* trace */}, String.format(
                 "START: %1$3.2f ms", (float)(b - a) / one_millis
             ));
-            
+    }
+
+    public void onConfigure() {
+        // read configuration
+        canvas_background = getPropertyAs(CANVAS_BACKGROUND, Vector4::fromString, canvas_background);
+        canvas_layout     = getPropertyAs(CANVAS_LAYOUT    , Layout::fromString , canvas_layout    );
+
+        debug            = getPropertyAs(DEBUG           , BOOLEAN            , debug           );
+        debug_background = getPropertyAs(DEBUG_BACKGROUND, Vector4::fromString, debug_background);
+        debug_font_name  = getProperty  (DEBUG_FONT_NAME ,                      debug_font_name );
+        debug_font_size  = getPropertyAs(DEBUG_FONT_SIZE , INTEGER            , debug_font_size );
+        debug_foreground = getPropertyAs(DEBUG_FOREGROUND, Vector4::fromString, debug_foreground);
+
+        render_hz = getPropertyAs(RENDER_HZ, INTEGER, render_hz);
+        update_hz = getPropertyAs(UPDATE_HZ, INTEGER, update_hz);
+
+        window_background = getPropertyAs(WINDOW_BACKGROUND, Vector4::fromString, window_background);
+        window_border     = getPropertyAs(WINDOW_BORDER    , BOOLEAN            , window_border    );
+        window_device     = getPropertyAs(WINDOW_DEVICE    , INTEGER            , window_device    );
+        window_layout     = getPropertyAs(WINDOW_LAYOUT    , Layout::fromString , window_layout    );
+        window_string     = getProperty  (WINDOW_STRING    ,                      window_string    );
+
+        canvas_background_color = color4i(canvas_background);
+        debug_background_color  = color4i(debug_background );
+        debug_foreground_color  = color4i(debug_foreground );
+        window_background_color = color4i(window_background);
+        debug_font = new java.awt.Font(debug_font_name, Font.PLAIN, debug_font_size);
+
+        // release old resources
+        if(window != null)
+            window.dispose();
+        window = null;
+        canvas = null;
+        b      = null;
+
+        // assign new resources
+        window = new java.awt.Frame() ;
+        canvas = new java.awt.Canvas();
+        window.add(canvas);
+
+
+        // compute the window bounds
+        Region2 window_region = Layout.regionOf(window_layout, getMaximumWindowRegion(window_device, !window_border));
+        window.setUndecorated(!window_border);
+        window.setBounds(
+            (int)window_region.x(), (int)window_region.y(),
+            (int)window_region.w(), (int)window_region.h()
+        );
+        window.setTitle(window_string);
+
+        // compute the logical and virtual canvas size
+        Insets window_insets = window.getInsets();
+        Region2
+            logical_canvas_region = new Region2(
+            window_region.x() + window_insets.left,
+            window_region.y() + window_insets.top ,
+            window_region.w() - window_insets.left - window_insets.right ,
+            window_region.h() - window_insets.top  - window_insets.bottom
+        ),
+            virtual_canvas_region = Layout.regionOf(canvas_layout, logical_canvas_region);
+
+        logical_canvas_w = (int)logical_canvas_region.w();
+        logical_canvas_h = (int)logical_canvas_region.h();
+        virtual_canvas_w = (int)virtual_canvas_region.w();
+        virtual_canvas_h = (int)virtual_canvas_region.h();
+        virtual_canvas_scale = min(
+            (float) logical_canvas_w / virtual_canvas_w,
+            (float) logical_canvas_h / virtual_canvas_h
+        );
+
+        // add listeners
+        window.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent we) {
+                queue(new WindowEvent(self, WindowEvent.ON_CLOSE));
+            }
+        });
+        window.addWindowFocusListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowGainedFocus(java.awt.event.WindowEvent we) {
+                queue(new WindowEvent(self, WindowEvent.ON_FOCUS));
+            }
+
+            @Override
+            public void windowLostFocus(java.awt.event.WindowEvent we) {
+                queue(new WindowEvent(self, WindowEvent.ON_UNFOCUS));
+            }
+        });
+
+        canvas.setFocusable(true);
+        canvas.setFocusTraversalKeysEnabled(false);
+
+        canvas.addKeyListener        (input);
+        canvas.addMouseListener      (input);
+        canvas.addMouseWheelListener (input);
+        canvas.addMouseMotionListener(input);
+        canvas.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent ce) {
+                queue(new CanvasEvent(
+                    self,
+                    ce.getComponent().getWidth() ,
+                    ce.getComponent().getHeight()
+                ));
+            }
+        });
+
         // prepare timers
         nanos_per_update = update_hz > 0 ? one_second / update_hz : 0;
         update_timer = 0;
@@ -368,23 +387,29 @@ public class Stage extends Module.Server implements Configurable {
         avg_update_nanos = 0;
         min_update_nanos = Long.MAX_VALUE;
         max_update_nanos = 0;
-        
+
         nanos_per_render = render_hz > 0 ? one_second / render_hz : 0;
         render_timer = 0;
         render_count = 0;
         avg_render_nanos = 0;
         min_render_nanos = Long.MAX_VALUE;
         max_render_nanos = 0;
-        
+
         one_second_timer = 0;
-        
+
         fixed_update_dt = (float)nanos_per_update / one_second;
         fixed_update_ms = (float)nanos_per_update / one_millis;
-        
+
         fixed_render_dt = (float)nanos_per_render / one_second;
         fixed_render_ms = (float)nanos_per_render / one_millis;
-        
+
         t0 = t1 = t2 = System.nanoTime();
+        
+        // prepare to display
+        window.setIgnoreRepaint(true);
+        canvas.setIgnoreRepaint(true);
+        if(thread != null && running)
+            window.setVisible(true);
     }
     
     @Override
@@ -621,22 +646,35 @@ public class Stage extends Module.Server implements Configurable {
     public void onMouseWheel(float   wheel) {
         if(scene != null) scene.onMouseWheel(wheel);
     }
+
+    public void onStageEvent(StageEvent event) {
+        if(this != event.stage)
+            return;
+        switch(event.value) {
+            case StageEvent.ON_CONFIGURE:
+                onConfigure();
+        }
+    }
     
     public void onSceneEvent(SceneEvent event) {
-        if(scene != null) {
+        if(this != event.stage)
+            return;
+        if (scene != null) {
             scene.onDetach();
             scene.stage = null;
             scene.input = null;
         }
         scene = event.scene;
-        if(scene != null) {
-            scene.stage = this ;
+        if (scene != null) {
+            scene.stage = this;
             scene.input = input;
             scene.onAttach();
         }
     }
     
     public void onWindowEvent(WindowEvent event) {
+        if(this != event.stage)
+            return;
         switch(event.value) {
             case WindowEvent.ON_CLOSE:
                 input.onClose();
@@ -657,6 +695,8 @@ public class Stage extends Module.Server implements Configurable {
     }
     
     public void onCanvasEvent(CanvasEvent event) {
+        if(this != event.stage)
+            return;
         Region2
             logical_canvas_region = new Region2(
                 logical_canvas_w = event.canvas_w,
@@ -685,6 +725,25 @@ public class Stage extends Module.Server implements Configurable {
                 virtual_canvas_w,
                 virtual_canvas_h
             ));
+    }
+
+    public static class StageEvent {
+        public static final int
+            ON_CONFIGURE = 0x01;
+
+        public final Stage
+            stage;
+        public final int
+            value;
+
+        public StageEvent(Stage stage, int value) {
+            this.stage = stage;
+            this.value = value;
+        }
+
+        public boolean isConfigure() {
+            return value == ON_CONFIGURE;
+        }
     }
     
     public static class SceneEvent {

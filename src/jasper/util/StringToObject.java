@@ -1,5 +1,7 @@
 package jasper.util;
 
+import java.text.NumberFormat;
+
 public interface StringToObject<OBJECT> {
     public static final StringToObject<Boolean>
         BOOLEAN = StringToObject::stringToBoolean;
@@ -67,6 +69,30 @@ public interface StringToObject<OBJECT> {
             return Float.valueOf(s);
         } catch(Exception na) {
             return f;
+        }
+    }
+
+    public static Double stringToDouble(String s          ) {
+        return stringToDouble(s, 0d);
+    }
+
+    public static Double stringToDouble(String s, Double d) {
+        try {
+            return Double.valueOf(s);
+        } catch(Exception na) {
+            return d;
+        }
+    }
+
+    public static Number stringToNumber(String s          ) {
+        return stringToNumber(s, 0L);
+    }
+
+    public static Number stringToNumber(String s, Number n) {
+        try {
+            return NumberFormat.getInstance().parse(s);
+        } catch(Exception na) {
+            return n;
         }
     }
     

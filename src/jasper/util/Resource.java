@@ -1,6 +1,7 @@
 package jasper.util;
 
 import java.io.*;
+import java.util.Locale;
 import java.util.Objects;
 
 public class Resource implements Copyable<Resource>, Serializable {
@@ -118,6 +119,23 @@ public class Resource implements Copyable<Resource>, Serializable {
     @Override
     public String toString() {
         return Resource.toString(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Resource) {
+            Resource b = (Resource)o;
+            String
+                s0 =   toString(),
+                s1 = b.toString();
+            return s0.equals(s1);
+        } else
+            return false;
     }
     
     public static String toString(Resource resource) {

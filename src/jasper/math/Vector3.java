@@ -143,6 +143,14 @@ public class Vector3 implements Vector {
             super(x, y, z);
         }
 
+        public void set(Vector xyz) {
+            xyz(  xyz  );
+        }
+
+        public void set(float x, float y, float z) {
+            xyz(x, y, z);
+        }
+
         @Override
         public Vector3.Mutable x(float x) {
             this.x = x;

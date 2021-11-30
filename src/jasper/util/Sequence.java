@@ -51,11 +51,11 @@ public interface Sequence<T> extends Copyable<Sequence<T>>, Iterable<T>, Seriali
         int n = 0;
         for (T u : a)
             if (Objects.equals(u, t))
-                n++;
+                n ++;
         return n;
     }
 
-    public static <T> int index(T[] a, T t) {
+    public static <T> int indexOf(T[] a, T t) {
         int i = 0;
         for (T u : a) {
             if (Objects.equals(u, t))
@@ -69,11 +69,11 @@ public interface Sequence<T> extends Copyable<Sequence<T>>, Iterable<T>, Seriali
         int n = 0;
         for (T u : a)
             if (Objects.equals(u, t))
-                n++;
+                n ++;
         return n;
     }
 
-    public static <T> int index(Iterable<T> a, T t) {
+    public static <T> int indexOf(Iterable<T> a, T t) {
         int i = 0;
         for (T u : a) {
             if (Objects.equals(u, t))
@@ -81,6 +81,80 @@ public interface Sequence<T> extends Copyable<Sequence<T>>, Iterable<T>, Seriali
             i++;
         }
         return -1;
+    }
+
+    public static <T> boolean includes(T[] a, T t) {
+        for (T u : a)
+            if (Objects.equals(u, t))
+                return true;
+        return false;
+    }
+
+    public static <T> boolean excludes(T[] a, T t) {
+        for (T u : a)
+            if (Objects.equals(u, t))
+                return false;
+        return true;
+    }
+
+    @SafeVarargs
+    public static <T> boolean includesAll(T[] a, T... b) {
+        for (T u : b)
+            if (excludes(a, u))
+                return false;
+        return true;
+    }
+
+    @SafeVarargs
+    public static <T> boolean includesAny(T[] a, T... b) {
+        for (T u : b)
+            if (includes(a, u))
+                return true;
+        return false;
+    }
+
+    @SafeVarargs
+    public static <T> boolean excludesAll(T[] a, T... b) {
+        for (T u : b)
+            if (includes(a, u))
+                return false;
+        return true;
+    }
+
+    @SafeVarargs
+    public static <T> boolean excludesAny(T[] a, T... b) {
+        for (T u : b)
+            if (excludes(a, u))
+                return true;
+        return false;
+    }
+
+    public static <T> boolean includesAll(T[] a, Iterable<T> b) {
+        for (T u : b)
+            if (excludes(a, u))
+                return false;
+        return true;
+    }
+
+    public static <T> boolean includesAny(T[] a, Iterable<T> b) {
+        for (T u : b)
+            if (includes(a, u))
+                return true;
+        return false;
+    }
+
+    public static <T> boolean excludesAll(T[] a, Iterable<T> b) {
+        for (T u : b)
+            if (includes(a, u))
+                return false;
+        return true;
+    }
+
+    public static <T> boolean excludesAny(T[] a, Iterable<T> b) {
+        for (T u : b)
+            if (excludes(a, u))
+                return true;
+        return false;
     }
 
     public static <T> boolean includes(Iterable<T> a, T t) {
@@ -155,6 +229,50 @@ public interface Sequence<T> extends Copyable<Sequence<T>>, Iterable<T>, Seriali
             if (excludes(a, u))
                 return true;
         return false;
+    }
+
+    public static <T> Iterable<T> forward(T[] a) {
+        return forward(a, a.length);
+    }
+
+    public static <T> Iterable<T> reverse(T[] a) {
+        return reverse(a, a.length);
+    }
+
+    public static <T> Iterable<T> forward(T[] a, int size) {
+        return () -> new Iterator<T>() {
+            int
+                m =    0,
+                n = size;
+
+            @Override
+            public boolean hasNext() {
+                return m < n;
+            }
+
+            @Override
+            public T next() {
+                return a[m ++];
+            }
+        };
+    }
+
+    public static <T> Iterable<T> reverse(T[] a, int size) {
+        return () -> new Iterator<T>() {
+            int
+                m =    0,
+                n = size;
+
+            @Override
+            public boolean hasNext() {
+                return m < n;
+            }
+
+            @Override
+            public T next() {
+                return a[-- n];
+            }
+        };
     }
 
     public static interface Stack<T> extends Sequence<T> {

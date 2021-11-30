@@ -7,17 +7,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="lwjgl" level="project" />
-    <orderEntry type="library" name="lwjgl-linux" level="project" />
-    <orderEntry type="library" name="lwjgl-macos" level="project" />
-    <orderEntry type="library" name="lwjgl-windows" level="project" />
-    <orderEntry type="library" name="lwjgl-opengl" level="project" />
-    <orderEntry type="library" name="lwjgl-opengl-linux" level="project" />
-    <orderEntry type="library" name="lwjgl-opengl-macos" level="project" />
-    <orderEntry type="library" name="lwjgl-opengl-windows" level="project" />
-    <orderEntry type="library" name="lwjgl-vulkan" level="project" />
-    <orderEntry type="library" name="lwjgl-vulkan-macos" level="project" />
-    <orderEntry type="library" name="lwjgl-vulkan-windows" level="project" />
-    <orderEntry type="library" name="lwjgl-vulkan-linux" level="project" />
   </component>
 </module>

@@ -15,31 +15,33 @@ public class Debug {
     }
 
     public static String info(Object event) {
-        if(info != null)
-            return info.log("Info", event);
-        else
-            return null;
+        return info("Info", event);
     }
 
     public static String info(Object trace, Object event) {
         if(info != null)
             return info.log(trace, event);
         else
-            return null;
+            return    trace(trace, event);
     }
 
     public static String warn(Object event) {
-        if(warn != null)
-            return warn.log("Warn", event);
-        else
-            return null;
+        return warn("Warn", event);
     }
 
     public static String warn(Object trace, Object event) {
         if(warn != null)
             return warn.log(trace, event);
         else
-            return null;
+            return    trace(trace, event);
+    }
+
+    public static void panic(              Object event) throws RuntimeException {
+        throw new RuntimeException(warn(       event));
+    }
+
+    public static void panic(Object trace, Object event) throws RuntimeException {
+        throw new RuntimeException(warn(trace, event));
     }
 
     public static String trace(Object trace) {

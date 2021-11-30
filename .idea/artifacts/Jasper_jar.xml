@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Jasper:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Jasper_jar</output-path>
-    <root id="archive" name="Jasper.jar">
-      <element id="module-output" name="Jasper" />
-    </root>
-  </artifact>
-</component>
