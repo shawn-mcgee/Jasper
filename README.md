@@ -95,7 +95,7 @@ public class Example {
         Debug.info( sub(v2(1, 2), v4(3, 4, 5, 6)) ); // v2 v4 subtraction
         
         Debug.info( mul(5, v4(1, 2, 3, 4)   ) ); // v4 scalar multiplication
-        Debug.info( div(   v3(1, 2, 3   ), 4) );    // scalar v3 division
+        Debug.info( div(   v3(1, 2, 3   ), 4) ); // scalar v3 division
         
         // Each Vector type can be parsed from a human-readable String
         Debug.info( Vector2.fromString("1, 2") );
