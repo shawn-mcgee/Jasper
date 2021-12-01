@@ -12,9 +12,9 @@ import jasper.Jasper;
 
 public class Example {
     public static void main(String[] args) {
-    	// Debug can use anonymous objects to trace the method call site
+        // Debug can use anonymous objects to trace the method call site
         Debug.info(new Object() { }, Jasper.VERSION);
-	}
+    }
 }
 ```
 
