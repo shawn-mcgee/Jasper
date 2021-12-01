@@ -4,9 +4,37 @@ import jasper.util.Callback;
 
 import java.util.LinkedHashSet;
 
-public final class Engine extends Module.Resolver {
+public final class Engine {
     private static final Engine
         INSTANCE = new Engine();
+
+    private final Module.Worker
+        module = new Module.Worker() {
+            @Override
+            public <T> void queue(T event) {
+                synchronized (INSTANCE) {
+                    super . queue(event);
+                    INSTANCE.notifyAll();
+                }
+            }
+
+            @Override
+            protected void onStep() throws Exception {
+                if(pending() > 0)
+                    poll();
+                else
+                    synchronized (INSTANCE) {
+                        INSTANCE.wait();
+                    }
+            }
+
+            @Override
+            protected void onStop() {
+                modules.forEach(Module::onDetach);
+                modules.clear();
+            }
+        };
+
     private final LinkedHashSet<Module>
         modules = new LinkedHashSet<Module>();
     
@@ -14,43 +42,43 @@ public final class Engine extends Module.Resolver {
         // do nothing
     }
 
-    public static void INIT() {
+    public static void init() {
         INSTANCE.onInit();
     }
 
-    public static void EXIT() {
-        AWAIT(INSTANCE::onExit);
+    public static void exit() {
+        await(INSTANCE::onExit);
     }
     
-    public static void ATTACH(Module m) {
-        ASYNC(() -> INSTANCE.onAttach(m));
+    public static void attach(Module m) {
+        async(() -> INSTANCE.onAttach(m));
     }
     
-    public static void DETACH(Module m) {
-        ASYNC(() -> INSTANCE.onDetach(m));
+    public static void detach(Module m) {
+        async(() -> INSTANCE.onDetach(m));
     }
 
-    public static void ASYNC(Callback event) {
+    public static void async(Callback event) {
         INSTANCE.onAsync(event);
     }
 
-    public static void AWAIT(Callback event) {
+    public static void await(Callback event) {
         INSTANCE.onAwait(event);
     }
 
     private void onInit() {
         synchronized (INSTANCE) {
-            if (!running) {
-                thread = new java.lang.Thread(this);
-                running = true;
-                thread.start();
+            if (!module.running) {
+                module.thread = new java.lang.Thread(module);
+                module.running = true;
+                module.thread.start();
             }
         }
     }
     
     private void onExit() {
-        if (running)
-            running = false;
+        if (module.running)
+            module.running = false;
     }
     
     private void onAttach(Module m) {
@@ -64,34 +92,10 @@ public final class Engine extends Module.Resolver {
     }
 
     private void onAsync(Callback event) {
-        INIT(); async(event);
+        init(); module.async(event);
     }
 
     private void onAwait(Callback event) {
-        INIT(); await(event);
-    }
-
-    @Override
-    public <T> void queue(T event) {
-        super.queue(event);
-        synchronized (INSTANCE) {
-            INSTANCE.notifyAll();
-        }
-    }
-
-    @Override
-    protected void onStep() throws Exception {
-        if(pending() > 0)
-            poll();
-        else
-            synchronized (INSTANCE) {
-                INSTANCE.wait();
-            }
-    }
-
-    @Override
-    protected void onStop() {
-        modules.forEach(Module::onDetach);
-        modules.clear();
+        init(); module.await(event);
     }
 }

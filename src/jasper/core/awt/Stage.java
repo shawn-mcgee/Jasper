@@ -788,7 +788,7 @@ public class Stage extends Module.Server implements Configurable {
     }
     
     public static class CanvasEvent {
-        public Stage
+        public final Stage
             stage;
         public final int
             canvas_w,
@@ -799,6 +799,7 @@ public class Stage extends Module.Server implements Configurable {
             int canvas_w,
             int canvas_h
         ) {
+            this.stage = stage;
             this.canvas_w = canvas_w;
             this.canvas_h = canvas_h;
         }

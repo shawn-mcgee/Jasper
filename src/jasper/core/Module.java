@@ -7,17 +7,17 @@ import jasper.util.Event;
 public abstract class Module {
     protected void onAttach() { }
     protected void onDetach() { }
-    
-    public static abstract class Process extends Module implements Runnable {
+
+    public static abstract class Thread extends Module implements Runnable {
         protected java.lang.Thread
             thread;
         protected volatile boolean
             running;
-    
+
         protected void onStart() throws Exception { }
         protected void onStep () throws Exception { }
         protected void onStop () { }
-        
+
         @Override
         protected void onAttach() {
             if(!running) {
@@ -26,13 +26,13 @@ public abstract class Module {
                 thread.start();
             }
         }
-        
+
         @Override
         protected void onDetach() {
             if( running)
                 running = false;
         }
-        
+
         @Override
         public void run() {
             try {
@@ -48,7 +48,7 @@ public abstract class Module {
         }
     }
     
-    public static abstract class Server extends Process {
+    public static abstract class Server extends Module.Thread {
         protected final Event.Broker
             broker;
         protected final Event.Handle
@@ -125,9 +125,9 @@ public abstract class Module {
         }
     }
 
-    public static abstract class Resolver extends Server {
+    public static abstract class Worker extends Server {
 
-        public Resolver() {
+        public Worker() {
             handle.onAttach(
                 Callback.class,
                 this::onResolve
