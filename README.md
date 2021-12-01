@@ -1,5 +1,15 @@
 ### What is Jasper?
 
+Jasper is a Java game engine. Jasper does not make significant architectural
+decisions on behalf of the developer. Instead, Jasper seeks to expose a high
+quality, internally consistent interface.
+
+### Why is Jasper?
+
+Generally speaking, Java is not the first language that comes to mind when
+thinking about game development, but I believe that is because Java game 
+development is an under-served niche.
+
 ### Features
 
 Jasper comes with a lightweight logging utility called Debug.
@@ -22,7 +32,8 @@ public class Example {
 [com.example.Example.main] Jasper 0.4.1
 ```
 
-Jasper dramatically minimizes the boilerplate required to start drawing to the screen.
+Jasper dramatically minimizes the boilerplate required to start drawing to the 
+screen.
 
 ```java
 package com.example;
@@ -113,3 +124,19 @@ public class Example {
 [Info] <1.0, 2.0>
 [Info] <3.0, 4.0, 1.0, 2.0>
 ```
+
+### Roadmap
+
+As Jasper continues to mature, the projects immediate priorities are:
+
+***1. Graphics*** - Currently, Jasper only supports Java's built-in 
+java.awt.Graphics backend, but the goal is to also include support for libraries
+like OpenGL and Vulkan.
+
+***2. Audio*** - Jasper does not have any audio capabilities at the moment. The
+goal is to support multiple audio backends like Java's built-in 
+javax.sound.sampled and OpenAL.
+
+***3. Documentation*** - Now that the project is beginning to pick up speed,
+documentation and tutorials will be an important aspect of making the engine
+accessible to a more general audience.
