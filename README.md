@@ -137,6 +137,5 @@ like OpenGL and Vulkan.
 goal is to support multiple audio backends like Java's built-in 
 javax.sound.sampled and OpenAL.
 
-***3. Documentation*** - Now that the project is beginning to pick up speed,
-documentation and tutorials will be an important aspect of making the engine
-accessible to a more general audience.
+***3. Documentation*** - Jasper has little to no documentation. The goal is to
+make the project more accessible with high quality documentation and tutorials.
