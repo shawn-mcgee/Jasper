@@ -127,7 +127,7 @@ public class Example {
 
 ### Roadmap
 
-As Jasper continues to mature, the projects immediate priorities are:
+As Jasper continues to mature, the project's immediate priorities are:
 
 ***1. Graphics*** - Currently, Jasper only supports Java's built-in 
 java.awt.Graphics backend, but the goal is to also include support for libraries
