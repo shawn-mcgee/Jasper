@@ -1,16 +1,14 @@
 package jasper.core.awt;
 
-import jasper.math.*;
-import jasper.util.Copyable;
-import jasper.util.Debug;
-import jasper.util.Resource;
-import jasper.util.Sequence;
+import jasper.math.Bounds2;
+import jasper.math.Vector;
+import jasper.math.Vector2;
+import jasper.util.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Objects;
 
 public class Sprite implements Copyable<Sprite>, Renderable {
@@ -29,34 +27,39 @@ public class Sprite implements Copyable<Sprite>, Renderable {
     protected boolean
         flip,
         flop;
-
     protected final Vector2.Mutable
         origin = new Vector2.Mutable();
     protected final Bounds2.Mutable
         bounds = new Bounds2.Mutable();
 
-    public Sprite(Sprite.Atlas atlas, Sprite.Effect... chain) {
-        this.atlas = apply(atlas, chain);
-        this.bounds.set(
-            0, 0,
-            this.atlas.frame_w,
-            this.atlas.frame_h
-        );
+    protected final Array.Stack<Sprite>
+        stack = new Array.Stack<Sprite>();
+
+    public Sprite(Sprite.Atlas atlas) {
+        this(null, atlas);
     }
 
-    public Sprite(Sprite sprite                    , Sprite.Effect... chain) {
-        this(sprite, sprite.atlas, chain);
+    public Sprite(Sprite sprite                    ) {
+        this(sprite, sprite.atlas);
     }
 
-    public Sprite(Sprite sprite, Sprite.Atlas atlas, Sprite.Effect... chain) {
-        this.atlas = apply(atlas, chain);
-        this.mode  = sprite.mode;
-        this.frame = sprite.frame;
-        this.speed = sprite.speed;
-        this.flip  = sprite.flip;
-        this.flop  = sprite.flop;
-        this.origin.set(sprite.origin);
-        this.bounds.set(sprite.bounds);
+    public Sprite(Sprite sprite, Sprite.Atlas atlas) {
+        this.atlas = atlas;
+        if(sprite != null) {
+            this.mode = sprite.mode;
+            this
+                .frame(sprite.frame)
+                .speed(sprite.speed)
+                .flip (sprite.flip )
+                .flop (sprite.flop );
+            this.origin.set(sprite.origin);
+            this.bounds.set(sprite.bounds);
+        } else {
+            this.bounds.set(0, 0,
+                this.atlas.frame_w,
+                this.atlas.frame_h
+            );
+        }
     }
 
     @Override
@@ -104,6 +107,13 @@ public class Sprite implements Copyable<Sprite>, Renderable {
             (x1 - x0),
             (y1 - y0)
         );
+    }
+
+    public Sprite atlas(Sprite.Atlas atlas) {
+        this.atlas = atlas;
+        if(frame < 0                   ) frame = (frame % atlas.frames.length) + atlas.frames.length;
+        if(frame >= atlas.frames.length) frame = (frame % atlas.frames.length)                      ;
+        return this;
     }
 
     public Sprite.Atlas atlas() {
@@ -273,13 +283,33 @@ public class Sprite implements Copyable<Sprite>, Renderable {
         return bounds;
     }
 
+    public Sprite push() {
+        stack.push(copy());
+        return this;
+    }
+
+    public Sprite pull() {
+        if(stack.size() > 0) {
+            Sprite sprite = stack.pull();
+            this.atlas = sprite.atlas;
+            this.mode  = sprite.mode ;
+            this.frame = sprite.frame;
+            this.speed = sprite.speed;
+            this.flip  = sprite.flip;
+            this.flop  = sprite.flop;
+            this.origin.set(sprite.origin);
+            this.bounds.set(sprite.bounds);
+        }
+        return this;
+    }
+
     @Override
     public Sprite copy() {
         return new Sprite(this);
     }
 
     public static Sprite load(Resource resource, int w, int h, Sprite.Effect... chain) {
-        return new Sprite(Sprite.Atlas.load(resource, w, h), chain);
+        return new Sprite(Sprite.Effect.apply(Sprite.Atlas.load(resource, w, h), chain));
     }
 
     public static Sprite load(String   resource, int w, int h, Sprite.Effect... chain) {
@@ -294,262 +324,24 @@ public class Sprite implements Copyable<Sprite>, Renderable {
         return Sprite.load(new Resource(from, path), w, h, chain);
     }
 
-    public static Sprite load(Sprite.Cache cache, Resource resource, int w, int h, Sprite.Effect... chain) {
-        return new Sprite(cache.load(resource, w, h, chain));
+    public static Sprite load(Sprite.Cache cache, String id, Resource resource, int w, int h, Sprite.Effect... chain) {
+        return new Sprite(cache.load(id, resource, w, h, chain));
     }
 
-    public static Sprite load(Sprite.Cache cache, String   resource, int w, int h, Sprite.Effect... chain) {
-        return Sprite.load(cache, new Resource(resource), w, h, chain);
+    public static Sprite load(Sprite.Cache cache, String id, String   resource, int w, int h, Sprite.Effect... chain) {
+        return Sprite.load(cache, id, new Resource(resource), w, h, chain);
     }
 
-    public static Sprite load(Sprite.Cache cache, Class<?> from, String path, int w, int h, Sprite.Effect... chain) {
-        return Sprite.load(cache, new Resource(from, path), w, h, chain);
+    public static Sprite load(Sprite.Cache cache, String id, Class<?> from, String path, int w, int h, Sprite.Effect... chain) {
+        return Sprite.load(cache, id, new Resource(from, path), w, h, chain);
     }
 
-    public static Sprite load(Sprite.Cache cache, String   from, String path, int w, int h, Sprite.Effect... chain) {
-        return Sprite.load(cache, new Resource(from, path), w, h, chain);
+    public static Sprite load(Sprite.Cache cache, String id, String   from, String path, int w, int h, Sprite.Effect... chain) {
+        return Sprite.load(cache, id, new Resource(from, path), w, h, chain);
     }
 
-    public static Sprite get(Sprite.Cache cache, Resource resource, Sprite.Effect... chain) {
-        return new Sprite(cache.get(resource, chain));
-    }
-
-    public static Sprite get(Sprite.Cache cache, String   resource, Sprite.Effect... chain) {
-        return Sprite.get(cache, new Resource(resource), chain);
-    }
-
-    public static Sprite get(Sprite.Cache cache, Class<?> from, String path, Sprite.Effect... chain) {
-        return Sprite.get(cache, new Resource(from, path), chain);
-    }
-
-    public static Sprite get(Sprite.Cache cache, String   from, String path, Sprite.Effect... chain) {
-        return Sprite.get(cache, new Resource(from, path), chain);
-    }
-
-    public static Sprite apply(Sprite sprite, Sprite.Effect... chain) {
-        return new Sprite(sprite, apply(sprite.atlas));
-    }
-
-    public static Sprite.Atlas apply(Sprite.Atlas atlas, Sprite.Effect... chain) {
-        if(chain.length > 0) {
-            BufferedImage[] frames = apply(atlas.frames, chain);
-            int
-                frame_w = 0,
-                frame_h = 0;
-            if(frames.length > 0) {
-                frame_w = frames[0].getWidth() ;
-                frame_h = frames[0].getHeight();
-            }
-            return new Sprite.Atlas(
-                null,
-                null  ,       0,       0,
-                frames, frame_w, frame_h
-            );
-        } else
-            return atlas;
-    }
-
-    public static BufferedImage[] apply(BufferedImage[] frames, Sprite.Effect... chain) {
-        frames = AWT.copyImages(frames);
-        for(Sprite.Effect effect: chain)
-            frames = effect.apply(frames);
-        return frames;
-    }
-
-    public static class Index implements Iterable<Sprite>, Renderable {
-        protected int
-            s0 = 0,
-            s1 = 2;
-        protected String[]
-            strings = new String[s1];
-        protected Sprite[]
-            sprites = new Sprite[s1];
-
-        protected String
-            string;
-        protected Sprite
-            sprite;
-
-        protected final Vector2.Mutable
-            origin = new Vector2.Mutable();
-
-        public String string() {
-            return string;
-        }
-
-        public Sprite sprite() {
-            return sprite;
-        }
-
-        public int size() {
-            return s0;
-        }
-
-        public Sprite.Index x(float x) {
-            origin.x(x);
-            return this;
-        }
-
-        public Sprite.Index y(float y) {
-            origin.y(y);
-            return this;
-        }
-
-        public Sprite.Index xy(float x, float y) {
-            origin.xy(x, y);
-            return this;
-        }
-
-        public Sprite.Index xy(Vector xy) {
-            origin.xy(xy);
-            return this;
-        }
-
-        public float x() {
-            return origin.x();
-        }
-
-        public float y() {
-            return origin.y();
-        }
-
-        public Vector2 xy() {
-            return origin.xy();
-        }
-
-        public Vector2.Mutable origin() {
-            return origin;
-        }
-
-        @Override
-        public void onRender(RenderContext context) {
-            if(sprite != null) {
-                context = context.push();
-                context.translate(
-                    origin.x(),
-                    origin.y()
-                ).draw(sprite);
-                context = context.pull();
-            }
-        }
-
-        public Sprite select(int i) {
-            return select(i, null, null);
-        }
-
-        public Sprite select(String string) {
-            return select(Sequence.indexOf(strings, string), null, null);
-        }
-
-        public Sprite select(Sprite sprite) {
-            return select(Sequence.indexOf(sprites, sprite), null, null);
-        }
-
-        public Sprite select(int i, String string, Sprite sprite) {
-            if(
-                i >= 0 && i < s0 &&
-                (string == null || Objects.equals(strings[i], string)) &&
-                (sprite == null || Objects.equals(sprites[i], sprite))
-            ) {
-                this.string = strings[i];
-                this.sprite = sprites[i];
-            }
-            return this.sprite;
-        }
-
-        public Sprite.Index insert(Sprite sprite) {
-            return insert(s0, null, sprite);
-        }
-
-        public Sprite.Index insert(String string, Sprite sprite) {
-            return insert(s0, string, sprite);
-        }
-
-        public Sprite.Index insert(int         i, Sprite sprite) {
-            return insert(i   , null  , sprite);
-        }
-
-        public Sprite.Index insert(int i, String string, Sprite sprite) {
-            if(i >= 0 && i <= s0) {
-                if(s0 >= s1)
-                    increase();
-
-                for (int j = s0; j > i; j --) {
-                    strings[j] = strings[j - 1];
-                    sprites[j] = sprites[j - 1];
-                }
-                strings[i] = string;
-                sprites[i] = sprite;
-                s0++;
-            }
-            return this;
-        }
-
-        public Sprite.Index remove(int i) {
-            return remove(i, null, null);
-        }
-
-        public Sprite.Index remove(String string) {
-            return remove(Sequence.indexOf(strings, string), null, null);
-        }
-
-        public Sprite.Index remove(Sprite sprite) {
-            return remove(Sequence.indexOf(sprites, sprite), null, null);
-        }
-
-        public Sprite.Index remove(int i, String string, Sprite sprite) {
-            if(
-                i >= 0 && i < s0 &&
-                (string == null || Objects.equals(strings[i], string)) &&
-                (sprite == null || Objects.equals(sprites[i], sprite))
-            ) {
-                for (int j = i; j < s0 - 1; j ++) {
-                    strings[j] = strings[j + 1];
-                    sprites[j] = sprites[j + 1];
-                }
-                s0--;
-            }
-            return this;
-        }
-
-        protected void increase() {
-            int
-                m = s1,
-                n = s1 + (s1 >> 1);
-            String[] _strings = new String[n];
-            Sprite[] _sprites = new Sprite[n];
-            System.arraycopy(strings, 0, _strings, 0, m);
-            System.arraycopy(sprites, 0, _sprites, 0, m);
-            strings = _strings;
-            sprites = _sprites;
-            s1 = n;
-        }
-
-        protected void decrease() {
-            int
-                m = s1,
-                n = s1 - (s1 >> 1);
-            String[] _strings = new String[n];
-            Sprite[] _sprites = new Sprite[n];
-            System.arraycopy(strings, 0, _strings, 0, n);
-            System.arraycopy(sprites, 0, _sprites, 0, n);
-            strings = _strings;
-            sprites = _sprites;
-            s1 = n;
-        }
-
-        public Iterable<Sprite> forward() {
-            return Sequence.forward(sprites, s0);
-        }
-
-        public Iterable<Sprite> reverse() {
-            return Sequence.reverse(sprites, s0);
-        }
-
-        @Override
-        public Iterator<Sprite> iterator() {
-            return forward().iterator();
-        }
+    public static Sprite from(Sprite.Cache cache, String id, Sprite.Effect... chain) {
+        return new Sprite(cache.reserve(id, chain));
     }
 
     public static class Atlas implements Copyable<Sprite.Atlas> {
@@ -640,12 +432,41 @@ public class Sprite implements Copyable<Sprite>, Renderable {
     }
 
     public static interface Effect {
-
-        public BufferedImage[] apply(BufferedImage[] frames);
-
         public static final Sprite.Effect
             COERCE_TYPE_INT_RGB  = Sprite.Effect.COERCE(BufferedImage.TYPE_INT_RGB ),
             COERCE_TYPE_INT_ARGB = Sprite.Effect.COERCE(BufferedImage.TYPE_INT_ARGB);
+
+        public BufferedImage[] apply(BufferedImage[] frames);
+
+        public static BufferedImage[] apply(BufferedImage[] frames, Sprite.Effect... chain) {
+            frames = AWT.copyImages(frames);
+            for(Sprite.Effect effect: chain)
+                frames = effect.apply(frames);
+            return frames;
+        }
+
+        public static Sprite.Atlas apply(Sprite.Atlas atlas, Sprite.Effect... chain) {
+            if(chain.length > 0) {
+                BufferedImage[] frames = apply(atlas.frames, chain);
+                int
+                    frame_w = 0,
+                    frame_h = 0;
+                if(frames.length > 0) {
+                    frame_w = frames[0].getWidth() ;
+                    frame_h = frames[0].getHeight();
+                }
+                return new Sprite.Atlas(
+                    null,
+                    null  ,       0,       0,
+                    frames, frame_w, frame_h
+                );
+            } else
+                return atlas;
+        }
+
+        public static Sprite apply(Sprite sprite, Sprite.Effect... chain) {
+            return new Sprite(sprite, apply(sprite.atlas, chain));
+        }
 
         public static Sprite.Effect COERCE(int type) {
             return (frames) -> {
@@ -664,76 +485,76 @@ public class Sprite implements Copyable<Sprite>, Renderable {
     }
 
     public static class Cache {
-        protected final HashMap<Resource, Cache.Element>
-            map  =  new HashMap<Resource, Cache.Element>();
+        protected final HashMap<String, Cache.Element>
+            index = new HashMap<String, Cache.Element>();
 
-        public Sprite.Atlas load(Resource resource, int w, int h, Sprite.Effect... chain) {
-            Cache.Element element = map.get(resource);
+        public Sprite.Atlas load(String id, Resource resource, int w, int h, Sprite.Effect... chain) {
+            Cache.Element element = index.get(id);
 
-            if (element != null) {
-                if (
+            boolean
+                warn = false;
+            if(
+                element == null ||
+                (warn =
+                    !Objects.equals(element.atlas().resource, resource) ||
                     element.atlas().frame_w != w ||
                     element.atlas().frame_h != h
                 )
-                    Debug.warn(new Object() { }, "Sprite.Cache mismatch '" + resource + "'");
-            } else {
-                map.put(resource, element = new Cache.Element(
-                    this, Sprite.Atlas.load(resource, w, h)
-                ));
-                element = element.get(chain);
+            ) {
+                Sprite.Atlas atlas = Sprite.Atlas.load(resource, w, h);
+                if(atlas != null) {
+                    if(warn) Debug.warn(new Object() { }, String.format(
+                        "Sprite.Atlas ('%1$s', %2$d, %3$d) with id '%4$s' will be replaced ('%5$s', %6$d, %7$d)",
+                        element.atlas().resource,
+                        element.atlas().frame_w ,
+                        element.atlas().frame_h ,
+                        id, resource, w, h
+                    ));
+
+                    element = new Cache.Element(this, atlas);
+                    index.put(id, element);
+                }
             }
-            return element.atlas();
+
+            return element != null ? element.reserve(chain).atlas() : null;
         }
 
-        public Sprite.Atlas load(String   resource, int w, int h, Sprite.Effect... chain) {
-            return load(new Resource(resource), w, h, chain);
+        public Sprite.Atlas load(String id, String   resource, int w, int h, Sprite.Effect... chain) {
+            return load(id, new Resource(resource), w, h, chain);
         }
 
-        public Sprite.Atlas load(Class<?> from, String path, int w, int h, Sprite.Effect... chain) {
-            return load(new Resource(from, path), w, h, chain);
+        public Sprite.Atlas load(String id, Class<?> from, String path, int w, int h, Sprite.Effect... chain) {
+            return load(id, new Resource(from, path), w, h, chain);
         }
 
-        public Sprite.Atlas load(String   from, String path, int w, int h, Sprite.Effect... chain) {
-            return load(new Resource(from, path), w, h, chain);
+        public Sprite.Atlas load(String id, String   from, String path, int w, int h, Sprite.Effect... chain) {
+            return load(id, new Resource(from, path), w, h, chain);
         }
 
-        public Sprite.Atlas get(Resource resource, Sprite.Effect... chain) {
-            Cache.Element element = map.get(resource);
-            return element != null ? element.get(chain).atlas() : null;
+        public Sprite.Atlas request(String id, Sprite.Effect... chain) {
+            Cache.Element element;
+            if((element = index.get(id)) != null)
+                element = element.request(chain);
+            return element != null ? element.atlas() : null;
         }
 
-        public Sprite.Atlas get(String   resource, Sprite.Effect... chain) {
-            return get(new Resource(resource), chain);
+        public Sprite.Atlas require(String id, Sprite.Effect... chain) {
+            Cache.Element element;
+            if((element = index.get(id)) != null)
+                element = element.require(chain);
+            return element != null ? element.atlas() : null;
         }
 
-        public Sprite.Atlas get(Class<?> from, String path, Sprite.Effect... chain) {
-            return get(new Resource(from, path), chain);
-        }
-
-        public Sprite.Atlas get(String   from, String path, Sprite.Effect... chain) {
-            return get(new Resource(from, path), chain);
-        }
-
-        public boolean has(Resource resource, Sprite.Effect... chain) {
-            Cache.Element element = map.get(resource);
-            return element != null && element.has(chain);
-        }
-
-        public boolean has(String   resource, Sprite.Effect... chain) {
-            return has(new Resource(resource), chain);
-        }
-
-        public boolean has(Class<?> from, String path, Sprite.Effect... chain) {
-            return has(new Resource(from, path), chain);
-        }
-
-        public boolean has(String   from, String path, Sprite.Effect... chain) {
-            return has(new Resource(from, path), chain);
+        public Sprite.Atlas reserve(String id, Sprite.Effect... chain) {
+            Cache.Element element;
+            if((element = index.get(id)) != null)
+                element = element.reserve(chain);
+            return element != null ? element.atlas() : null;
         }
 
         public static class Element {
             protected final HashMap<Sprite.Effect, Cache.Element>
-                map  =  new HashMap<Sprite.Effect, Cache.Element>();
+                index = new HashMap<Sprite.Effect, Cache.Element>();
             protected Sprite.Cache
                 cache;
             protected Sprite.Atlas
@@ -755,33 +576,49 @@ public class Sprite implements Copyable<Sprite>, Renderable {
                 return atlas;
             }
 
-            public boolean       has(Sprite.Effect... chain) {
+            public Cache.Element request(Sprite.Effect... chain) {
                 Cache.Element
                     root = this,
                     node = this;
-                for (Sprite.Effect effect: chain) {
-                    node = root.map.get(effect);
-                    if (node != null)
-                        root = node ;
+                for(Sprite.Effect effect : chain) {
+                    node = root.index.get(effect);
+                    if(node != null)
+                        root = node;
                     else
-                        return false;
+                        return null;
                 }
-                return true;
+                return node;
             }
 
-            public Cache.Element get(Sprite.Effect... chain) {
+            public Cache.Element require(Sprite.Effect... chain) {
                 Cache.Element
                     root = this,
                     node = this;
-                for (Sprite.Effect effect: chain) {
-                    node = root.map.get(effect);
-                    if (node != null)
+                for(Sprite.Effect effect : chain) {
+                    node = root.index.get(effect);
+                    if(node != null)
+                        root = node;
+                    else
+                        root = node = new Cache.Element(
+                            cache, Sprite.Effect.apply(root.atlas, effect)
+                        );
+                }
+                return node;
+            }
+
+            public Cache.Element reserve(Sprite.Effect... chain) {
+                Cache.Element
+                    root = this,
+                    node = this;
+                for(Sprite.Effect effect : chain) {
+                    node = root.index.get(effect);
+                    if(node != null)
                         root = node;
                     else {
                         root = node = new Cache.Element(
-                            cache, Sprite.apply(root.atlas, effect)
+                            cache, Sprite.Effect.apply(root.atlas, effect)
                         );
-                        map.put(effect, node);
+                        index.put(effect, node);
                     }
                 }
                 return node;

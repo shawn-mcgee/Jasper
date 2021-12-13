@@ -5,7 +5,7 @@ import jasper.util.Version;
 
 public class Jasper {
     public static final Version
-        VERSION = new Version("Jasper", 0, 4, 1);
+        VERSION = new Version("Jasper", 0, 4, 2);
     
     public static void main(String[] args) {
         Debug.info(new Object() { }, VERSION);
