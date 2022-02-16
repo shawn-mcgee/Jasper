@@ -8,8 +8,8 @@ growing.
 The project's namesake comes from the semi-precious, sedimentary mineral known 
 as Jasper; more specifically, the slow and accumulative nature of the gemstone's
 formation. Despite my best efforts, I am fortunate enough to have a loving 
-family and a full-time job that keep me busy. Crucially, I have known from the 
-beginning that progress would be similarly sedimentary, and that perhaps with 
+family and a full-time job that keep me busy. Ergo, I have known from the 
+beginning that progress would be similarly sedimentary, but perhaps with 
 enough time and effort, my little rock would also be a semi-precious mineral
 someday. So, the name seemed to be a proper fit.
 
