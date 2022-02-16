@@ -1,18 +1,29 @@
-### What is Jasper?
+## What is Jasper?
 
-Jasper is a Java game engine. Jasper does not make significant architectural
-decisions on behalf of the developer. Instead, Jasper seeks to expose a high
-quality, internally consistent interface.
+Jasper is a Java game engine. Or at least I tell myself that is what it will be
+when it grows up. In its current state, the project is arguably still in its
+infancy, but it contains a rudimentary yet robust feature set that is constantly
+growing.
 
-### Why is Jasper?
+The project's namesake comes from the semi-precious, sedimentary mineral known 
+as Jasper; more specifically, the slow and accumulative nature of the gemstone's
+formation. Despite my best efforts, I am fortunate enough to have a loving 
+family and a full-time job that keep me busy. Crucially, I have known from the 
+beginning that progress would be similarly sedimentary, and that perhaps with 
+enough time and effort, my little rock would also be a semi-precious mineral
+someday. So, the name seemed to be a proper fit.
+
+## Why is Jasper?
 
 Generally speaking, Java is not the first language that comes to mind when
 thinking about game development, but I believe that is because Java game 
-development is an under-served niche.
+development represents an under-served niche. I believe the Java ecosystem lacks
+the tools to make game design accessible to both artists and programmers. It is 
+my hope to someday fill this perceived need with a suite of Java based tools.
 
-### Features
+## Features
 
-Jasper comes with a lightweight logging utility called Debug.
+Jasper comes with a lightweight logging utility called `Debug`.
 
 ```java
 package com.example;
@@ -32,8 +43,7 @@ public class Example {
 [com.example.Example.main] Jasper 0.4.1
 ```
 
-Jasper dramatically minimizes the boilerplate required to start drawing to the 
-screen.
+Jasper  minimizes the boilerplate required to start drawing to the screen.
 
 ```java
 package com.example;
@@ -72,7 +82,7 @@ public class Example {
 }
 ```
 
-Jasper comes with a high-performance Vector math library.
+Jasper also comes with a high-performance Vector math library.
 
 ```java
 package com.example;
@@ -125,17 +135,30 @@ public class Example {
 [Info] <3.0, 4.0, 1.0, 2.0>
 ```
 
-### Roadmap
+## Roadmap
 
-As Jasper continues to mature, the project's immediate priorities are:
+As Jasper continues to mature, my immediate priorities are:
 
-***1. Graphics*** - Currently, Jasper only supports Java's built-in 
-java.awt.Graphics backend, but the goal is to also include support for libraries
-like OpenGL and Vulkan.
+### Graphics
+At its inception, I intended to realize a full 2D and 3D game engine in pure 
+Java. While not impossible, it has quickly become obvious that `java.awt` simply
+does not have the reasonable performance necessary for 3D. Moving forward, the
+goal is to include support for rendering backend like OpenGL and Vulkan via 
+[LWJGL](https://www.lwjgl.org).
 
-***2. Audio*** - Jasper does not have any audio capabilities at the moment. The
-goal is to support multiple audio backends like Java's built-in 
-javax.sound.sampled and OpenAL.
+### Audio
+Jasper lacks any audio capabilities at the moment, but the goal is to support 
+multiple audio backends like Java's `javax.sound.sampled` and OpenAL via
+[LWJGL](https://www.lwjgl.org).
 
-***3. Documentation*** - Jasper has little to no documentation. The goal is to
-make the project more accessible with high quality documentation and tutorials.
+### Multithreading
+In its current state, Jasper is mostly single threaded with little support for
+parallelization. I believe that determinism is an important anchor for both 
+programmers and animators to be able to rely on, which is why it is so important
+to get this aspect right. Moving forward, the goal is to expose multithreaded
+behavior in a way that doesn't break this contract.
+
+### Documentation
+Because of its existence as a solo hobby project, Jasper has little or no 
+documentation. High quality documentation and tutorials are a must and the goal 
+is to add them incrementally as new features begin to crystallize.
