@@ -3,6 +3,7 @@ package jasper.math;
 import static jasper.math.Math.EPSILON;
 import static jasper.util.StringToObject.stringToFloat;
 import static jasper.util.Utility.parse;
+import static java.lang.Math.max;
 
 public class Bounds2 implements Box2, Bounds {
     private static final long
@@ -185,45 +186,25 @@ public class Bounds2 implements Box2, Bounds {
         
         @Override
         public Bounds2.Mutable x0(float x0) {
-            if(x0 <= x1)
-                this.x0 = x0;
-            else {
-                this.x0 = x1;
-                this.x1 = x0;
-            }
+            if(x1 < (this.x0 = x0)) x1 = x0;
             return this;
         }
     
         @Override
         public Bounds2.Mutable y0(float y0) {
-            if(y0 <= y1)
-                this.y0 = y0;
-            else {
-                this.y0 = y1;
-                this.y1 = y0;
-            }
+            if(y1 < (this.y0 = y0)) y1 = y0;
             return this;
         }
     
         @Override
         public Bounds2.Mutable x1(float x1) {
-            if(x1 >= x0)
-                this.x1 = x1;
-            else {
-                this.x1 = x0;
-                this.x0 = x1;
-            }
+            if(x0 > (this.x1 = x1)) x0 = x1;
             return this;
         }
     
         @Override
         public Bounds2.Mutable y1(float y1) {
-            if(y1 >= y0)
-                this.y1 = y1;
-            else {
-                this.y1 = y0;
-                this.y0 = y1;
-            }
+            if(y0 > (this.y1 = y1)) y0 = y1;
             return this;
         }
         

@@ -25,8 +25,8 @@ public class Resource implements Copyable<Resource>, Serializable {
     public Resource(String   resource) {
         String[] u = (resource + " ").split(":");
         String
-            from = u.length > 1 ? u[0].strip() : null,
-            path = u.length > 1 ? u[1].strip() : u[0].strip();
+            from = u.length > 1 ? u[0].trim() : null,
+            path = u.length > 1 ? u[1].trim() : u[0].trim();
         try {
             if(from != null) {
                 this.path = path;
@@ -71,12 +71,12 @@ public class Resource implements Copyable<Resource>, Serializable {
         return Resource.exists(this);
     }
 
-    public void create() {
-        Resource.create(this);
+    public boolean create() {
+        return Resource.create(this);
     }
 
-    public void delete() {
-        Resource.delete(this);
+    public boolean delete() {
+        return Resource.delete(this);
     }
 
     public InputStream newInputStream() {
@@ -182,9 +182,9 @@ public class Resource implements Copyable<Resource>, Serializable {
         return exists(new Resource(from, path));
     }
     
-    public static void create(Resource resource) {
+    public static boolean create(Resource resource) {
         if(resource.from != null)
-            Debug.warn(new Object() { }, "Unable to create resource '" + resource + "'");
+                Debug.warn(new Object() { }, "Unable to create resource '" + resource + "'");
         else
             try {
                 File file = new File(resource.path);
@@ -193,24 +193,31 @@ public class Resource implements Copyable<Resource>, Serializable {
                         file.getParentFile().mkdirs();
                     file.createNewFile();
                 }
+                return true;
             } catch (Exception na) {
                 Debug.warn(new Object() {}, "Unable to create resource '" + resource + "'");
             }
+        return false;
     }
     
-    public static void create(String   resource) {
-        create(new Resource(resource));
+    public static boolean create(String   resource) {
+        return create(new Resource(resource));
     }
     
-    public static void delete(Resource resource) {
+    public static boolean delete(Resource resource) {
         if(resource.from != null)
-            Debug.warn(new Object() { }, "Unable to delete resource '" + resource + "'");
+                Debug.warn(new Object() { }, "Unable to delete resource '" + resource + "'");
         else
-            new File(resource.path).delete();
+            try {
+                return new File(resource.path).delete();
+            } catch(Exception na) {
+                Debug.warn(new Object() { }, "Unable to delete resource '" + resource + "'");
+            }
+        return false;
     }
     
-    public static void delete(String   resource) {
-        delete(new Resource(resource));
+    public static boolean delete(String   resource) {
+        return delete(new Resource(resource));
     }
     
     public static InputStream newInputStream(Resource resource) {
@@ -356,7 +363,13 @@ public class Resource implements Copyable<Resource>, Serializable {
     public static byte[] readBytes(InputStream from, String resource) {
         if(from != null)
             try(BufferedInputStream in = new BufferedInputStream(from)) {
-                return in.readAllBytes();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int    length;
+                byte[] buffer = new byte[1024];
+                while((length = in.read(buffer)) != -1)
+                    baos.write(buffer, 0, length);
+                baos.flush();
+                return baos.toByteArray();
             } catch (Exception na) {
                 Debug.warn(new Object() { }, "Unable to read bytes from resource '" + resource + "'");
             }

@@ -86,7 +86,7 @@ public interface Array<T> extends Sequence<T> {
         }
     
         @Override
-        public T get(int i) {
+        public T get(int i    ) {
             return i >= 0 && i < size ? Unsafe.cast(a[at(i)]    ) : null;
         }
         
@@ -305,7 +305,7 @@ public interface Array<T> extends Sequence<T> {
         
             @Override
             public Iterator<T> iterator() {
-                return new Iterator<>() {
+                return new Iterator<T>() {
                     private int
                         m =      0,
                         n = a.size;
@@ -333,7 +333,7 @@ public interface Array<T> extends Sequence<T> {
             
             @Override
             public Iterator<T> iterator() {
-                return new Iterator<>() {
+                return new Iterator<T>() {
                     private int
                         m =      0,
                         n = a.size;
@@ -538,7 +538,7 @@ public interface Array<T> extends Sequence<T> {
             
             @Override
             public Iterator<T> iterator() {
-                return new Iterator<>() {
+                return new Iterator<T>() {
                     private int
                         m =      0,
                         n = a.size;
@@ -566,7 +566,7 @@ public interface Array<T> extends Sequence<T> {
             
             @Override
             public Iterator<T> iterator() {
-                return new Iterator<>() {
+                return new Iterator<T>() {
                     private int
                         m =      0,
                         n = a.size;

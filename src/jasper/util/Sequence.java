@@ -55,7 +55,7 @@ public interface Sequence<T> extends Copyable<Sequence<T>>, Iterable<T>, Seriali
         return n;
     }
 
-    public static <T> int indexOf(T[] a, T t) {
+    public static <T> int index(T[] a, T t) {
         int i = 0;
         for (T u : a) {
             if (Objects.equals(u, t))
@@ -73,7 +73,7 @@ public interface Sequence<T> extends Copyable<Sequence<T>>, Iterable<T>, Seriali
         return n;
     }
 
-    public static <T> int indexOf(Iterable<T> a, T t) {
+    public static <T> int index(Iterable<T> a, T t) {
         int i = 0;
         for (T u : a) {
             if (Objects.equals(u, t))
@@ -286,7 +286,7 @@ public interface Sequence<T> extends Copyable<Sequence<T>>, Iterable<T>, Seriali
         public Stack<T> copy();
 
         public static <T> Stack<T> from(Deque<T> deque) {
-            return new Stack<>() {
+            return new Stack<T>() {
                 private static final long
                     serialVersionUID = 1L;
 
@@ -354,7 +354,7 @@ public interface Sequence<T> extends Copyable<Sequence<T>>, Iterable<T>, Seriali
         public Queue<T> copy();
 
         public static <T> Queue<T> from(Deque<T> deque) {
-            return new Queue<>() {
+            return new Queue<T>() {
                 private static final long
                     serialVersionUID = 1L;
 

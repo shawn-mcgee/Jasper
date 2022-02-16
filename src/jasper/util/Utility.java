@@ -13,7 +13,7 @@ public final class Utility {
     public static String[] parse(String s, String... tags) {
         String[]
             // split s at commas, append " " for edge case when string ends with comma
-            t  = (s.strip() + " ").split(","),
+            t  = (s.trim() + " ").split(","),
             u0 = new String[t.length], // split labels
             u1 = new String[t.length]; // split values
         int
@@ -27,11 +27,11 @@ public final class Utility {
             // split t[i] at colons, append " " for edge case when string ends with colon
             String[] u = (t[i] + " ").split(":");
             if(u.length > 1) { // a label is being used     (e.g. label:value)
-                u0[i] = u[0].strip();
-                u1[i] = u[1].strip();
+                u0[i] = u[0].trim();
+                u1[i] = u[1].trim();
                 a0 ++;
             } else             // a label is not being used (e.g.       value)
-                u1[i] = u[0].strip();
+                u1[i] = u[0].trim();
         }
         a1 = m - a0;
         
@@ -43,7 +43,7 @@ public final class Utility {
             // split tags[i] at pipes, append " " for edge case when string ends with pipe
             String[] a = (tags[i] + " ").split("\\|");
             for(j = 0; j < a.length; j ++)
-                a[j] = a[j].strip();
+                a[j] = a[j].trim();
             alias[i] = a;
         }
         
@@ -99,5 +99,9 @@ b:          for(j = 0; j < m; j ++) {
                     }
         
         return u;
+    }
+
+    public static boolean isBlank(String string) {
+        return string.trim().isEmpty();
     }
 }

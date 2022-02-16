@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static jasper.util.Utility.isBlank;
+
 public class Debug {
     public static Logger
         info = Logger.create(System.out),
@@ -52,7 +54,7 @@ public class Debug {
         String format;
         if (trace instanceof String) {
             format = (String)trace;
-            if(!format.isBlank())
+            if(!isBlank(format))
                 format = String.format("[%1$s]", trace);
         } else {
             try {
@@ -70,7 +72,7 @@ public class Debug {
             s0 = Objects.toString(event),
             s1 = String.format(s0, args);
         format += " %s%n";
-        for(String u: s1.strip().split("\\n"))
+        for(String u: s1.trim().split("\\n"))
             sb.append(String.format(format, u));
         return sb.toString();
     }

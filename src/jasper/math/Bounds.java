@@ -25,25 +25,25 @@ public interface Bounds extends Box {
     public static interface Mutable extends Bounds, Box.Mutable {
         @Override
         public default Bounds.Mutable x(float x) {
-            float dx = x - x0();
-            x1(x1() + dx);
-            x0(x0() + dx);
+            float x0 = x0(), x1 = x1(), dx = x - x0;
+            x0(x0 + dx);
+            x1(x1 + dx);
             return this;
         }
         
         @Override
         public default Bounds.Mutable y(float y) {
-            float dy = y - y0();
-            y1(y1() + dy);
-            y0(y0() + dy);
+            float y0 = y0(), y1 = y1(), dy = y - y0;
+            y0(y0 + dy);
+            y1(y1 + dy);
             return this;
         }
     
         @Override
         public default Bounds.Mutable z(float z) {
-            float dz = z - z0();
-            z1(z1() + dz);
-            z0(z0() + dz);
+            float z0 = z0(), z1 = z1(), dz = z - z0;
+            z0(z0 + dz);
+            z1(z1 + dz);
             return this;
         }
         
