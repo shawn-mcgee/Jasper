@@ -143,7 +143,7 @@ As Jasper continues to mature, my immediate priorities are:
 At its inception, I intended to realize a full 2D and 3D game engine in pure 
 Java. While not impossible, it has quickly become obvious that `java.awt` simply
 does not have the reasonable performance necessary for 3D. Moving forward, the
-goal is to include support for rendering backend like OpenGL and Vulkan via 
+goal is to include support for rendering backends like OpenGL and Vulkan via 
 [LWJGL](https://www.lwjgl.org).
 
 ### Audio
