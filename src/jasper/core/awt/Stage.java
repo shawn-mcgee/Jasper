@@ -123,9 +123,10 @@ public class Stage extends Module.Server implements Configurable {
         input = new Input(this);
         
         Configurable.configure(dbg,
-            _DEBUG_UPDATE, null,
-            _DEBUG_RENDER, null,
-            _DEBUG_CANVAS, null
+            _DEBUG_VERSION, Jasper.VERSION.toString(),
+            _DEBUG_UPDATE , null,
+            _DEBUG_RENDER , null,
+            _DEBUG_CANVAS , null
         );
     }
     
@@ -555,7 +556,7 @@ public class Stage extends Module.Server implements Configurable {
         b;
     protected void render(float t, float dt, float fixed_dt) {
         if(b == null || b.contentsLost()) {
-            canvas.createBufferStrategy(2);
+            canvas.createBufferStrategy(3);
             b = canvas.getBufferStrategy();
         }
         
@@ -617,7 +618,7 @@ public class Stage extends Module.Server implements Configurable {
                 if(property != null)
                     g.drawString(property, 0, fm.getLeading() + fm.getAscent() + fm.getHeight() * i ++);
         }
-        
+
         h.dispose();
         g.dispose();
         b.   show();
@@ -822,7 +823,8 @@ public class Stage extends Module.Server implements Configurable {
         WINDOW_STRING = "window-string";
     
     public static final String
-        _DEBUG_UPDATE = ".debug-update",
-        _DEBUG_RENDER = ".debug-render",
-        _DEBUG_CANVAS = ".debug_canvas";
+        _DEBUG_VERSION = ".debug-version",
+        _DEBUG_UPDATE  = ".debug-update",
+        _DEBUG_RENDER  = ".debug-render",
+        _DEBUG_CANVAS  = ".debug_canvas";
 }
