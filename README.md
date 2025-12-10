@@ -1,25 +1,12 @@
 ## What is Jasper?
 
-Jasper is a Java game engine. Or at least I tell myself that is what it will be
-when it grows up. In its current state, the project is arguably still in its
-infancy, but it contains a rudimentary yet robust feature set that is constantly
-growing.
+Jasper is a Java game engine. Or at least I tell myself that is what it will be when it grows up. In its current state, the project is arguably still in its infancy, but it contains a rudimentary yet robust feature set that is constantly growing.
 
-The project's namesake comes from the semi-precious, sedimentary mineral known 
-as Jasper; more specifically, the slow and accumulative nature of the gemstone's
-formation. Despite my best efforts, I am fortunate enough to have a loving 
-family and a full-time job that keep me busy. Ergo, I have known from the 
-beginning that progress would be similarly sedimentary, but perhaps with 
-enough time and effort, my little rock would also be a semi-precious mineral
-someday. So, the name seemed to be a proper fit.
+The project's namesake comes from the semi-precious, sedimentary mineral known as Jasper; more specifically, the slow and accumulative nature of the gemstone's formation. Despite my best efforts, I am fortunate enough to have a loving family and a full-time job that keep me busy. Ergo, I have known from the beginning that progress would be similarly sedimentary, but perhaps with enough time and effort, my little rock would also be a semi-precious mineral someday. So, the name seemed to be a proper fit.
 
 ## Why is Jasper?
 
-Generally speaking, Java is not the first language that comes to mind when
-thinking about game development, but I believe that is because Java game 
-development represents an under-served niche. I believe the Java ecosystem lacks
-the tools to make game design accessible to both artists and programmers. It is 
-my hope to someday fill this perceived need with a suite of Java based tools.
+Generally speaking, Java is not the first language that comes to mind when thinking about game development, but I believe that is because Java game development represents an under-served niche. I believe the Java ecosystem lacks the tools to make game design accessible to both artists and programmers. It is my hope to someday fill this perceived need with a suite of Java based tools.
 
 ## Features
 
@@ -140,25 +127,13 @@ public class Example {
 As Jasper continues to mature, my immediate priorities are:
 
 ### Graphics
-At its inception, I intended to realize a full 2D and 3D game engine in pure 
-Java. While not impossible, it has quickly become obvious that `java.awt` simply
-does not have the reasonable performance necessary for 3D. Moving forward, the
-goal is to include support for rendering backends like OpenGL and Vulkan via 
-[LWJGL](https://www.lwjgl.org).
+At its inception, I intended to realize a full 2D and 3D game engine in pure Java. While not impossible, it has quickly become obvious that `java.awt` simply does not have the reasonable performance necessary for 3D. Moving forward, the goal is to include support for rendering backends like OpenGL and Vulkan via [LWJGL](https://www.lwjgl.org).
 
 ### Audio
-Jasper lacks any audio capabilities at the moment, but the goal is to support 
-multiple audio backends like Java's `javax.sound.sampled` and OpenAL via
-[LWJGL](https://www.lwjgl.org).
+Jasper lacks any audio capabilities at the moment, but the goal is to support multiple audio backends like Java's `javax.sound.sampled` and OpenAL via [LWJGL](https://www.lwjgl.org).
 
 ### Multithreading
-In its current state, Jasper is mostly single threaded with little support for
-parallelization. I believe that determinism is an important anchor for both 
-programmers and animators to be able to rely on, which is why it is so important
-to get this aspect right. Moving forward, the goal is to expose multithreaded
-behavior in a way that doesn't break this contract.
+In its current state, Jasper is mostly single threaded with little support for parallelization. I believe that determinism is an important anchor for both programmers and animators to be able to rely on, which is why it is so important to get this aspect right. Moving forward, the goal is to expose multithreaded behavior in a way that doesn't break this contract.
 
 ### Documentation
-Because of its existence as a solo hobby project, Jasper has little or no 
-documentation. High quality documentation and tutorials are a must and the goal 
-is to add them incrementally as new features begin to crystallize.
+Because of its existence as a solo hobby project, Jasper has little or no documentation. High quality documentation and tutorials are a must and the goal is to add them incrementally as new features begin to crystallize.
