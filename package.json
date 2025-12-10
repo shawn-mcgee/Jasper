@@ -1,0 +1,23 @@
+{
+  "name": "jasper",
+  "version": "1.0.0",
+  "description": "Jasper is a Java game engine. Or at least I tell myself that is what it will be\r when it grows up. In its current state, the project is arguably still in its\r infancy, but it contains a rudimentary yet robust feature set that is constantly\r growing.",
+  "homepage": "https://github.com/shawn-mcgee/Jasper#readme",
+  "bugs": {
+    "url": "https://github.com/shawn-mcgee/Jasper/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shawn-mcgee/Jasper.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
