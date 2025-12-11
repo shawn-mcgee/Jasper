@@ -1,6 +1,6 @@
-import { Vector2f, Vector2u, Vector2i } from "./vector2";
-import { Vector3f, Vector3u, Vector3i } from "./vector3";
-import { Vector4f, Vector4u, Vector4i } from "./vector4";
+import { Vector2f, Vector2u, Vector2i } from "./vector/vector2";
+import { Vector3f, Vector3u, Vector3i } from "./vector/vector3";
+import { Vector4f, Vector4u, Vector4i } from "./vector/vector4";
 
 export const imm = {
   vec2f(x ?: number, y ?: number)                           { return new Vector2f(x, y); },
@@ -39,3 +39,15 @@ export const vec4u = imm.vec4u;
 export const vec2i = imm.vec2i;
 export const vec3i = imm.vec3i;
 export const vec4i = imm.vec4i;
+
+// forward vector imports
+export * from "./vector/vector";
+export * from "./vector/vector2";
+export * from "./vector/vector3";
+export * from "./vector/vector4";
+export * from "./vector/ops/add";
+export * from "./vector/ops/sub";
+export * from "./vector/ops/hmul";
+export * from "./vector/ops/hdiv";
+export * from "./vector/ops/dot";
+export * from "./vector/ops/out";
