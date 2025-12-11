@@ -1,5 +1,5 @@
 import { vec2f, vec2i } from "./jasper/math/vector";
-import { add2u } from "./jasper/math/vector/op/add";
+import { add2u } from "./jasper/math/vector/ops/add";
 
 
 

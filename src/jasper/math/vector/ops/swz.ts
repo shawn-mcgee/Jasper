@@ -1,3 +1,9 @@
+import { Vector } from "../vector";
+import { Vector2f, Vector2i, Vector2u } from "../vector2";
+import { Vector3f, Vector3i, Vector3u } from "../vector3";
+import { Vector4f, Vector4i, Vector4u } from "../vector4";
+import { out2f, out2i, out2u, out3f, out3i, out3u, out4f, out4i, out4u } from "./out";
+
 //swizzle2f
 export function xxf(a: Vector, out ?: Vector2f.Mutable) {
   return out2f(out, a.x, a.x);
@@ -4038,4 +4044,3 @@ export function zwwwi(a: Vector, out ?: Vector4i.Mutable) {
 export function wwwwi(a: Vector, out ?: Vector4i.Mutable) {
   return out4i(out, a.w, a.w, a.w, a.w);
 }
-
